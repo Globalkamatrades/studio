@@ -1,7 +1,7 @@
 
 import type { FC } from 'react';
 import SectionCard from '@/components/ui/section-card';
-import { LineChart, AlertTriangle, ExternalLink, Droplets } from 'lucide-react';
+import { LineChart, AlertTriangle, ExternalLink, Droplets, TrendingUp, DollarSign } from 'lucide-react'; // Added TrendingUp
 import ButtonLink from './ui/button-link';
 
 const GRAPHQL_ENDPOINT = 'https://api.placeholder.co/graphql/solana'; 
@@ -47,10 +47,9 @@ interface LiquidityBlockData {
 }
 
 interface LiquidityInfo {
-  tokenLiquidity: number; // Monthly ECOHO Buy Volume
-  wsolLiquidity: number; // Monthly SOL Sell Volume
+  tokenLiquidity: number; 
+  wsolLiquidity: number; 
   Block: LiquidityBlockData;
-  // Trade?: { Market?: { MarketAddress?: string } }; // Not strictly needed for display
 }
 
 interface SolanaLiquidityResponseData {
@@ -64,11 +63,26 @@ interface GraphQLLiquidityResponse {
   errors?: Array<{ message: string }>;
 }
 
+interface AthPriceInfo {
+  athPriceUSD: number;
+}
+
+interface SolanaAthResponseData {
+    DEXTradeByTokens: AthPriceInfo[];
+}
+
+interface GraphQLAthResponse {
+  data?: {
+    Solana?: SolanaAthResponseData;
+  };
+  errors?: Array<{ message: string }>;
+}
+
 
 async function getMarketData(): Promise<DexTradeData | null> {
   const query = `
     query GetEcohoMarketData {
-      Solana(dataset: combined) { # Changed from archive to combined
+      Solana(dataset: combined) {
         DEXTradeByTokens(
           orderBy: { descendingByField: "Block_Timefield" }
           where: {
@@ -87,7 +101,7 @@ async function getMarketData(): Promise<DexTradeData | null> {
           Trade {
             high: Price(maximum: Trade_Price)
             low: Price(minimum: Trade_Price)
-            open: Price(minimum: Trade_Price)
+            open: Price(minimum: Trade_Price) 
             close: Price(maximum: Trade_Price)
           }
           count
@@ -190,6 +204,51 @@ async function getLiquidityData(): Promise<LiquidityInfo | null> {
   }
 }
 
+async function getEcohoAthPrice(): Promise<number | null> {
+  const query = `
+    query GetEcohoAthPrice {
+      Solana(dataset: archive) { # Using archive dataset for ATH
+        DEXTradeByTokens(
+          where: { Trade: { Currency: { MintAddress: { is: "${ECOHO_MINT_ADDRESS}" } } } }
+          limit: { count: 1 } # We expect a single ATH value
+        ) {
+          athPriceUSD: quantile(of: Trade_PriceInUSD, level: 0.99) # 99th percentile as ATH proxy
+        }
+      }
+    }
+  `;
+  try {
+    const response = await fetch(GRAPHQL_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query }),
+      cache: 'no-store', 
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error(`GraphQL request for ATH data failed with status ${response.status}: ${errorBody}`);
+      throw new Error(`Network response was not ok for ATH data. Status: ${response.status}.`);
+    }
+
+    const result = (await response.json()) as GraphQLAthResponse;
+
+    if (result.errors) {
+      console.error('GraphQL ATH Data Errors:', result.errors);
+      throw new Error(result.errors.map(e => e.message).join(', '));
+    }
+
+    const athEntries = result.data?.Solana?.DEXTradeByTokens;
+    if (athEntries && athEntries.length > 0 && athEntries[0].athPriceUSD !== null && athEntries[0].athPriceUSD !== undefined) {
+      return athEntries[0].athPriceUSD;
+    }
+    return null;
+  } catch (error) {
+    console.error('Failed to fetch ATH price:', error);
+    throw error;
+  }
+}
+
 
 interface MarketStatProps {
   label: string;
@@ -197,12 +256,16 @@ interface MarketStatProps {
   unit?: string;
   isLoading?: boolean;
   isMonthly?: boolean;
+  icon?: React.ReactNode;
 }
 
-const MarketStat: FC<MarketStatProps> = ({ label, value, unit, isLoading, isMonthly }) => {
+const MarketStat: FC<MarketStatProps> = ({ label, value, unit, isLoading, isMonthly, icon }) => {
   return (
     <div className="p-3 bg-card/50 rounded-lg shadow">
-      <p className="text-sm text-muted-foreground">{label} {isMonthly && "(Monthly)"}</p>
+      <p className="text-sm text-muted-foreground flex items-center gap-1">
+        {icon}
+        {label} {isMonthly && "(Monthly)"}
+      </p>
       {isLoading ? (
         <div className="h-6 w-24 bg-muted-foreground/20 animate-pulse rounded mt-1"></div>
       ) : (
@@ -210,7 +273,7 @@ const MarketStat: FC<MarketStatProps> = ({ label, value, unit, isLoading, isMont
           {value === 'N/A' || value === null || value === undefined 
             ? 'N/A' 
             : typeof value === 'number' 
-              ? value.toLocaleString(undefined, {maximumFractionDigits: unit === 'SOL' ? 4: 2, minimumFractionDigits: unit === 'SOL' ? 2 : 0 }) 
+              ? value.toLocaleString(undefined, {maximumFractionDigits: unit === 'SOL' || unit === 'USD' ? 4: 2, minimumFractionDigits: unit === 'SOL' || unit === 'USD' ? 2 : 0 }) 
               : value}
           {unit && value !== 'N/A' && value !== null && value !== undefined && <span className="text-xs ml-1 text-muted-foreground">{unit}</span>}
         </p>
@@ -223,14 +286,17 @@ const MarketStat: FC<MarketStatProps> = ({ label, value, unit, isLoading, isMont
 const MarketAnalytics: FC = async () => {
   let marketData: DexTradeData | null = null;
   let liquidityData: LiquidityInfo | null = null;
+  let athPriceData: number | null = null;
   let marketFetchError: string | null = null;
   let liquidityFetchError: string | null = null;
+  let athFetchError: string | null = null;
   let isLoading = true;
 
   try {
-    const [marketResult, liquidityResult] = await Promise.allSettled([
+    const [marketResult, liquidityResult, athResult] = await Promise.allSettled([
       getMarketData(),
-      getLiquidityData()
+      getLiquidityData(),
+      getEcohoAthPrice()
     ]);
 
     if (marketResult.status === 'fulfilled') {
@@ -246,18 +312,24 @@ const MarketAnalytics: FC = async () => {
       liquidityFetchError = liquidityResult.reason?.message || "Failed to load liquidity-related data.";
       console.error('Liquidity data fetch error:', liquidityResult.reason);
     }
+
+    if (athResult.status === 'fulfilled') {
+      athPriceData = athResult.value;
+    } else {
+      athFetchError = athResult.reason?.message || "Failed to load ATH price data.";
+      console.error('ATH price data fetch error:', athResult.reason);
+    }
     isLoading = false;
   } catch (error: any) { 
-    // This catch block is less likely to be hit with Promise.allSettled,
-    // but kept as a fallback. Errors are handled per promise.
     console.error('Generic error in MarketAnalytics data fetching:', error);
     marketFetchError = marketFetchError || error.message || "An unexpected error occurred loading market data.";
     liquidityFetchError = liquidityFetchError || error.message || "An unexpected error occurred loading liquidity data.";
+    athFetchError = athFetchError || error.message || "An unexpected error occurred loading ATH data.";
     isLoading = false;
   }
 
   const birdeyeLink = `https://birdeye.so/token/${ECOHO_MINT_ADDRESS}?chain=solana`;
-  const combinedError = [marketFetchError, liquidityFetchError].filter(Boolean).join(' ');
+  const combinedError = [marketFetchError, liquidityFetchError, athFetchError].filter(Boolean).join(' ');
 
   return (
     <SectionCard 
@@ -294,33 +366,44 @@ const MarketAnalytics: FC = async () => {
         </div>
       )}
 
-      {!combinedError || isLoading ? ( // Show stats if no error or still loading
+      {!combinedError || isLoading ? ( 
         <div className="space-y-6">
             <div>
                 <h3 className="text-lg font-semibold mb-2 text-card-foreground/90 flex items-center gap-2"><LineChart size={20} /> Daily Price & Volume</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     <MarketStat 
-                    label="24h Volume" 
-                    value={marketData?.volume ?? 'N/A'} 
-                    unit="SOL"
-                    isLoading={isLoading}
+                        label="24h Volume" 
+                        value={marketData?.volume ?? 'N/A'} 
+                        unit="SOL"
+                        isLoading={isLoading}
+                        icon={<DollarSign size={16} className="text-muted-foreground" />}
                     />
                     <MarketStat 
-                    label="24h Trades" 
-                    value={marketData?.count ?? 'N/A'}
-                    isLoading={isLoading}
+                        label="24h Trades" 
+                        value={marketData?.count ?? 'N/A'}
+                        isLoading={isLoading}
+                        icon={<LineChart size={16} className="text-muted-foreground" />}
+                    />
+                     <MarketStat 
+                        label="ATH Price (99th Percentile)" 
+                        value={athPriceData ?? 'N/A'} 
+                        unit="USD"
+                        isLoading={isLoading}
+                        icon={<TrendingUp size={16} className="text-muted-foreground" />}
                     />
                     <MarketStat 
-                    label="24h High Price" 
-                    value={marketData?.Trade?.high ?? 'N/A'} 
-                    unit="SOL"
-                    isLoading={isLoading}
+                        label="24h High Price" 
+                        value={marketData?.Trade?.high ?? 'N/A'} 
+                        unit="SOL"
+                        isLoading={isLoading}
+                        icon={<TrendingUp size={16} className="text-muted-foreground" />}
                     />
                     <MarketStat 
-                    label="24h Low Price" 
-                    value={marketData?.Trade?.low ?? 'N/A'} 
-                    unit="SOL"
-                    isLoading={isLoading}
+                        label="24h Low Price" 
+                        value={marketData?.Trade?.low ?? 'N/A'} 
+                        unit="SOL"
+                        isLoading={isLoading}
+                        icon={<TrendingUp size={16} className="text-muted-foreground rotate-180" />}
                     />
                 </div>
                 {isLoading && !marketData && (
@@ -331,6 +414,9 @@ const MarketAnalytics: FC = async () => {
                     Price/Volume data as of: {new Date(marketData.Block.Timefield.Time).toLocaleString()}
                     </p>
                 )}
+                 {!isLoading && athPriceData === null && !athFetchError && (
+                     <p className="text-xs text-muted-foreground text-right mt-1">ATH data currently unavailable.</p>
+                 )}
             </div>
             <div>
                 <h3 className="text-lg font-semibold mb-2 text-card-foreground/90 flex items-center gap-2"><Droplets size={20}/> Monthly Market Activity</h3>
@@ -342,6 +428,7 @@ const MarketAnalytics: FC = async () => {
                         unit="ECOHO"
                         isLoading={isLoading}
                         isMonthly={true}
+                        icon={<DollarSign size={16} className="text-muted-foreground" />}
                     />
                     <MarketStat 
                         label="SOL Volume (from ECOHO Sales)" 
@@ -349,6 +436,7 @@ const MarketAnalytics: FC = async () => {
                         unit="SOL"
                         isLoading={isLoading}
                         isMonthly={true}
+                        icon={<DollarSign size={16} className="text-muted-foreground" />}
                     />
                 </div>
                  {isLoading && !liquidityData && (
@@ -360,7 +448,7 @@ const MarketAnalytics: FC = async () => {
                     </p>
                 )}
             </div>
-           {!isLoading && !marketData && !liquidityData && !combinedError && (
+           {!isLoading && !marketData && !liquidityData && !athPriceData && !combinedError && (
              <p className="text-sm text-muted-foreground p-4 text-center">No market data available at the moment.</p>
            )}
         </div>
@@ -370,3 +458,4 @@ const MarketAnalytics: FC = async () => {
 };
 
 export default MarketAnalytics;
+
