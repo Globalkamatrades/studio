@@ -1,7 +1,9 @@
+
 "use client";
 
 import type { NextPage } from 'next';
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
 
 const CommercialInvoicePage: NextPage = () => {
   const handlePrint = () => {
@@ -11,6 +13,13 @@ const CommercialInvoicePage: NextPage = () => {
   return (
     <>
       <header className="bg-black text-white p-2.5 text-center">
+        <Image 
+          src="https://kamaincprofile.com/logo.png" 
+          alt="Ecoho Gold Logo" 
+          width={120} 
+          height={50} // Assuming a height, adjust if needed
+          className="mx-auto mb-2.5" 
+        />
         <h1 className="text-2xl font-bold">Ecoho Gold</h1>
         <p>123 Ecoho Lane, Johannesburg, GP, 2000 | www.kamaincprofile.com | Akhona@kamaincprofile.com | 065 533 5608</p>
       </header>
@@ -61,6 +70,12 @@ const CommercialInvoicePage: NextPage = () => {
             </tr>
           </tbody>
         </table>
+
+        <div className="mt-[30px] bg-gray-100 p-2.5 border border-dashed border-gray-700">
+          <strong>Crypto Wallet Address for Payment:</strong><br />
+          <code className="font-mono">0xYourWalletAddressHere</code>
+          <br /><small className="text-xs">(ECOHO BEP-20 Wallet)</small>
+        </div>
 
         <p className="mt-[30px]">I declare all the information contained in this invoice to be true and correct.</p>
         <p>
