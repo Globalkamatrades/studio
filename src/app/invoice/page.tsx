@@ -12,7 +12,7 @@ const CommercialInvoicePage: NextPage = () => {
     <>
       <header className="bg-black text-white p-2.5 text-center">
         <h1 className="text-2xl font-bold">Ecoho Gold</h1>
-        <p>123 Ecoho Lane, Johannesburg, GP, 2000 | www.kamaincprofile.com | info@ecoho.gold | +27 73 456 7890</p>
+        <p>123 Ecoho Lane, Johannesburg, GP, 2000 | www.kamaincprofile.com | Akhona@kamaincprofile.com | 065 533 5608</p>
       </header>
 
       <main className="border border-gray-300 p-5 mt-5">
