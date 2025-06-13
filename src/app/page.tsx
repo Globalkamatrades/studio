@@ -9,7 +9,8 @@ import AirdropRewards from '@/components/airdrop-rewards';
 import WhitepaperSection from '@/components/whitepaper-section';
 import ContactLinks from '@/components/contact-links';
 import CommunitySpotlightForm from '@/components/community-spotlight-form';
-import MarketAnalytics from '@/components/market-analytics'; // Added import
+import MarketAnalytics from '@/components/market-analytics';
+import EthereumNftDexTrades from '@/components/ethereum-nft-dex-trades'; // Added import
 
 export default function HomePage() {
   return (
@@ -18,7 +19,8 @@ export default function HomePage() {
       <main className="flex-grow container mx-auto px-4 py-8 md:py-12">
         <div className="space-y-8 md:space-y-12">
           <TokenInfo />
-          <MarketAnalytics /> {/* Added new component */}
+          <MarketAnalytics />
+          <EthereumNftDexTrades /> {/* Added new component */}
           <BuyToken />
           <NftPurchase />
           <AudiusPlayer />
@@ -32,5 +34,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-    
