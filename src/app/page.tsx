@@ -1,3 +1,4 @@
+
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 import AudiusPlayer from '@/components/audius-player';
@@ -8,6 +9,7 @@ import AirdropRewards from '@/components/airdrop-rewards';
 import WhitepaperSection from '@/components/whitepaper-section';
 import ContactLinks from '@/components/contact-links';
 import CommunitySpotlightForm from '@/components/community-spotlight-form';
+import MarketAnalytics from '@/components/market-analytics'; // Added import
 
 export default function HomePage() {
   return (
@@ -15,10 +17,11 @@ export default function HomePage() {
       <Header />
       <main className="flex-grow container mx-auto px-4 py-8 md:py-12">
         <div className="space-y-8 md:space-y-12">
-          <AudiusPlayer />
-          <NftPurchase />
           <TokenInfo />
+          <MarketAnalytics /> {/* Added new component */}
           <BuyToken />
+          <NftPurchase />
+          <AudiusPlayer />
           <AirdropRewards />
           <WhitepaperSection />
           <CommunitySpotlightForm />
@@ -29,3 +32,5 @@ export default function HomePage() {
     </div>
   );
 }
+
+    
