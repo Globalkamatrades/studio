@@ -10,7 +10,8 @@ import WhitepaperSection from '@/components/whitepaper-section';
 import ContactLinks from '@/components/contact-links';
 import CommunitySpotlightForm from '@/components/community-spotlight-form';
 import MarketAnalytics from '@/components/market-analytics';
-import EthereumNftDexTrades from '@/components/ethereum-nft-dex-trades'; // Added import
+import EthereumNftDexTrades from '@/components/ethereum-nft-dex-trades';
+import SqlFileSelector from '@/components/sql-file-selector'; // Added import
 
 export default function HomePage() {
   return (
@@ -20,13 +21,14 @@ export default function HomePage() {
         <div className="space-y-8 md:space-y-12">
           <TokenInfo />
           <MarketAnalytics />
-          <EthereumNftDexTrades /> {/* Added new component */}
+          <EthereumNftDexTrades />
           <BuyToken />
           <NftPurchase />
           <AudiusPlayer />
           <AirdropRewards />
           <WhitepaperSection />
           <CommunitySpotlightForm />
+          <SqlFileSelector /> {/* Added new component */}
           <ContactLinks />
         </div>
       </main>
