@@ -5,166 +5,116 @@ import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import SectionCard from '@/components/ui/section-card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { AlertTriangle, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { AlertTriangle, Image as ImageIcon, Loader2, ExternalLink } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
-// Updated to use The Graph Network Subgraph for Arbitrum
-const SUBGRAPH_ID = "DZz4kDTdmzWLWsV373w2bSmoar3umKKH9y82SUKr5qmp";
-const GRAPHQL_ENDPOINT_EVM = `https://gateway.thegraph.com/api/subgraphs/id/${SUBGRAPH_ID}`;
+const ALCHEMY_API_ENDPOINT_BASE = 'https://eth-mainnet.g.alchemy.com/v2/';
+const FROM_ADDRESS_TO_QUERY = "0x994b342dd87fc825f66e51ffa3ef71ad818b6893"; // Address from example
 
-interface EvmTradeCurrency {
-  Symbol: string;
-  SmartContract: string;
-}
-
-interface EvmTradeBuyDetail {
-  Currency: EvmTradeCurrency;
-  min_price: number;
-  max_price: number;
-}
-
-interface EvmTradeSellDetail {
-  Currency: EvmTradeCurrency;
-}
-
-// IMPORTANT: This interface will likely need to be adjusted based on the actual schema
-// of The Graph subgraph 'DZz4kDTdmzWLWsV373w2bSmoar3umKKH9y82SUKr5qmp'.
-// The current structure is based on the OLD placeholder API.
-interface EvmTradeData {
-  Trade: {
-    Buy: EvmTradeBuyDetail;
-    Sell: EvmTradeSellDetail;
+interface AlchemyTransfer {
+  blockNum: string;
+  hash: string;
+  from: string;
+  to: string;
+  value: number | null;
+  erc721TokenId: string | null;
+  erc1155Metadata: { tokenId: string; value: string; }[] | null;
+  asset: string | null;
+  category: string;
+  rawContract: {
+    value: string | null;
+    address: string | null;
+    decimal: string | null;
   };
-  buy_amount: string;
-  sell_amount: string;
-  count: string;
-  // Add other fields that your new query for The Graph might return
-}
-
-interface EvmDEXTradesResponse {
-  // This top-level structure will depend on your NEW query for The Graph.
-  // For example, it might be `data: { yourQueryRootField: EvmTradeData[] }`
-  // The example query for The Graph was:
-  // { graphNetworks(first: 5) { ... }, graphAccounts(first: 5) { ... } }
-  // This is NOT for NFT trades. You need to replace it.
-  EVM?: { // This 'EVM' key is from the OLD API structure.
-    DEXTrades?: EvmTradeData[]; // This 'DEXTrades' key is from OLD API.
+  metadata?: {
+    blockTimestamp: string;
   };
-  // If your new query for The Graph returns data directly under 'data', adjust accordingly.
-  // e.g. data?: { someTradesField?: EvmTradeData[] }
 }
 
-interface GraphQLResponse {
-  data?: EvmDEXTradesResponse; // Or your new response structure from The Graph
-  errors?: Array<{ message: string }>;
+interface AlchemyApiResponse {
+  jsonrpc: string;
+  id: number;
+  result?: {
+    transfers: AlchemyTransfer[];
+  };
+  error?: {
+    code: number;
+    message: string;
+  };
 }
 
-async function getEthereumNftDexTrades(): Promise<EvmTradeData[]> {
-  const apiKey = process.env.NEXT_PUBLIC_THEGRAPH_GATEWAY_API_KEY;
-
+async function getRecentNftTransfers(apiKey: string | undefined): Promise<AlchemyTransfer[]> {
   if (!apiKey) {
-    console.warn("NEXT_PUBLIC_THEGRAPH_GATEWAY_API_KEY is not set. API calls will likely fail.");
-    // Optionally, throw an error or return empty data to prevent API calls without a key
-    // throw new Error("API key for The Graph is missing.");
+    console.warn("NEXT_PUBLIC_ALCHEMY_API_KEY is not set. API calls will fail.");
+    throw new Error("Alchemy API key is missing.");
   }
 
-  // !!! IMPORTANT !!!
-  // The GraphQL query below is from the OLD placeholder API.
-  // It WILL NOT WORK with The Graph subgraph 'DZz4kDTdmzWLWsV373w2bSmoar3umKKH9y82SUKr5qmp'
-  // unless that subgraph happens to have an identical schema (which is highly unlikely).
-  // You MUST REPLACE this query with one that is valid for the schema of your target subgraph
-  // and fetches Ethereum NFT DEX trades data.
-  //
-  // You can explore the subgraph's schema and test queries on The Graph Explorer.
-  // The example query provided with The Graph API info was:
-  // { graphNetworks(first: 5) { id controller graphToken epochManager } graphAccounts(first: 5) { id names { id } defaultName { id } createdAt } }
-  // This query is for general graph network information, NOT for NFT trades.
-  const query = `
-    query GetEthereumNftDexTrades_NEEDS_REPLACEMENT {
-      EVM(dataset: combined, network: eth) {
-        DEXTrades(
-          orderBy: {descendingByField: "count"}
-          limit: {offset: 0, count: 10}
-          where: {Block: {Date: {since: "2023-05-01", till: "2023-05-28"}}, Trade: {Buy: {Currency: {Fungible: false}}, Sell: {Currency: {Fungible: true}}}}
-        ) {
-          Trade {
-            Buy {
-              Currency {
-                Symbol
-                SmartContract
-              }
-              min_price: Price(minimum: Trade_Buy_Price)
-              max_price: Price(maximum: Trade_Buy_Price)
-            }
-            Sell {
-              Currency {
-                Symbol
-                SmartContract
-              }
-            }
-          }
-          buy_amount: sum(of: Trade_Buy_Amount)
-          sell_amount: sum(of: Trade_Sell_Amount)
-          count
-        }
-      }
-    }
-  `;
+  const apiEndpoint = `${ALCHEMY_API_ENDPOINT_BASE}${apiKey}`;
+
+  const payload = {
+    jsonrpc: "2.0",
+    method: "alchemy_getAssetTransfers",
+    params: [
+      {
+        fromBlock: "0x0",
+        fromAddress: FROM_ADDRESS_TO_QUERY,
+        category: ["erc721", "erc1155"],
+        withMetadata: true,
+        excludeZeroValue: false, 
+        maxCount: "0xa", // Fetch 10 transfers
+      },
+    ],
+    id: 0,
+  };
 
   try {
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-    };
-    if (apiKey) {
-      headers['Authorization'] = `Bearer ${apiKey}`;
-    }
-
-    const response = await fetch(GRAPHQL_ENDPOINT_EVM, {
+    const response = await fetch(apiEndpoint, {
       method: 'POST',
-      headers: headers,
-      body: JSON.stringify({ query }), // Ensure your 'query' variable holds the CORRECT query string
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
       cache: 'no-store',
     });
 
     if (!response.ok) {
       const errorBody = await response.text();
-      console.error(`GraphQL request for EVM NFT trades failed with status ${response.status}: ${errorBody}`);
+      console.error(`Alchemy API request failed with status ${response.status}: ${errorBody}`);
       throw new Error(`Network response was not ok. Status: ${response.status}. Body: ${errorBody}`);
     }
 
-    const result = (await response.json()) as GraphQLResponse;
+    const result = (await response.json()) as AlchemyApiResponse;
 
-    if (result.errors) {
-      console.error('GraphQL EVM NFT Trades Errors:', result.errors);
-      throw new Error(result.errors.map(e => e.message).join(', '));
+    if (result.error) {
+      console.error('Alchemy API Error:', result.error);
+      throw new Error(`Alchemy API Error: ${result.error.message} (Code: ${result.error.code})`);
     }
 
-    // IMPORTANT: Adjust this data access path based on your NEW query's response structure.
-    // The path 'data.EVM.DEXTrades' is from the OLD API.
-    return result.data?.EVM?.DEXTrades || [];
+    return result.result?.transfers || [];
   } catch (error) {
-    console.error('Failed to fetch Ethereum NFT DEX trades:', error);
-    throw error; // Re-throw to be caught by the component
+    console.error('Failed to fetch NFT transfers from Alchemy:', error);
+    throw error; 
   }
 }
 
 const EthereumNftDexTrades: FC = () => {
-  const [trades, setTrades] = useState<EvmTradeData[]>([]);
+  const [transfers, setTransfers] = useState<AlchemyTransfer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [apiKeyMissing, setApiKeyMissing] = useState(false);
+  const [apiKey, setApiKey] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    if (!process.env.NEXT_PUBLIC_THEGRAPH_GATEWAY_API_KEY) {
-      setApiKeyMissing(true);
-    }
+    const key = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
+    setApiKey(key);
+
     async function fetchData() {
       setIsLoading(true);
       setError(null);
       try {
-        const data = await getEthereumNftDexTrades();
-        setTrades(data);
+        const data = await getRecentNftTransfers(key);
+        setTransfers(data);
       } catch (err: any) {
-        setError(err.message || 'Failed to load Ethereum NFT DEX trades.');
+        setError(err.message || 'Failed to load NFT transfers.');
         console.error(err);
       } finally {
         setIsLoading(false);
@@ -173,14 +123,34 @@ const EthereumNftDexTrades: FC = () => {
     fetchData();
   }, []);
 
-  const warningMessage = apiKeyMissing
-    ? "The API Key for The Graph (NEXT_PUBLIC_THEGRAPH_GATEWAY_API_KEY) is missing from your .env file. Please add it to fetch data."
-    : "This component is configured to use The Graph. Ensure your API key is set in .env. The GraphQL query in `getEthereumNftDexTrades` function needs to be verified or updated to match the schema of the configured subgraph (" + SUBGRAPH_ID + ") to fetch relevant Ethereum NFT DEX trades. The current query is a placeholder and likely incorrect for this subgraph.";
+  const getDisplayTokenId = (transfer: AlchemyTransfer): string => {
+    if (transfer.erc721TokenId) {
+      try {
+        return BigInt(transfer.erc721TokenId).toString(10);
+      } catch {
+        return transfer.erc721TokenId; // Fallback if not a valid hex BigInt
+      }
+    }
+    if (transfer.erc1155Metadata && transfer.erc1155Metadata.length > 0) {
+      // For simplicity, show the first token ID for ERC1155 if multiple
+      try {
+        return BigInt(transfer.erc1155Metadata[0].tokenId).toString(10);
+      } catch {
+        return transfer.erc1155Metadata[0].tokenId;
+      }
+    }
+    return 'N/A';
+  };
+  
+  const getEtherscanLink = (hash: string) => `https://etherscan.io/tx/${hash}`;
 
+  const warningMessage = !apiKey
+    ? "The Alchemy API Key (NEXT_PUBLIC_ALCHEMY_API_KEY) is missing from your .env file. Please add it to fetch data."
+    : null;
 
   return (
-    <SectionCard title="Top NFT Sales on Ethereum DEXs" icon={<ImageIcon className="text-primary h-8 w-8" />}>
-      {(apiKeyMissing || GRAPHQL_ENDPOINT_EVM.includes(SUBGRAPH_ID)) && ( // Show warning if API key missing or if we are using The Graph
+    <SectionCard title={`Recent NFT Transfers from ${FROM_ADDRESS_TO_QUERY.substring(0,6)}...${FROM_ADDRESS_TO_QUERY.slice(-4)} (ETH)`} icon={<ImageIcon className="text-primary h-8 w-8" />}>
+      {warningMessage && (
         <div className="mb-4 p-3 bg-yellow-500/10 border border-yellow-500/30 text-yellow-700 rounded-md text-sm flex items-center gap-2">
           <AlertTriangle size={18} />
           <span>{warningMessage}</span>
@@ -190,7 +160,7 @@ const EthereumNftDexTrades: FC = () => {
       {isLoading && (
         <div className="flex justify-center items-center py-8">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="ml-2 text-muted-foreground">Loading NFT trades data...</p>
+          <p className="ml-2 text-muted-foreground">Loading NFT transfers...</p>
         </div>
       )}
 
@@ -198,58 +168,62 @@ const EthereumNftDexTrades: FC = () => {
         <div className="p-4 bg-destructive/10 border border-destructive/30 text-destructive rounded-md text-sm flex items-center gap-2">
           <AlertTriangle size={20} className="text-destructive" />
           <div>
-            <p className="font-semibold">Error Fetching Ethereum NFT Trades</p>
+            <p className="font-semibold">Error Fetching NFT Transfers</p>
             <p>{error}</p>
-            <p className="text-xs mt-1">This could be due to a missing/invalid API key, an incorrect GraphQL query for the selected subgraph, or network issues.</p>
+            <p className="text-xs mt-1">This could be due to a missing/invalid API key or network issues with the Alchemy API.</p>
           </div>
         </div>
       )}
 
-      {!isLoading && !error && trades.length === 0 && (
-        <p className="text-center text-muted-foreground py-4">No NFT trades data available. This could be due to the query needing adjustment for the new API or no data matching the (potentially incorrect) current query.</p>
+      {!isLoading && !error && transfers.length === 0 && (
+        <p className="text-center text-muted-foreground py-4">No recent NFT transfers found for this address or matching the criteria.</p>
       )}
 
-      {!isLoading && !error && trades.length > 0 && (
+      {!isLoading && !error && transfers.length > 0 && (
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>NFT Symbol</TableHead>
-              <TableHead className="text-right">Min Price (Sold For)</TableHead>
-              <TableHead className="text-right">Max Price (Sold For)</TableHead>
-              <TableHead>Sold For Currency</TableHead>
-              <TableHead className="text-right">Trade Count</TableHead>
-              <TableHead className="text-right">Total NFT Amount</TableHead>
-              <TableHead className="text-right">Total Sell Currency Amount</TableHead>
+              <TableHead>Timestamp</TableHead>
+              <TableHead>Asset</TableHead>
+              <TableHead>Token ID</TableHead>
+              <TableHead>From</TableHead>
+              <TableHead>To</TableHead>
+              <TableHead className="text-right">Tx Hash</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {trades.map((trade, index) => (
-              <TableRow key={`${trade.Trade?.Buy?.Currency?.SmartContract || index}-${index}`}>
-                <TableCell className="font-medium">
-                  {trade.Trade?.Buy?.Currency?.Symbol || 'N/A'}
-                  <div className="text-xs text-muted-foreground truncate" style={{maxWidth: '150px'}} title={trade.Trade?.Buy?.Currency?.SmartContract}>
-                    {trade.Trade?.Buy?.Currency?.SmartContract}
-                  </div>
-                </TableCell>
-                <TableCell className="text-right">{trade.Trade?.Buy?.min_price?.toFixed(4) ?? 'N/A'}</TableCell>
-                <TableCell className="text-right">{trade.Trade?.Buy?.max_price?.toFixed(4) ?? 'N/A'}</TableCell>
+            {transfers.map((transfer) => (
+              <TableRow key={transfer.hash}>
                 <TableCell>
-                  {trade.Trade?.Sell?.Currency?.Symbol || 'N/A'}
-                   <div className="text-xs text-muted-foreground truncate" style={{maxWidth: '150px'}} title={trade.Trade?.Sell?.Currency?.SmartContract}>
-                    {trade.Trade?.Sell?.Currency?.SmartContract === "0x" ? "Native (ETH)" : trade.Trade?.Sell?.Currency?.SmartContract}
-                  </div>
+                  {transfer.metadata?.blockTimestamp 
+                    ? new Date(transfer.metadata.blockTimestamp).toLocaleString() 
+                    : 'N/A'}
                 </TableCell>
-                <TableCell className="text-right">{trade.count}</TableCell>
-                <TableCell className="text-right">{parseFloat(trade.buy_amount).toLocaleString()}</TableCell>
-                <TableCell className="text-right">{parseFloat(trade.sell_amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 4})}</TableCell>
+                <TableCell className="font-medium">
+                  {transfer.asset || 'Unknown Asset'}
+                  {transfer.rawContract?.address && (
+                     <div className="text-xs text-muted-foreground truncate" style={{maxWidth: '150px'}} title={transfer.rawContract.address}>
+                        {transfer.rawContract.address}
+                     </div>
+                  )}
+                </TableCell>
+                <TableCell>{getDisplayTokenId(transfer)}</TableCell>
+                <TableCell className="truncate" style={{maxWidth: '150px'}} title={transfer.from}>{transfer.from}</TableCell>
+                <TableCell className="truncate" style={{maxWidth: '150px'}} title={transfer.to}>{transfer.to}</TableCell>
+                <TableCell className="text-right">
+                   <Button variant="link" size="sm" asChild className="p-0 h-auto">
+                    <a href={getEtherscanLink(transfer.hash)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+                      View <ExternalLink size={12} />
+                    </a>
+                   </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       )}
       <p className="text-xs text-muted-foreground mt-2 text-right">
-        Data attempts to show trades where NFTs were bought with fungible tokens. Query needs validation for The Graph.<br />
-        Currently displaying data from an Arbitrum (Ethereum L2) subgraph. Ethereum Mainnet is identified as eip155:1.
+        Displaying up to 10 most recent ERC721/ERC1155 transfers. Data from Alchemy.
       </p>
     </SectionCard>
   );
