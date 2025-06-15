@@ -5,7 +5,7 @@ import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import SectionCard from '@/components/ui/section-card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { AlertTriangle, Image as ImageIcon, ShoppingCart, Loader2 } from 'lucide-react'; // Changed DollarSign to ShoppingCart for NFT context
+import { AlertTriangle, Image as ImageIcon, Loader2 } from 'lucide-react';
 
 // Placeholder - Replace with your actual GraphQL endpoint for EVM data
 const GRAPHQL_ENDPOINT_EVM = 'https://api.placeholder.co/graphql/ethereum'; // Or your Bitquery endpoint
@@ -18,7 +18,7 @@ interface EvmTradeCurrency {
 interface EvmTradeBuyDetail {
   Currency: EvmTradeCurrency;
   min_price: number;
-  max_price: number; // Corrected from max_rice
+  max_price: number; 
 }
 
 interface EvmTradeSellDetail {

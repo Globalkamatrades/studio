@@ -107,8 +107,8 @@ const SqlFileSelector: FC = () => {
         )}
 
         {successMessage && !error && (
-           <Alert variant="default" className="bg-green-500/10 border-green-500/30 text-green-700 dark:text-green-400">
-            <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-500" />
+           <Alert variant="success">
+            <CheckCircle2 className="h-4 w-4" />
             <AlertTitle>Success</AlertTitle>
             <AlertDescription>{successMessage}</AlertDescription>
           </Alert>
