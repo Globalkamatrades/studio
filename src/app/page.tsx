@@ -1,7 +1,7 @@
 
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
-import SpotifyPlayer from '@/components/spotify-player'; // Changed from AudiusPlayer
+// import SpotifyPlayer from '@/components/spotify-player'; // Removed
 import NftPurchase from '@/components/nft-purchase';
 import TokenInfo from '@/components/token-info';
 import BuyToken from '@/components/buy-token';
@@ -23,7 +23,7 @@ export default function HomePage() {
           <EthereumNftDexTrades />
           <BuyToken />
           <NftPurchase />
-          <SpotifyPlayer /> {/* Changed from AudiusPlayer */}
+          {/* <SpotifyPlayer /> */} {/* Removed */}
           <AirdropRewards />
           <WhitepaperSection />
           <CommunitySpotlightForm />
