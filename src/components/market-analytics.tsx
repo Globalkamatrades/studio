@@ -319,40 +319,48 @@ const MarketAnalytics: FC = async () => {
   let athFetchError: string | null = null;
   let isLoading = true;
 
-  try {
-    const [marketResult, liquidityResult, athResult] = await Promise.allSettled([
-      getMarketData(),
-      getLiquidityData(),
-      getEcohoAthPrice()
-    ]);
+  const isPlaceholderApiActive = GRAPHQL_ENDPOINT.includes('api.placeholder.co');
 
-    if (marketResult.status === 'fulfilled') {
-      marketData = marketResult.value;
-    } else {
-      marketFetchError = marketResult.reason?.message || "Failed to load market data.";
-      console.error('Market data fetch error (handled by component):', marketResult.reason);
-    }
-
-    if (liquidityResult.status === 'fulfilled') {
-      liquidityData = liquidityResult.value;
-    } else {
-      liquidityFetchError = liquidityResult.reason?.message || "Failed to load liquidity-related data.";
-      console.error('Liquidity data fetch error (handled by component):', liquidityResult.reason);
-    }
-
-    if (athResult.status === 'fulfilled') {
-      athPriceData = athResult.value;
-    } else {
-      athFetchError = athResult.reason?.message || "Failed to load ATH price data.";
-      console.error('ATH price data fetch error (handled by component):', athResult.reason);
-    }
+  if (isPlaceholderApiActive) {
     isLoading = false;
-  } catch (error: any) { 
-    console.error('Generic error in MarketAnalytics data fetching (should not be reached if Promise.allSettled is used correctly):', error);
-    marketFetchError = marketFetchError || error.message || "An unexpected error occurred loading market data.";
-    liquidityFetchError = liquidityFetchError || error.message || "An unexpected error occurred loading liquidity data.";
-    athFetchError = athFetchError || error.message || "An unexpected error occurred loading ATH data.";
-    isLoading = false;
+    // Errors will remain null, data will remain null.
+    // The yellow warning will still show due to the GRAPHQL_ENDPOINT check below.
+  } else {
+    try {
+      const [marketResult, liquidityResult, athResult] = await Promise.allSettled([
+        getMarketData(),
+        getLiquidityData(),
+        getEcohoAthPrice()
+      ]);
+
+      if (marketResult.status === 'fulfilled') {
+        marketData = marketResult.value;
+      } else {
+        marketFetchError = marketResult.reason?.message || "Failed to load market data.";
+        console.error('Market data fetch error (handled by component):', marketResult.reason);
+      }
+
+      if (liquidityResult.status === 'fulfilled') {
+        liquidityData = liquidityResult.value;
+      } else {
+        liquidityFetchError = liquidityResult.reason?.message || "Failed to load liquidity-related data.";
+        console.error('Liquidity data fetch error (handled by component):', liquidityResult.reason);
+      }
+
+      if (athResult.status === 'fulfilled') {
+        athPriceData = athResult.value;
+      } else {
+        athFetchError = athResult.reason?.message || "Failed to load ATH price data.";
+        console.error('ATH price data fetch error (handled by component):', athResult.reason);
+      }
+      isLoading = false;
+    } catch (error: any) { 
+      console.error('Generic error in MarketAnalytics data fetching:', error);
+      marketFetchError = marketFetchError || error.message || "An unexpected error occurred loading market data.";
+      liquidityFetchError = liquidityFetchError || error.message || "An unexpected error occurred loading liquidity data.";
+      athFetchError = athFetchError || error.message || "An unexpected error occurred loading ATH data.";
+      isLoading = false;
+    }
   }
 
   const birdeyeLink = `https://birdeye.so/token/${ECOHO_MINT_ADDRESS}?chain=solana`;
@@ -363,27 +371,14 @@ const MarketAnalytics: FC = async () => {
   if (athFetchError) errorMessages.push(`ATH price data: ${athFetchError}`);
 
   let displayError: string | null = null;
-  if (errorMessages.length > 0) {
+  if (errorMessages.length > 0) { // This will only be true if !isPlaceholderApiActive and an error occurred
     const allRawMessages = [marketFetchError, liquidityFetchError, athFetchError].filter(Boolean) as string[];
     const uniqueRawMessages = [...new Set(allRawMessages)];
     
-    // Check if all unique messages indicate a placeholder API issue
-    const allPlaceholderRelated = uniqueRawMessages.every(msg => msg.toLowerCase().includes('placeholder api') || msg.toLowerCase().includes('fetch failed for'));
-
-    if (allPlaceholderRelated && uniqueRawMessages.length >=1) {
-        displayError = `Multiple data fetches failed. This is likely due to the placeholder API (${GRAPHQL_ENDPOINT}). Please update it to a live endpoint.`;
-         if (uniqueRawMessages.length === 1) {
-            displayError = uniqueRawMessages[0]; // Show the specific message if it's the same for all
-         }
-    } else if (uniqueRawMessages.length === 1 && allRawMessages.length > 1) {
+    if (uniqueRawMessages.length === 1 && allRawMessages.length > 1) {
       displayError = `Multiple data fetches failed with the same error: ${uniqueRawMessages[0]}`;
-    } 
-     else {
+    } else {
       displayError = errorMessages.join('. ') + '.';
-    }
-
-    if (GRAPHQL_ENDPOINT.includes('api.placeholder.co') && displayError && !displayError.toLowerCase().includes("placeholder api")) {
-        displayError += " This is likely due to the placeholder API. Please update it with a live endpoint to see data.";
     }
   }
 
@@ -406,14 +401,14 @@ const MarketAnalytics: FC = async () => {
         </ButtonLink>
       }
     >
-      {GRAPHQL_ENDPOINT.includes('api.placeholder.co') && (
+      {isPlaceholderApiActive && (
         <div className="mb-4 p-3 bg-yellow-500/10 border border-yellow-500/30 text-yellow-700 rounded-md text-sm flex items-center gap-2">
           <AlertTriangle size={18} />
           <span>The GraphQL endpoint is currently a placeholder. Update <code>src/components/market-analytics.tsx</code> with your actual API endpoint to see live data.</span>
         </div>
       )}
 
-      {displayError && !isLoading && (
+      {displayError && !isLoading && !isPlaceholderApiActive && ( // Only show if not placeholder and error exists
         <div className="p-4 bg-destructive/10 border border-destructive/30 text-destructive rounded-md text-sm flex items-center gap-2">
           <AlertTriangle size={20} className="text-destructive" />
           <div>
@@ -423,7 +418,7 @@ const MarketAnalytics: FC = async () => {
         </div>
       )}
 
-      {(!displayError || isLoading) && ( 
+      {(!displayError || isLoading || isPlaceholderApiActive) && ( 
         <div className="space-y-6">
             <div>
                 <h3 className="text-lg font-semibold mb-2 text-card-foreground/90 flex items-center gap-2"><LineChart size={20} /> Daily Price & Volume</h3>
@@ -463,7 +458,7 @@ const MarketAnalytics: FC = async () => {
                         icon={<TrendingUp size={16} className="text-muted-foreground rotate-180" />}
                     />
                 </div>
-                {isLoading && !marketData && (
+                {isLoading && !marketData && !isPlaceholderApiActive && ( // only show loading skeleton if not placeholder
                     <div className="h-4 w-48 bg-muted-foreground/20 animate-pulse rounded mt-2 ml-auto"></div>
                 )}
                 {!isLoading && marketData?.Block?.Timefield?.Time && (
@@ -471,7 +466,7 @@ const MarketAnalytics: FC = async () => {
                     Price/Volume data as of: {new Date(marketData.Block.Timefield.Time).toLocaleString()}
                     </p>
                 )}
-                 {!isLoading && athPriceData === null && !athFetchError && (
+                 {!isLoading && athPriceData === null && !athFetchError && !isPlaceholderApiActive &&(
                      <p className="text-xs text-muted-foreground text-right mt-1">ATH data currently unavailable.</p>
                  )}
             </div>
@@ -496,7 +491,7 @@ const MarketAnalytics: FC = async () => {
                         icon={<DollarSign size={16} className="text-muted-foreground" />}
                     />
                 </div>
-                 {isLoading && !liquidityData && (
+                 {isLoading && !liquidityData && !isPlaceholderApiActive && ( // only show loading skeleton if not placeholder
                     <div className="h-4 w-48 bg-muted-foreground/20 animate-pulse rounded mt-2 ml-auto"></div>
                 )}
                 {!isLoading && liquidityData?.Block?.Timefield?.Time && (
@@ -505,7 +500,7 @@ const MarketAnalytics: FC = async () => {
                     </p>
                 )}
             </div>
-           {!isLoading && !marketData && !liquidityData && !athPriceData && !displayError && (
+           {!isLoading && !marketData && !liquidityData && !athPriceData && !displayError && !isPlaceholderApiActive &&(
              <p className="text-sm text-muted-foreground p-4 text-center">No market data available at the moment.</p>
            )}
         </div>
@@ -515,3 +510,5 @@ const MarketAnalytics: FC = async () => {
 };
 
 export default MarketAnalytics;
+
+    
