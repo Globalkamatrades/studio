@@ -7,8 +7,9 @@ import SectionCard from '@/components/ui/section-card';
 import { Music2, Loader2, Play, Pause, ExternalLink, AlertTriangle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+// Input and Label are no longer needed for URI change
+// import { Input } from '@/components/ui/input';
+// import { Label } from '@/components/ui/label';
 
 // Interfaces for Spotify Web API response (for Top Tracks)
 interface SpotifyArtistWebAPI {
@@ -35,7 +36,8 @@ const SpotifyPlayer: FC = () => {
   const spotifyEmbedControllerRef = useRef<any>(null);
   const [iFrameAPI, setIFrameAPI] = useState<any>(undefined);
   const [playerLoaded, setPlayerLoaded] = useState(false);
-  const [uri, setUri] = useState(initialArtistUri); // Initialize with artist URI
+  // URI state and setter are removed as the URI is now fixed to initialArtistUri
+  // const [uri, setUri] = useState(initialArtistUri); 
 
   const [topTracks, setTopTracks] = useState<SpotifyTrackWebAPI[] | null>(null);
   const [isLoadingTopTracks, setIsLoadingTopTracks] = useState<boolean>(false);
@@ -48,15 +50,12 @@ const SpotifyPlayer: FC = () => {
     let localOnSpotifyIframeApiReady: ((api: any) => void) | null = null;
 
     if (typeof window !== 'undefined') {
-      // Define the callback function that Spotify's API will call
       localOnSpotifyIframeApiReady = (SpotifyIframeApi: any) => {
         setIFrameAPI(SpotifyIframeApi);
       };
-      // Assign it to the window object
       (window as any).onSpotifyIframeApiReady = localOnSpotifyIframeApiReady;
     }
 
-    // Check if the script already exists to avoid duplicates
     if (typeof document !== 'undefined' && !document.getElementById(scriptId)) {
       const script = document.createElement("script");
       script.id = scriptId;
@@ -64,37 +63,32 @@ const SpotifyPlayer: FC = () => {
       script.async = true;
       document.body.appendChild(script);
 
-      // Cleanup script on component unmount
       return () => {
         const existingScript = document.getElementById(scriptId);
         if (existingScript && document.body.contains(existingScript)) {
           document.body.removeChild(existingScript);
         }
-        // Clean up the global callback if it's the one we set
         if (typeof window !== 'undefined' && (window as any).onSpotifyIframeApiReady === localOnSpotifyIframeApiReady) {
           (window as any).onSpotifyIframeApiReady = null;
         }
       };
     } else if (typeof window !== 'undefined' && (window as any).SpotifyIframeApi && !iFrameAPI) {
-      // If script exists and API is on window but not in state, set it (e.g., HMR)
       setIFrameAPI((window as any).SpotifyIframeApi);
     }
     
-    // General cleanup for the window callback if the component unmounts before the script loads
     return () => {
        if (typeof window !== 'undefined' && (window as any).onSpotifyIframeApiReady === localOnSpotifyIframeApiReady) {
           (window as any).onSpotifyIframeApiReady = null;
        }
     };
-  }, [iFrameAPI]); // Depend on iFrameAPI to ensure this effect correctly manages its lifecycle
+  }, [iFrameAPI]); 
 
   useEffect(() => {
-    // Ensure iFrameAPI is loaded, embedRef is available, and controller hasn't been created
     if (iFrameAPI && embedRef.current && !spotifyEmbedControllerRef.current) {
       const options = {
         width: "100%",
-        height: "352", // Default height for Spotify embeds
-        uri: uri, // Initial URI to load
+        height: "352",
+        uri: initialArtistUri, // Use initialArtistUri directly
       };
       iFrameAPI.createController(
         embedRef.current,
@@ -104,31 +98,22 @@ const SpotifyPlayer: FC = () => {
           
           const onPlayerReadyCallback = () => {
             setPlayerLoaded(true);
-            // console.log("Spotify Player is Ready");
           };
           controller.addListener("ready", onPlayerReadyCallback);
           
-          // Store the callback for cleanup
-          // It's good practice to type a custom property on the controller if possible,
-          // or manage this association externally if not.
           (controller as any).__onPlayerReadyCallback = onPlayerReadyCallback;
         }
       );
     }
 
-    // Cleanup for the player controller's "ready" listener
     return () => {
       const controller = spotifyEmbedControllerRef.current;
       if (controller && (controller as any).__onPlayerReadyCallback) {
         controller.removeListener("ready", (controller as any).__onPlayerReadyCallback);
-        // console.log("Spotify Player 'ready' listener removed");
-        // It's important to remove the custom property to avoid memory leaks if the controller object persists
         delete (controller as any).__onPlayerReadyCallback; 
       }
-      // Note: The Spotify Iframe API does not provide a controller.destroy() method.
-      // Removing the iframe or letting React unmount embedRef is the typical cleanup.
     };
-  }, [iFrameAPI, uri]); // Re-run if iFrameAPI becomes available or initial URI changes (though URI changes are handled by loadUri)
+  }, [iFrameAPI, initialArtistUri]); // Depend on initialArtistUri (though it's constant, it's good practice)
 
 
   const onPauseClick = () => {
@@ -143,13 +128,7 @@ const SpotifyPlayer: FC = () => {
     }
   };
 
-  const onUriChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newUri = event.target.value;
-    setUri(newUri); // Update state for the input field
-    if (spotifyEmbedControllerRef.current && playerLoaded) {
-      spotifyEmbedControllerRef.current.loadUri(newUri); // Load new content into existing player
-    }
-  };
+  // onUriChange function is removed
 
   async function fetchWebApi(endpoint: string, method: string, body?: any): Promise<any> {
     if (!spotifyApiToken) {
@@ -191,8 +170,8 @@ const SpotifyPlayer: FC = () => {
         setTopTracks(tracks);
       } catch (err: any) {
         console.error("Failed to fetch top tracks:", err);
-        if (err.message && typeof err.message === 'string' && err.message.includes("401") && err.message.toLowerCase().includes("expired")) {
-          setErrorTopTracks("The Spotify API token has expired. To see your top tracks, please provide a new valid token in the .env file (NEXT_PUBLIC_SPOTIFY_TEMP_TOKEN) or implement a full OAuth 2.0 flow for a production application.");
+        if (err.message && typeof err.message === 'string' && err.message.includes("401") && (err.message.toLowerCase().includes("expired") || err.message.toLowerCase().includes("invalid access token"))) {
+          setErrorTopTracks("The Spotify API token has expired or is invalid. To see your top tracks, please provide a new valid token in the .env file (NEXT_PUBLIC_SPOTIFY_TEMP_TOKEN) or implement a full OAuth 2.0 flow for a production application.");
         } else {
           setErrorTopTracks(err.message || "Failed to fetch your top tracks from Spotify.");
         }
@@ -223,22 +202,11 @@ const SpotifyPlayer: FC = () => {
                 <Pause className="h-5 w-5" />
               </Button>
             </div>
-            <div>
-              <Label htmlFor="spotify-uri" className="text-sm font-medium text-muted-foreground">Change Spotify URI (e.g., spotify:track:TRACK_ID):</Label>
-              <Input
-                id="spotify-uri"
-                type="text"
-                value={uri}
-                onChange={onUriChange}
-                placeholder="Enter Spotify URI"
-                className="mt-1"
-              />
-            </div>
+            {/* URI Input and Label removed */}
           </div>
         )}
         <p className="mt-4 text-sm text-muted-foreground">
-          Use the controls above to play, pause, or load a new Spotify track, album, artist, or playlist.
-          Initial content is artist: <code>{initialArtistUri}</code>.
+          Use the controls above to play or pause the music. The player is initialized with content from artist: <code>{initialArtistUri}</code>.
         </p>
       </div>
 
