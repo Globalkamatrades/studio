@@ -4,10 +4,11 @@ import SectionCard from '@/components/ui/section-card';
 import { LineChart, AlertTriangle, ExternalLink, Droplets, TrendingUp, DollarSign } from 'lucide-react'; // Added TrendingUp
 import ButtonLink from './ui/button-link';
 
-const GRAPHQL_ENDPOINT = 'https://api.placeholder.co/graphql/solana'; 
+const GRAPHQL_ENDPOINT = 'https://api.placeholder.co/graphql/solana';
 const ECOHO_MINT_ADDRESS = "6D7NaB2xsLd7cauWu1wKk6KBsJohJmP2qZH9GEfVi5Ui";
 const SOL_MINT_ADDRESS = "So11111111111111111111111111111111111111112";
 const ECOHO_SOL_MARKET_ADDRESS = "BSzedbEvWRqVksaF558epPWCM16avEpyhm2HgSq9WZyy";
+const FETCH_TIMEOUT_MS = 10000; // 10 seconds
 
 interface TimefieldData {
   Time: string;
@@ -47,8 +48,8 @@ interface LiquidityBlockData {
 }
 
 interface LiquidityInfo {
-  tokenLiquidity: number; 
-  wsolLiquidity: number; 
+  tokenLiquidity: number;
+  wsolLiquidity: number;
   Block: LiquidityBlockData;
 }
 
@@ -92,16 +93,16 @@ async function getMarketData(): Promise<DexTradeData | null> {
               PriceAsymmetry: { lt: 0.1 }
             }
           }
-          limit: { count: 1 } 
+          limit: { count: 1 }
         ) {
           Block {
             Timefield: Time(interval: { in: days, count: 1 })
           }
-          volume: sum(of: Trade_Amount) 
+          volume: sum(of: Trade_Amount)
           Trade {
             high: Price(maximum: Trade_Price)
             low: Price(minimum: Trade_Price)
-            open: Price(minimum: Trade_Price) 
+            open: Price(minimum: Trade_Price)
             close: Price(maximum: Trade_Price)
           }
           count
@@ -110,13 +111,18 @@ async function getMarketData(): Promise<DexTradeData | null> {
     }
   `;
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+
   try {
     const response = await fetch(GRAPHQL_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query }),
-      cache: 'no-store', 
+      cache: 'no-store',
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       const errorBody = await response.text();
@@ -130,15 +136,18 @@ async function getMarketData(): Promise<DexTradeData | null> {
       console.error('GraphQL Market Data Errors:', result.errors);
       throw new Error(result.errors.map(e => e.message).join(', '));
     }
-    
+
     const trades = result.data?.Solana?.DEXTradeByTokens;
     if (trades && trades.length > 0) {
-      return trades[0]; 
+      return trades[0];
     }
     return null;
   } catch (error: any) {
+    clearTimeout(timeoutId);
     let specificError: Error;
-    if (error instanceof TypeError && error.message.toLowerCase().includes('fetch failed') && GRAPHQL_ENDPOINT.includes('api.placeholder.co')) {
+    if (error.name === 'AbortError') {
+      specificError = new Error(`Failed to fetch market data: Request timed out after ${FETCH_TIMEOUT_MS / 1000} seconds.`);
+    } else if (error instanceof TypeError && error.message.toLowerCase().includes('fetch failed') && GRAPHQL_ENDPOINT.includes('api.placeholder.co')) {
       specificError = new Error(`Fetch failed for market data from placeholder API (${GRAPHQL_ENDPOINT}). Please update to a live API endpoint.`);
     } else if (error instanceof Error) {
       specificError = new Error(`Failed to fetch market data: ${error.message}`);
@@ -146,7 +155,7 @@ async function getMarketData(): Promise<DexTradeData | null> {
       specificError = new Error('Failed to fetch market data due to an unknown error.');
     }
     if (error instanceof Error && error.stack) specificError.stack = error.stack;
-    console.error(specificError.message, error); 
+    console.error(specificError.message, error);
     throw specificError;
   }
 }
@@ -181,20 +190,25 @@ async function getLiquidityData(): Promise<LiquidityInfo | null> {
       }
     }
   `;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+
   try {
     const response = await fetch(GRAPHQL_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query }),
       cache: 'no-store',
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       const errorBody = await response.text();
       console.error(`GraphQL request for liquidity data failed with status ${response.status}: ${errorBody}`);
       throw new Error(`Network response for liquidity data was not ok. Status: ${response.status}.`);
     }
-    
+
     const result = (await response.json()) as GraphQLLiquidityResponse;
 
     if (result.errors) {
@@ -208,8 +222,11 @@ async function getLiquidityData(): Promise<LiquidityInfo | null> {
     }
     return null;
   } catch (error: any) {
+    clearTimeout(timeoutId);
     let specificError: Error;
-    if (error instanceof TypeError && error.message.toLowerCase().includes('fetch failed') && GRAPHQL_ENDPOINT.includes('api.placeholder.co')) {
+    if (error.name === 'AbortError') {
+      specificError = new Error(`Failed to fetch liquidity data: Request timed out after ${FETCH_TIMEOUT_MS / 1000} seconds.`);
+    } else if (error instanceof TypeError && error.message.toLowerCase().includes('fetch failed') && GRAPHQL_ENDPOINT.includes('api.placeholder.co')) {
       specificError = new Error(`Fetch failed for liquidity data from placeholder API (${GRAPHQL_ENDPOINT}). Please update to a live API endpoint.`);
     } else if (error instanceof Error) {
       specificError = new Error(`Failed to fetch liquidity data: ${error.message}`);
@@ -235,13 +252,18 @@ async function getEcohoAthPrice(): Promise<number | null> {
       }
     }
   `;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+
   try {
     const response = await fetch(GRAPHQL_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query }),
-      cache: 'no-store', 
+      cache: 'no-store',
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       const errorBody = await response.text();
@@ -262,8 +284,11 @@ async function getEcohoAthPrice(): Promise<number | null> {
     }
     return null;
   } catch (error: any) {
+    clearTimeout(timeoutId);
     let specificError: Error;
-    if (error instanceof TypeError && error.message.toLowerCase().includes('fetch failed') && GRAPHQL_ENDPOINT.includes('api.placeholder.co')) {
+    if (error.name === 'AbortError') {
+      specificError = new Error(`Failed to fetch ATH price data: Request timed out after ${FETCH_TIMEOUT_MS / 1000} seconds.`);
+    } else if (error instanceof TypeError && error.message.toLowerCase().includes('fetch failed') && GRAPHQL_ENDPOINT.includes('api.placeholder.co')) {
       specificError = new Error(`Fetch failed for ATH price data from placeholder API (${GRAPHQL_ENDPOINT}). Please update to a live API endpoint.`);
     } else if (error instanceof Error) {
       specificError = new Error(`Failed to fetch ATH price data: ${error.message}`);
@@ -297,10 +322,10 @@ const MarketStat: FC<MarketStatProps> = ({ label, value, unit, isLoading, isMont
         <div className="h-6 w-24 bg-muted-foreground/20 animate-pulse rounded mt-1"></div>
       ) : (
         <p className="text-xl font-semibold text-primary">
-          {value === 'N/A' || value === null || value === undefined 
-            ? 'N/A' 
-            : typeof value === 'number' 
-              ? value.toLocaleString(undefined, {maximumFractionDigits: unit === 'SOL' || unit === 'USD' ? 4: 2, minimumFractionDigits: unit === 'SOL' || unit === 'USD' ? 2 : 0 }) 
+          {value === 'N/A' || value === null || value === undefined
+            ? 'N/A'
+            : typeof value === 'number'
+              ? value.toLocaleString(undefined, {maximumFractionDigits: unit === 'SOL' || unit === 'USD' ? 4: 2, minimumFractionDigits: unit === 'SOL' || unit === 'USD' ? 2 : 0 })
               : value}
           {unit && value !== 'N/A' && value !== null && value !== undefined && <span className="text-xs ml-1 text-muted-foreground">{unit}</span>}
         </p>
@@ -323,8 +348,6 @@ const MarketAnalytics: FC = async () => {
 
   if (isPlaceholderApiActive) {
     isLoading = false;
-    // Errors will remain null, data will remain null.
-    // The yellow warning will still show due to the GRAPHQL_ENDPOINT check below.
   } else {
     try {
       const [marketResult, liquidityResult, athResult] = await Promise.allSettled([
@@ -354,7 +377,7 @@ const MarketAnalytics: FC = async () => {
         console.error('ATH price data fetch error (handled by component):', athResult.reason);
       }
       isLoading = false;
-    } catch (error: any) { 
+    } catch (error: any) {
       console.error('Generic error in MarketAnalytics data fetching:', error);
       marketFetchError = marketFetchError || error.message || "An unexpected error occurred loading market data.";
       liquidityFetchError = liquidityFetchError || error.message || "An unexpected error occurred loading liquidity data.";
@@ -364,17 +387,17 @@ const MarketAnalytics: FC = async () => {
   }
 
   const birdeyeLink = `https://birdeye.so/token/${ECOHO_MINT_ADDRESS}?chain=solana`;
-  
+
   const errorMessages: string[] = [];
   if (marketFetchError) errorMessages.push(`Market data: ${marketFetchError}`);
   if (liquidityFetchError) errorMessages.push(`Liquidity data: ${liquidityFetchError}`);
   if (athFetchError) errorMessages.push(`ATH price data: ${athFetchError}`);
 
   let displayError: string | null = null;
-  if (errorMessages.length > 0) { // This will only be true if !isPlaceholderApiActive and an error occurred
+  if (errorMessages.length > 0) {
     const allRawMessages = [marketFetchError, liquidityFetchError, athFetchError].filter(Boolean) as string[];
     const uniqueRawMessages = [...new Set(allRawMessages)];
-    
+
     if (uniqueRawMessages.length === 1 && allRawMessages.length > 1) {
       displayError = `Multiple data fetches failed with the same error: ${uniqueRawMessages[0]}`;
     } else {
@@ -384,11 +407,11 @@ const MarketAnalytics: FC = async () => {
 
 
   return (
-    <SectionCard 
-      title="ECOHO Market Analytics (SOL)" 
+    <SectionCard
+      title="ECOHO Market Analytics (SOL)"
       icon={<LineChart className="text-primary h-8 w-8" />}
       actions={
-        <ButtonLink 
+        <ButtonLink
           href={birdeyeLink}
           target="_blank"
           rel="noopener noreferrer"
@@ -408,7 +431,7 @@ const MarketAnalytics: FC = async () => {
         </div>
       )}
 
-      {displayError && !isLoading && !isPlaceholderApiActive && ( // Only show if not placeholder and error exists
+      {displayError && !isLoading && !isPlaceholderApiActive && (
         <div className="p-4 bg-destructive/10 border border-destructive/30 text-destructive rounded-md text-sm flex items-center gap-2">
           <AlertTriangle size={20} className="text-destructive" />
           <div>
@@ -418,47 +441,47 @@ const MarketAnalytics: FC = async () => {
         </div>
       )}
 
-      {(!displayError || isLoading || isPlaceholderApiActive) && ( 
+      {(!displayError || isLoading || isPlaceholderApiActive) && (
         <div className="space-y-6">
             <div>
                 <h3 className="text-lg font-semibold mb-2 text-card-foreground/90 flex items-center gap-2"><LineChart size={20} /> Daily Price & Volume</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <MarketStat 
-                        label="24h Volume" 
-                        value={marketData?.volume ?? 'N/A'} 
+                    <MarketStat
+                        label="24h Volume"
+                        value={marketData?.volume ?? 'N/A'}
                         unit="SOL"
-                        isLoading={isLoading}
+                        isLoading={isLoading && !isPlaceholderApiActive}
                         icon={<DollarSign size={16} className="text-muted-foreground" />}
                     />
-                    <MarketStat 
-                        label="24h Trades" 
+                    <MarketStat
+                        label="24h Trades"
                         value={marketData?.count ?? 'N/A'}
-                        isLoading={isLoading}
+                        isLoading={isLoading && !isPlaceholderApiActive}
                         icon={<LineChart size={16} className="text-muted-foreground" />}
                     />
-                     <MarketStat 
-                        label="ATH Price (99th Percentile)" 
-                        value={athPriceData ?? 'N/A'} 
+                     <MarketStat
+                        label="ATH Price (99th Percentile)"
+                        value={athPriceData ?? 'N/A'}
                         unit="USD"
-                        isLoading={isLoading}
+                        isLoading={isLoading && !isPlaceholderApiActive}
                         icon={<TrendingUp size={16} className="text-muted-foreground" />}
                     />
-                    <MarketStat 
-                        label="24h High Price" 
-                        value={marketData?.Trade?.high ?? 'N/A'} 
+                    <MarketStat
+                        label="24h High Price"
+                        value={marketData?.Trade?.high ?? 'N/A'}
                         unit="SOL"
-                        isLoading={isLoading}
+                        isLoading={isLoading && !isPlaceholderApiActive}
                         icon={<TrendingUp size={16} className="text-muted-foreground" />}
                     />
-                    <MarketStat 
-                        label="24h Low Price" 
-                        value={marketData?.Trade?.low ?? 'N/A'} 
+                    <MarketStat
+                        label="24h Low Price"
+                        value={marketData?.Trade?.low ?? 'N/A'}
                         unit="SOL"
-                        isLoading={isLoading}
+                        isLoading={isLoading && !isPlaceholderApiActive}
                         icon={<TrendingUp size={16} className="text-muted-foreground rotate-180" />}
                     />
                 </div>
-                {isLoading && !marketData && !isPlaceholderApiActive && ( // only show loading skeleton if not placeholder
+                {isLoading && !marketData && !isPlaceholderApiActive && (
                     <div className="h-4 w-48 bg-muted-foreground/20 animate-pulse rounded mt-2 ml-auto"></div>
                 )}
                 {!isLoading && marketData?.Block?.Timefield?.Time && (
@@ -474,24 +497,24 @@ const MarketAnalytics: FC = async () => {
                 <h3 className="text-lg font-semibold mb-2 text-card-foreground/90 flex items-center gap-2"><Droplets size={20}/> Monthly Market Activity</h3>
                  <p className="text-xs text-muted-foreground mb-2">On market: {ECOHO_SOL_MARKET_ADDRESS}</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <MarketStat 
-                        label="ECOHO Buy Volume" 
-                        value={liquidityData?.tokenLiquidity ?? 'N/A'} 
+                    <MarketStat
+                        label="ECOHO Buy Volume"
+                        value={liquidityData?.tokenLiquidity ?? 'N/A'}
                         unit="ECOHO"
-                        isLoading={isLoading}
+                        isLoading={isLoading && !isPlaceholderApiActive}
                         isMonthly={true}
                         icon={<DollarSign size={16} className="text-muted-foreground" />}
                     />
-                    <MarketStat 
-                        label="SOL Volume (from ECOHO Sales)" 
-                        value={liquidityData?.wsolLiquidity ?? 'N/A'} 
+                    <MarketStat
+                        label="SOL Volume (from ECOHO Sales)"
+                        value={liquidityData?.wsolLiquidity ?? 'N/A'}
                         unit="SOL"
-                        isLoading={isLoading}
+                        isLoading={isLoading && !isPlaceholderApiActive}
                         isMonthly={true}
                         icon={<DollarSign size={16} className="text-muted-foreground" />}
                     />
                 </div>
-                 {isLoading && !liquidityData && !isPlaceholderApiActive && ( // only show loading skeleton if not placeholder
+                 {isLoading && !liquidityData && !isPlaceholderApiActive && (
                     <div className="h-4 w-48 bg-muted-foreground/20 animate-pulse rounded mt-2 ml-auto"></div>
                 )}
                 {!isLoading && liquidityData?.Block?.Timefield?.Time && (
@@ -510,5 +533,3 @@ const MarketAnalytics: FC = async () => {
 };
 
 export default MarketAnalytics;
-
-    
