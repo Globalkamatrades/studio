@@ -11,7 +11,6 @@ import ContactLinks from '@/components/contact-links';
 import CommunitySpotlightForm from '@/components/community-spotlight-form';
 import MarketAnalytics from '@/components/market-analytics';
 import EthereumNftDexTrades from '@/components/ethereum-nft-dex-trades';
-import SqlFileSelector from '@/components/sql-file-selector';
 
 export default function HomePage() {
   return (
@@ -28,7 +27,6 @@ export default function HomePage() {
           <AirdropRewards />
           <WhitepaperSection />
           <CommunitySpotlightForm />
-          <SqlFileSelector />
           <ContactLinks />
         </div>
       </main>
