@@ -1,7 +1,6 @@
 
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
-// import SpotifyPlayer from '@/components/spotify-player'; // Removed
 import NftPurchase from '@/components/nft-purchase';
 import TokenInfo from '@/components/token-info';
 import BuyToken from '@/components/buy-token';
@@ -11,6 +10,7 @@ import ContactLinks from '@/components/contact-links';
 import CommunitySpotlightForm from '@/components/community-spotlight-form';
 import MarketAnalytics from '@/components/market-analytics';
 import EthereumNftDexTrades from '@/components/ethereum-nft-dex-trades';
+import NftGalleryPreview from '@/components/nft-gallery-preview'; // New import
 
 export default function HomePage() {
   return (
@@ -22,8 +22,8 @@ export default function HomePage() {
           <MarketAnalytics />
           <EthereumNftDexTrades />
           <BuyToken />
+          <NftGalleryPreview /> {/* Added NFT Gallery Preview */}
           <NftPurchase />
-          {/* <SpotifyPlayer /> */} {/* Removed */}
           <AirdropRewards />
           <WhitepaperSection />
           <CommunitySpotlightForm />
