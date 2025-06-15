@@ -4,7 +4,7 @@
 import type { FC } from 'react';
 import { useEffect, useState, useRef } from 'react';
 import SectionCard from '@/components/ui/section-card';
-import { Music2, Loader2, Play, Pause, ExternalLink } from 'lucide-react';
+import { Music2, Loader2, Play, Pause, ExternalLink, AlertTriangle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,7 +16,7 @@ interface SpotifyArtistWebAPI {
 }
 
 interface SpotifyTrackWebAPI {
-  id: string; 
+  id: string;
   name: string;
   artists: SpotifyArtistWebAPI[];
   external_urls: {
@@ -29,13 +29,13 @@ interface TopTracksResponse {
 }
 
 const SpotifyPlayer: FC = () => {
-  const initialArtistUri = "spotify:artist:0SKtNTddZSa7jYW84C6CSL"; 
+  const initialArtistUri = "spotify:artist:0SKtNTddZSa7jYW84C6CSL";
 
   const embedRef = useRef<HTMLDivElement | null>(null);
   const spotifyEmbedControllerRef = useRef<any>(null);
   const [iFrameAPI, setIFrameAPI] = useState<any>(undefined);
   const [playerLoaded, setPlayerLoaded] = useState(false);
-  const [uri, setUri] = useState(initialArtistUri);
+  const [uri, setUri] = useState(initialArtistUri); // Initialize with artist URI
 
   const [topTracks, setTopTracks] = useState<SpotifyTrackWebAPI[] | null>(null);
   const [isLoadingTopTracks, setIsLoadingTopTracks] = useState<boolean>(false);
@@ -48,74 +48,88 @@ const SpotifyPlayer: FC = () => {
     let localOnSpotifyIframeApiReady: ((api: any) => void) | null = null;
 
     if (typeof window !== 'undefined') {
+      // Define the callback function that Spotify's API will call
       localOnSpotifyIframeApiReady = (SpotifyIframeApi: any) => {
         setIFrameAPI(SpotifyIframeApi);
       };
+      // Assign it to the window object
       (window as any).onSpotifyIframeApiReady = localOnSpotifyIframeApiReady;
     }
 
-    if (typeof document !== 'undefined') {
-      if (!document.getElementById(scriptId)) {
-        const script = document.createElement("script");
-        script.id = scriptId;
-        script.src = "https://open.spotify.com/embed/iframe-api/v1";
-        script.async = true;
-        document.body.appendChild(script);
+    // Check if the script already exists to avoid duplicates
+    if (typeof document !== 'undefined' && !document.getElementById(scriptId)) {
+      const script = document.createElement("script");
+      script.id = scriptId;
+      script.src = "https://open.spotify.com/embed/iframe-api/v1";
+      script.async = true;
+      document.body.appendChild(script);
 
-        return () => {
-          const existingScript = document.getElementById(scriptId);
-          if (existingScript && document.body.contains(existingScript)) {
-            document.body.removeChild(existingScript);
-          }
-          if (typeof window !== 'undefined' && (window as any).onSpotifyIframeApiReady === localOnSpotifyIframeApiReady) {
-            (window as any).onSpotifyIframeApiReady = null;
-          }
-        };
-      } else if ((window as any).SpotifyIframeApi && !iFrameAPI) {
-        // Script already exists and API might be ready (e.g., from HMR)
-        setIFrameAPI((window as any).SpotifyIframeApi);
-      }
+      // Cleanup script on component unmount
+      return () => {
+        const existingScript = document.getElementById(scriptId);
+        if (existingScript && document.body.contains(existingScript)) {
+          document.body.removeChild(existingScript);
+        }
+        // Clean up the global callback if it's the one we set
+        if (typeof window !== 'undefined' && (window as any).onSpotifyIframeApiReady === localOnSpotifyIframeApiReady) {
+          (window as any).onSpotifyIframeApiReady = null;
+        }
+      };
+    } else if (typeof window !== 'undefined' && (window as any).SpotifyIframeApi && !iFrameAPI) {
+      // If script exists and API is on window but not in state, set it (e.g., HMR)
+      setIFrameAPI((window as any).SpotifyIframeApi);
     }
     
-    // General cleanup if component unmounts before script loads or if onSpotifyIframeApiReady was set
+    // General cleanup for the window callback if the component unmounts before the script loads
     return () => {
-        if (typeof window !== 'undefined' && (window as any).onSpotifyIframeApiReady === localOnSpotifyIframeApiReady) {
-           (window as any).onSpotifyIframeApiReady = null;
-        }
-   };
-  }, [iFrameAPI]); // iFrameAPI in dependency array to re-check if it became available through other means
+       if (typeof window !== 'undefined' && (window as any).onSpotifyIframeApiReady === localOnSpotifyIframeApiReady) {
+          (window as any).onSpotifyIframeApiReady = null;
+       }
+    };
+  }, [iFrameAPI]); // Depend on iFrameAPI to ensure this effect correctly manages its lifecycle
 
   useEffect(() => {
+    // Ensure iFrameAPI is loaded, embedRef is available, and controller hasn't been created
     if (iFrameAPI && embedRef.current && !spotifyEmbedControllerRef.current) {
+      const options = {
+        width: "100%",
+        height: "352", // Default height for Spotify embeds
+        uri: uri, // Initial URI to load
+      };
       iFrameAPI.createController(
         embedRef.current,
-        {
-          width: "100%",
-          height: "352",
-          uri: uri, 
-        },
+        options,
         (controller: any) => {
           spotifyEmbedControllerRef.current = controller;
-          const onPlayerReadyCallback = () => setPlayerLoaded(true);
+          
+          const onPlayerReadyCallback = () => {
+            setPlayerLoaded(true);
+            // console.log("Spotify Player is Ready");
+          };
           controller.addListener("ready", onPlayerReadyCallback);
           
           // Store the callback for cleanup
+          // It's good practice to type a custom property on the controller if possible,
+          // or manage this association externally if not.
           (controller as any).__onPlayerReadyCallback = onPlayerReadyCallback;
         }
       );
     }
 
+    // Cleanup for the player controller's "ready" listener
     return () => {
       const controller = spotifyEmbedControllerRef.current;
       if (controller && (controller as any).__onPlayerReadyCallback) {
         controller.removeListener("ready", (controller as any).__onPlayerReadyCallback);
+        // console.log("Spotify Player 'ready' listener removed");
+        // It's important to remove the custom property to avoid memory leaks if the controller object persists
         delete (controller as any).__onPlayerReadyCallback; 
       }
-      // Note: Spotify Iframe API doesn't have an explicit controller.destroy() method.
-      // Clearing the ref or innerHTML of embedRef could be done here if issues persist,
-      // but it's often better to let React manage the DOM element itself.
+      // Note: The Spotify Iframe API does not provide a controller.destroy() method.
+      // Removing the iframe or letting React unmount embedRef is the typical cleanup.
     };
-  }, [iFrameAPI]); // Runs when iFrameAPI is available to create the controller
+  }, [iFrameAPI, uri]); // Re-run if iFrameAPI becomes available or initial URI changes (though URI changes are handled by loadUri)
+
 
   const onPauseClick = () => {
     if (spotifyEmbedControllerRef.current && playerLoaded) {
@@ -131,9 +145,9 @@ const SpotifyPlayer: FC = () => {
 
   const onUriChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newUri = event.target.value;
-    setUri(newUri);
+    setUri(newUri); // Update state for the input field
     if (spotifyEmbedControllerRef.current && playerLoaded) {
-      spotifyEmbedControllerRef.current.loadUri(newUri);
+      spotifyEmbedControllerRef.current.loadUri(newUri); // Load new content into existing player
     }
   };
 
@@ -177,7 +191,11 @@ const SpotifyPlayer: FC = () => {
         setTopTracks(tracks);
       } catch (err: any) {
         console.error("Failed to fetch top tracks:", err);
-        setErrorTopTracks(err.message || "Failed to fetch your top tracks from Spotify.");
+        if (err.message && typeof err.message === 'string' && err.message.includes("401") && err.message.toLowerCase().includes("expired")) {
+          setErrorTopTracks("The Spotify API token has expired. To see your top tracks, please provide a new valid token in the .env file (NEXT_PUBLIC_SPOTIFY_TEMP_TOKEN) or implement a full OAuth 2.0 flow for a production application.");
+        } else {
+          setErrorTopTracks(err.message || "Failed to fetch your top tracks from Spotify.");
+        }
       } finally {
         setIsLoadingTopTracks(false);
       }
@@ -220,6 +238,7 @@ const SpotifyPlayer: FC = () => {
         )}
         <p className="mt-4 text-sm text-muted-foreground">
           Use the controls above to play, pause, or load a new Spotify track, album, artist, or playlist.
+          Initial content is artist: <code>{initialArtistUri}</code>.
         </p>
       </div>
 
@@ -228,6 +247,7 @@ const SpotifyPlayer: FC = () => {
         
         {!process.env.NEXT_PUBLIC_SPOTIFY_TEMP_TOKEN && (
            <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
             <AlertTitle>Configuration Missing</AlertTitle>
             <AlertDescription>
               A temporary Spotify API token is not configured in <code>.env</code> (<code>NEXT_PUBLIC_SPOTIFY_TEMP_TOKEN</code>). The "Your Top Tracks" feature is currently disabled.
@@ -263,7 +283,7 @@ const SpotifyPlayer: FC = () => {
             {topTracks.map((track) => (
               <li key={track.id} className="text-sm flex items-center justify-between p-2 rounded-md hover:bg-muted/50">
                 <div>
-                  <strong>{track.name}</strong>
+                  <strong className="text-card-foreground">{track.name}</strong>
                   <span className="text-xs text-muted-foreground ml-2">
                      by {track.artists.map(artist => artist.name).join(', ')}
                   </span>
@@ -290,5 +310,3 @@ const SpotifyPlayer: FC = () => {
 };
 
 export default SpotifyPlayer;
-
-    
