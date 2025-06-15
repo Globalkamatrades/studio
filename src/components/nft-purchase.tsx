@@ -35,17 +35,15 @@ const NftPurchase: FC = () => {
 
         const mockApiResponse = {
           openSea: {
-            floorPrice: 1.00, // Updated mock floor price
-            priceCurrency: "USD", // Updated mock currency
-            collectionUrl: "https://opensea.io/collection/ecoho-music-nfts-official", // Example, replace with actual
+            floorPrice: 1.00, 
+            priceCurrency: "USD", 
+            collectionUrl: "https://opensea.io/collection/ecoho-music-nfts-official", 
             error: null
           }
-          // You could add LooksRare or other marketplace data here
         };
 
         if (mockApiResponse.openSea && mockApiResponse.openSea.error) {
           setError(mockApiResponse.openSea.error);
-          // Fallback to a generic OpenSea link if specific collection link isn't available or errors out
           setMarketData(prev => ({ ...prev, collectionUrl: "https://opensea.io/" }));
         } else if (mockApiResponse.openSea) {
           setMarketData({
@@ -107,8 +105,11 @@ const NftPurchase: FC = () => {
             </p>
           )}
           
-          <p className="mb-6 font-semibold text-primary">
+          <p className="mb-2 font-semibold text-primary">
             Each NFT purchase rewards you with 100 ECOHO tokens!
+          </p>
+          <p className="text-xs text-muted-foreground mb-6">
+            (The value of ECOHO tokens may vary. Please check current exchange rates.)
           </p>
           <ButtonLink
             href={openSeaLink}
