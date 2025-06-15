@@ -35,8 +35,8 @@ const NftPurchase: FC = () => {
 
         const mockApiResponse = {
           openSea: {
-            floorPrice: 0.5, // Example floor price
-            priceCurrency: "ETH",
+            floorPrice: 1.00, // Updated mock floor price
+            priceCurrency: "USD", // Updated mock currency
             collectionUrl: "https://opensea.io/collection/ecoho-music-nfts-official", // Example, replace with actual
             error: null
           }
@@ -103,7 +103,7 @@ const NftPurchase: FC = () => {
 
           {!isLoading && !error && marketData.floorPrice !== null && (
             <p className="mb-2 text-xl font-semibold">
-              Floor Price: {marketData.floorPrice} {marketData.priceCurrency}
+              Floor Price: {marketData.priceCurrency === "USD" ? "$" : ""}{marketData.floorPrice.toFixed(2)} {marketData.priceCurrency}
             </p>
           )}
           
