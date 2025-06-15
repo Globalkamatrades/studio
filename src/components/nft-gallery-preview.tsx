@@ -9,7 +9,8 @@ import ButtonLink from '@/components/ui/button-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Gem, Sparkles, ArrowRight, Music2, PlayCircle } from 'lucide-react';
+import { Gem, Sparkles, ArrowRight, Music2, PlayCircle, Tag } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface PreviewNftItem {
   id: string | number;
@@ -18,6 +19,7 @@ interface PreviewNftItem {
   dataAiHint: string;
   musicUrl?: string;
   description?: string;
+  price?: string; // Added price field
 }
 
 const staticPreviewNfts: PreviewNftItem[] = [
@@ -44,6 +46,7 @@ const staticPreviewNfts: PreviewNftItem[] = [
 const NftGalleryPreview: FC = () => {
   const [musicUrlInput, setMusicUrlInput] = useState('');
   const [musicTitleInput, setMusicTitleInput] = useState('');
+  const [musicPriceInput, setMusicPriceInput] = useState(''); // State for price
   const [userMusicNft, setUserMusicNft] = useState<PreviewNftItem | null>(null);
 
   const handleUserMusicSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -56,10 +59,12 @@ const NftGalleryPreview: FC = () => {
         dataAiHint: 'custom music audio',
         musicUrl: musicUrlInput,
         description: "User submitted music.",
+        price: musicPriceInput.trim() || undefined, // Add price
       });
       // Optionally clear inputs
       // setMusicTitleInput('');
       // setMusicUrlInput('');
+      // setMusicPriceInput('');
     }
   };
 
@@ -84,7 +89,7 @@ const NftGalleryPreview: FC = () => {
           />
         </div>
         <div>
-          <Label htmlFor="musicUrl" className="block text-sm font-medium text-card-foreground/90 mb-1">Music URL (e.g., Soundcloud, Bandcamp, YouTube, MP3 link)</Label>
+          <Label htmlFor="musicUrl" className="block text-sm font-medium text-card-foreground/90 mb-1">Music URL (e.g., Soundcloud, YouTube, MP3 link)</Label>
           <Input 
             id="musicUrl" 
             type="url" 
@@ -95,11 +100,29 @@ const NftGalleryPreview: FC = () => {
             className="bg-background/70"
           />
         </div>
+        <div>
+          <Label htmlFor="musicPrice" className="block text-sm font-medium text-card-foreground/90 mb-1">Price (Optional, e.g., 10 ECOHO)</Label>
+          <Input 
+            id="musicPrice" 
+            value={musicPriceInput} 
+            onChange={(e) => setMusicPriceInput(e.target.value)} 
+            placeholder="e.g., 10 ECOHO or 0.5 BNB" 
+            className="bg-background/70"
+          />
+        </div>
         <Button type="submit" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground">
           <Music2 size={18} className="mr-2"/> Add Music to Preview
         </Button>
       </form>
       
+      <Alert variant="default" className="mb-6 bg-primary/5 border-primary/20">
+          <Sparkles className="h-4 w-4 text-primary" />
+          <AlertTitle className="text-primary">Marketplace Preview</AlertTitle>
+          <AlertDescription className="text-primary/80">
+            The "Feature Your Music" section is a UI demonstration. Actual sales and token transactions would require further backend and blockchain development.
+          </AlertDescription>
+      </Alert>
+
       {/* NFT Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
         {staticPreviewNfts.map((nft) => (
@@ -144,6 +167,12 @@ const NftGalleryPreview: FC = () => {
                   <PlayCircle size={16} className="mr-1.5 shrink-0" /> Listen Here
                 </a>
               )}
+              {userMusicNft.price && (
+                <div className="mt-2 text-sm text-card-foreground/90 flex items-center">
+                  <Tag size={16} className="mr-1.5 shrink-0 text-primary" />
+                  Price: <span className="font-semibold ml-1">{userMusicNft.price}</span>
+                </div>
+              )}
               {userMusicNft.description && <p className="text-xs text-muted-foreground mt-1 flex-grow">{userMusicNft.description}</p>}
             </div>
           </div>
@@ -155,7 +184,7 @@ const NftGalleryPreview: FC = () => {
           href="/nfts"
           variant="default"
           size="lg"
-          className="bg-primary hover:bg-primary/90 text-primary-foreground group" // Added group for arrow animation
+          className="bg-primary hover:bg-primary/90 text-primary-foreground group" 
           icon={<Gem size={20} />}
         >
           Explore Full NFT Gallery <ArrowRight size={20} className="ml-1 group-hover:translate-x-1 transition-transform"/>
@@ -166,3 +195,4 @@ const NftGalleryPreview: FC = () => {
 };
 
 export default NftGalleryPreview;
+
