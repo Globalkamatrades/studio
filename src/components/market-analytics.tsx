@@ -329,7 +329,25 @@ const MarketAnalytics: FC = async () => {
   }
 
   const birdeyeLink = `https://birdeye.so/token/${ECOHO_MINT_ADDRESS}?chain=solana`;
-  const combinedError = [marketFetchError, liquidityFetchError, athFetchError].filter(Boolean).join(' ');
+  
+  const errorMessages: string[] = [];
+  if (marketFetchError) errorMessages.push(`Market data: ${marketFetchError}`);
+  if (liquidityFetchError) errorMessages.push(`Liquidity data: ${liquidityFetchError}`);
+  if (athFetchError) errorMessages.push(`ATH price data: ${athFetchError}`);
+
+  let displayError: string | null = null;
+  if (errorMessages.length > 0) {
+    const allRawMessages = [marketFetchError, liquidityFetchError, athFetchError].filter(Boolean) as string[];
+    const uniqueRawMessages = [...new Set(allRawMessages)];
+    if (uniqueRawMessages.length === 1 && allRawMessages.length > 1) {
+      displayError = `Multiple data fetches failed with the same error: ${uniqueRawMessages[0]}.`;
+    } else {
+      displayError = errorMessages.join('. ') + '.';
+    }
+    if (GRAPHQL_ENDPOINT.includes('api.placeholder.co') && displayError && displayError.toLowerCase().includes('fetch')) {
+        displayError += " This is likely due to the placeholder API. Please update it with a live endpoint to see data.";
+    }
+  }
 
   return (
     <SectionCard 
@@ -356,17 +374,17 @@ const MarketAnalytics: FC = async () => {
         </div>
       )}
 
-      {combinedError && !isLoading && (
+      {displayError && !isLoading && (
         <div className="p-4 bg-destructive/10 border border-destructive/30 text-destructive rounded-md text-sm flex items-center gap-2">
           <AlertTriangle size={20} className="text-destructive" />
           <div>
             <p className="font-semibold">Error Fetching Data</p>
-            <p>{combinedError}</p>
+            <p>{displayError}</p>
           </div>
         </div>
       )}
 
-      {!combinedError || isLoading ? ( 
+      {(!displayError || isLoading) && ( 
         <div className="space-y-6">
             <div>
                 <h3 className="text-lg font-semibold mb-2 text-card-foreground/90 flex items-center gap-2"><LineChart size={20} /> Daily Price & Volume</h3>
@@ -448,11 +466,11 @@ const MarketAnalytics: FC = async () => {
                     </p>
                 )}
             </div>
-           {!isLoading && !marketData && !liquidityData && !athPriceData && !combinedError && (
+           {!isLoading && !marketData && !liquidityData && !athPriceData && !displayError && (
              <p className="text-sm text-muted-foreground p-4 text-center">No market data available at the moment.</p>
            )}
         </div>
-      ) : null}
+      ) }
     </SectionCard>
   );
 };
