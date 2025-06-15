@@ -1,7 +1,7 @@
 
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
-import AudiusPlayer from '@/components/audius-player';
+import SpotifyPlayer from '@/components/spotify-player'; // Changed from AudiusPlayer
 import NftPurchase from '@/components/nft-purchase';
 import TokenInfo from '@/components/token-info';
 import BuyToken from '@/components/buy-token';
@@ -11,7 +11,7 @@ import ContactLinks from '@/components/contact-links';
 import CommunitySpotlightForm from '@/components/community-spotlight-form';
 import MarketAnalytics from '@/components/market-analytics';
 import EthereumNftDexTrades from '@/components/ethereum-nft-dex-trades';
-import SqlFileSelector from '@/components/sql-file-selector'; // Added import
+import SqlFileSelector from '@/components/sql-file-selector';
 
 export default function HomePage() {
   return (
@@ -24,11 +24,11 @@ export default function HomePage() {
           <EthereumNftDexTrades />
           <BuyToken />
           <NftPurchase />
-          <AudiusPlayer />
+          <SpotifyPlayer /> {/* Changed from AudiusPlayer */}
           <AirdropRewards />
           <WhitepaperSection />
           <CommunitySpotlightForm />
-          <SqlFileSelector /> {/* Added new component */}
+          <SqlFileSelector />
           <ContactLinks />
         </div>
       </main>
