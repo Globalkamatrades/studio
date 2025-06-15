@@ -121,7 +121,7 @@ async function getMarketData(): Promise<DexTradeData | null> {
     if (!response.ok) {
       const errorBody = await response.text();
       console.error(`GraphQL request for market data failed with status ${response.status}: ${errorBody}`);
-      throw new Error(`Network response was not ok. Status: ${response.status}.`);
+      throw new Error(`Network response for market data was not ok. Status: ${response.status}.`);
     }
 
     const result = (await response.json()) as GraphQLResponse;
@@ -136,9 +136,18 @@ async function getMarketData(): Promise<DexTradeData | null> {
       return trades[0]; 
     }
     return null;
-  } catch (error) {
-    console.error('Failed to fetch market data:', error);
-    throw error; 
+  } catch (error: any) {
+    let specificError: Error;
+    if (error instanceof TypeError && error.message.toLowerCase().includes('fetch failed') && GRAPHQL_ENDPOINT.includes('api.placeholder.co')) {
+      specificError = new Error(`Fetch failed for market data from placeholder API (${GRAPHQL_ENDPOINT}). Please update to a live API endpoint.`);
+    } else if (error instanceof Error) {
+      specificError = new Error(`Failed to fetch market data: ${error.message}`);
+    } else {
+      specificError = new Error('Failed to fetch market data due to an unknown error.');
+    }
+    if (error instanceof Error && error.stack) specificError.stack = error.stack;
+    console.error(specificError.message, error); 
+    throw specificError;
   }
 }
 
@@ -183,7 +192,7 @@ async function getLiquidityData(): Promise<LiquidityInfo | null> {
     if (!response.ok) {
       const errorBody = await response.text();
       console.error(`GraphQL request for liquidity data failed with status ${response.status}: ${errorBody}`);
-      throw new Error(`Network response was not ok for liquidity data. Status: ${response.status}.`);
+      throw new Error(`Network response for liquidity data was not ok. Status: ${response.status}.`);
     }
     
     const result = (await response.json()) as GraphQLLiquidityResponse;
@@ -198,9 +207,18 @@ async function getLiquidityData(): Promise<LiquidityInfo | null> {
       return liquidityEntries[0];
     }
     return null;
-  } catch (error) {
-    console.error('Failed to fetch liquidity data:', error);
-    throw error;
+  } catch (error: any) {
+    let specificError: Error;
+    if (error instanceof TypeError && error.message.toLowerCase().includes('fetch failed') && GRAPHQL_ENDPOINT.includes('api.placeholder.co')) {
+      specificError = new Error(`Fetch failed for liquidity data from placeholder API (${GRAPHQL_ENDPOINT}). Please update to a live API endpoint.`);
+    } else if (error instanceof Error) {
+      specificError = new Error(`Failed to fetch liquidity data: ${error.message}`);
+    } else {
+      specificError = new Error('Failed to fetch liquidity data due to an unknown error.');
+    }
+    if (error instanceof Error && error.stack) specificError.stack = error.stack;
+    console.error(specificError.message, error);
+    throw specificError;
   }
 }
 
@@ -228,7 +246,7 @@ async function getEcohoAthPrice(): Promise<number | null> {
     if (!response.ok) {
       const errorBody = await response.text();
       console.error(`GraphQL request for ATH data failed with status ${response.status}: ${errorBody}`);
-      throw new Error(`Network response was not ok for ATH data. Status: ${response.status}.`);
+      throw new Error(`Network response for ATH data was not ok. Status: ${response.status}.`);
     }
 
     const result = (await response.json()) as GraphQLAthResponse;
@@ -243,9 +261,18 @@ async function getEcohoAthPrice(): Promise<number | null> {
       return athEntries[0].athPriceUSD;
     }
     return null;
-  } catch (error) {
-    console.error('Failed to fetch ATH price:', error);
-    throw error;
+  } catch (error: any) {
+    let specificError: Error;
+    if (error instanceof TypeError && error.message.toLowerCase().includes('fetch failed') && GRAPHQL_ENDPOINT.includes('api.placeholder.co')) {
+      specificError = new Error(`Fetch failed for ATH price data from placeholder API (${GRAPHQL_ENDPOINT}). Please update to a live API endpoint.`);
+    } else if (error instanceof Error) {
+      specificError = new Error(`Failed to fetch ATH price data: ${error.message}`);
+    } else {
+      specificError = new Error('Failed to fetch ATH price data due to an unknown error.');
+    }
+    if (error instanceof Error && error.stack) specificError.stack = error.stack;
+    console.error(specificError.message, error);
+    throw specificError;
   }
 }
 
@@ -303,25 +330,25 @@ const MarketAnalytics: FC = async () => {
       marketData = marketResult.value;
     } else {
       marketFetchError = marketResult.reason?.message || "Failed to load market data.";
-      console.error('Market data fetch error:', marketResult.reason);
+      console.error('Market data fetch error (handled by component):', marketResult.reason);
     }
 
     if (liquidityResult.status === 'fulfilled') {
       liquidityData = liquidityResult.value;
     } else {
       liquidityFetchError = liquidityResult.reason?.message || "Failed to load liquidity-related data.";
-      console.error('Liquidity data fetch error:', liquidityResult.reason);
+      console.error('Liquidity data fetch error (handled by component):', liquidityResult.reason);
     }
 
     if (athResult.status === 'fulfilled') {
       athPriceData = athResult.value;
     } else {
       athFetchError = athResult.reason?.message || "Failed to load ATH price data.";
-      console.error('ATH price data fetch error:', athResult.reason);
+      console.error('ATH price data fetch error (handled by component):', athResult.reason);
     }
     isLoading = false;
   } catch (error: any) { 
-    console.error('Generic error in MarketAnalytics data fetching:', error);
+    console.error('Generic error in MarketAnalytics data fetching (should not be reached if Promise.allSettled is used correctly):', error);
     marketFetchError = marketFetchError || error.message || "An unexpected error occurred loading market data.";
     liquidityFetchError = liquidityFetchError || error.message || "An unexpected error occurred loading liquidity data.";
     athFetchError = athFetchError || error.message || "An unexpected error occurred loading ATH data.";
@@ -339,15 +366,27 @@ const MarketAnalytics: FC = async () => {
   if (errorMessages.length > 0) {
     const allRawMessages = [marketFetchError, liquidityFetchError, athFetchError].filter(Boolean) as string[];
     const uniqueRawMessages = [...new Set(allRawMessages)];
-    if (uniqueRawMessages.length === 1 && allRawMessages.length > 1) {
-      displayError = `Multiple data fetches failed with the same error: ${uniqueRawMessages[0]}.`;
-    } else {
+    
+    // Check if all unique messages indicate a placeholder API issue
+    const allPlaceholderRelated = uniqueRawMessages.every(msg => msg.toLowerCase().includes('placeholder api') || msg.toLowerCase().includes('fetch failed for'));
+
+    if (allPlaceholderRelated && uniqueRawMessages.length >=1) {
+        displayError = `Multiple data fetches failed. This is likely due to the placeholder API (${GRAPHQL_ENDPOINT}). Please update it to a live endpoint.`;
+         if (uniqueRawMessages.length === 1) {
+            displayError = uniqueRawMessages[0]; // Show the specific message if it's the same for all
+         }
+    } else if (uniqueRawMessages.length === 1 && allRawMessages.length > 1) {
+      displayError = `Multiple data fetches failed with the same error: ${uniqueRawMessages[0]}`;
+    } 
+     else {
       displayError = errorMessages.join('. ') + '.';
     }
-    if (GRAPHQL_ENDPOINT.includes('api.placeholder.co') && displayError && displayError.toLowerCase().includes('fetch')) {
+
+    if (GRAPHQL_ENDPOINT.includes('api.placeholder.co') && displayError && !displayError.toLowerCase().includes("placeholder api")) {
         displayError += " This is likely due to the placeholder API. Please update it with a live endpoint to see data.";
     }
   }
+
 
   return (
     <SectionCard 
@@ -476,4 +515,3 @@ const MarketAnalytics: FC = async () => {
 };
 
 export default MarketAnalytics;
-
