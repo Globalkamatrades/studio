@@ -248,7 +248,8 @@ const EthereumNftDexTrades: FC = () => {
         </Table>
       )}
       <p className="text-xs text-muted-foreground mt-2 text-right">
-        Data attempts to show trades where NFTs were bought with fungible tokens. Query needs validation for The Graph.
+        Data attempts to show trades where NFTs were bought with fungible tokens. Query needs validation for The Graph.<br />
+        Currently displaying data from an Arbitrum (Ethereum L2) subgraph. Ethereum Mainnet is identified as eip155:1.
       </p>
     </SectionCard>
   );
