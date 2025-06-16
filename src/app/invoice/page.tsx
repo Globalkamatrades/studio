@@ -17,11 +17,13 @@ const CommercialInvoicePage: NextPage = () => {
           src="https://kamaincprofile.com/logo.png" 
           alt="Ecoho Gold Logo" 
           width={120} 
-          height={50} // Assuming a height, adjust if needed
+          height={40}
           className="mx-auto mb-2.5" 
         />
         <h1 className="text-2xl font-bold">Ecoho Gold</h1>
-        <p>123 Ecoho Lane, Johannesburg, GP, 2000 | www.kamaincprofile.com | Akhona@kamaincprofile.com | 065 533 5608</p>
+        <p>Registered Office: 1138 Tsebe Unit T, Mabopane, Gauteng, 1138</p>
+        <p>Registration No: 2021 / 753276 / 07</p>
+        <p>www.kamaincprofile.com | Akhona@kamaincprofile.com | 065 533 5608</p>
       </header>
 
       <main className="border border-gray-300 p-5 mt-5">
