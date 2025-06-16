@@ -115,7 +115,7 @@ const WhitepaperPage: NextPage = () => {
           <p>
             🌍 <a href="https://kamaincprofile.com" target="_blank" rel="noopener noreferrer">Website</a><br />
             🐦 <a href="https://x.com/Akhona_Kama" target="_blank" rel="noopener noreferrer">Twitter/X</a><br />
-            🗨️ Telegram: <em>Coming Soon</em>
+            🗨️ <a href="https://t.me/ecoho_gold_chat" target="_blank" rel="noopener noreferrer">Telegram</a>
           </p>
         </div>
 
