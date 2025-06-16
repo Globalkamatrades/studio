@@ -1,6 +1,7 @@
 
 import type { Metadata, NextPage } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: 'Ecoho Gold Whitepaper',
@@ -27,106 +28,96 @@ const WhitepaperPage: NextPage = () => {
       color: #00ffe7;
     }
     .whitepaper-page-container .section {
-      margin-bottom: 40px;
+      margin-bottom: 30px; /* Adjusted margin for sections */
     }
     .whitepaper-page-container hr {
       border: 1px solid gold;
-      margin: 40px 0;
+      margin: 30px 0; /* Adjusted margin for hr */
+    }
+    .whitepaper-page-container ul {
+      list-style-type: none; /* Using '-' as bullet via content processing */
+      padding-left: 20px;
+    }
+    .whitepaper-page-container li {
+      margin-bottom: 8px;
+    }
+    .whitepaper-page-container .whitepaper-image-container {
+      text-align: center;
+      margin-bottom: 30px; /* Space after image */
     }
   `;
+
+  const sections = {
+    "1. Introduction": "Ecoho Gold (ECOHO) is a decentralized digital asset built on the Binance Smart Chain (BSC) designed to power a sustainable economic ecosystem by combining blockchain technology with real-world utility.",
+    "2. Vision & Mission": "Ecoho Gold aims to create a global, stable, and user-driven token economy backed by real value, with a focus on environmentally conscious projects and community rewards.",
+    "3. Tokenomics": "- Token Name: Ecoho Gold (ECOHO)\n- Network: BSC (BEP-20)\n- Total Supply: 1,000,000 ECOHO\n- Liquidity: 20%\n- Community Rewards: 30%\n- Development: 25%\n- Marketing: 15%\n- Reserve: 10%",
+    "4. Utility": "ECOHO will power:\n- Music NFT purchases\n- Airdrop incentives\n- Voting rights in the Ecoho DAO\n- Access to exclusive content and rewards",
+    "5. Roadmap": "Q2 2025: Token Launch & Website\nQ3 2025: NFT Platform Integration\nQ4 2025: Ecoho Mobile App\nQ1 2026: DAO Governance Launch\nQ2 2026: Cross-chain Expansion",
+    "6. Get Involved": "Visit https://kamaincprofile.com and follow us on Twitter @Akhona_Kama to stay updated.\nJoin our mission to empower a decentralized, eco-friendly future."
+  };
+
+  // Replace "•" with "-" as in the Python script, and prepare for HTML rendering
+  const processedSections = Object.entries(sections).map(([title, content]) => {
+    const cleanedContent = content.replace(/•/g, '-');
+    const lines = cleanedContent.split('\n').map(line => line.trim());
+    return { title, lines };
+  });
 
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: whitepaperStyles }} />
-      <div className="whitepaper-page-container min-h-screen"> {/* Wrapper div */}
-        {/* Add a link back to homepage for better navigation */}
+      <div className="whitepaper-page-container min-h-screen">
         <div className="mb-4 py-4">
             <Link href="/" className="app-link text-primary hover:underline p-2 bg-background rounded">
                 &larr; Back to Ecoho Gold Home
             </Link>
         </div>
+        
         <h1>Ecoho Gold (ECOHO) Whitepaper</h1>
-        <p><strong>Version:</strong> 1.0<br />
-           <strong>Date:</strong> June 2025</p>
+        
+        <div className="whitepaper-image-container my-8">
+          <Image 
+            src="/images/ecoho_gold_coin_3d.png" 
+            alt="Ecoho Gold Coin" 
+            width={180} // Adjusted width for better layout, Python script used w=90 in a PDF context
+            height={180} // Assuming square, adjust if not
+            className="mx-auto"
+            data-ai-hint="gold coin crypto"
+          />
+        </div>
 
+        {processedSections.map(({ title, lines }) => (
+          <div key={title} className="section">
+            <h2>{title}</h2>
+            {lines.length === 1 && !lines[0].startsWith('-') ? (
+              <p>{lines[0]}</p>
+            ) : (
+              lines[0].includes(':') && lines.length > 1 && lines[1].startsWith('-') ? ( // For Utility section structure
+                <>
+                  <p>{lines[0]}</p>
+                  <ul>
+                    {lines.slice(1).map((line, index) => (
+                      <li key={index}>{line}</li>
+                    ))}
+                  </ul>
+                </>
+              ) : (
+                <ul>
+                  {lines.map((line, index) => (
+                    <li key={index}>{line}</li>
+                  ))}
+                </ul>
+              )
+            )}
+          </div>
+        ))}
+        
         <hr />
 
-        <div className="section">
-          <h2>1. Introduction</h2>
-          <p>Ecoho Gold is a decentralized, community-powered cryptocurrency built on Binance Smart Chain (BEP-20). It is designed to empower creators, investors, and eco-conscious communities through tokenized real-world value, music NFTs, and Web3 finance tools.</p>
-        </div>
-
-        <div className="section">
-          <h2>2. Vision & Mission</h2>
-          <p>Our mission is to create a transparent and powerful digital economy where users can earn, trade, and participate in real-world utility ecosystems backed by music, digital art, and environmental projects.</p>
-        </div>
-
-        <div className="section">
-          <h2>3. Key Features</h2>
-          <ul>
-            <li><strong>💰 Ecoho Gold Token (ECOHO):</strong> BEP-20 utility token with real use in staking, governance, and rewards.</li>
-            <li><strong>🎵 Music NFTs:</strong> Own and trade music-backed NFTs that pay royalties to artists and holders.</li>
-            <li><strong>🌱 Green Projects:</strong> Support environmental impact and carbon credit projects.</li>
-            <li><strong>📊 Staking & Yield:</strong> Earn rewards through staking pools and DeFi farming.</li>
-          </ul>
-        </div>
-
-        <div className="section">
-          <h2>4. Tokenomics</h2>
-          <ul>
-            <li><strong>Total Supply:</strong> 1,000,000,000 ECOHO</li>
-            <li><strong>Initial Liquidity:</strong> $5 USD equivalent</li>
-            <li><strong>Token Distribution:</strong></li>
-            <ul>
-              <li>40% – Public Sale</li>
-              <li>20% – Ecosystem & Rewards</li>
-              <li>15% – Team & Advisors</li>
-              <li>15% – Liquidity Pool</li>
-              <li>10% – Marketing & Airdrops</li>
-            </ul>
-          </ul>
-        </div>
-
-        <div className="section">
-          <h2>5. Roadmap</h2>
-          <ul>
-            <li><strong>Q2 2025:</strong> Token launch on PancakeSwap, Website Live, Whitepaper Released</li>
-            <li><strong>Q3 2025:</strong> Music NFT Minting, Airdrop Campaign, Staking Platform</li>
-            <li><strong>Q4 2025:</strong> Ecoho Marketplace, Artist Onboarding, Mobile App Beta</li>
-            <li><strong>2026:</strong> DAO Governance Launch, Cross-chain Bridges, Carbon Credit Trading</li>
-          </ul>
-        </div>
-
-        <div className="section">
-          <h2>6. Smart Contract Details</h2>
-          <p><strong>Network:</strong> Binance Smart Chain (BSC)<br />
-             <strong>Standard:</strong> BEP-20<br />
-             <strong>Contract Address:</strong> <em>To be announced after deployment</em></p>
-        </div>
-
-        <div className="section">
-          <h2>7. Security</h2>
-          <p>Ecoho Gold smart contracts will undergo regular audits. Liquidity will be locked, and the project will implement anti-whale and anti-bot mechanisms to protect users.</p>
-        </div>
-
-        <div className="section">
-          <h2>8. Get Involved</h2>
-          <p>Join our growing community on social media and become a part of the future of sustainable, creator-focused crypto.</p>
-          <p>
-            🌍 <a href="https://kamaincprofile.com" target="_blank" rel="noopener noreferrer">Website</a><br />
-            🐦 <a href="https://x.com/Akhona_Kama" target="_blank" rel="noopener noreferrer">Twitter/X</a><br />
-            🗨️ <a href="https://t.me/ecoho_gold_chat" target="_blank" rel="noopener noreferrer">Telegram</a>
-          </p>
-        </div>
-
-        <hr />
-
-        <p><em>Ecoho Gold is more than a token — it’s a movement toward creative and ecological freedom through decentralized finance.</em></p>
+        <p><em>Join our mission to empower a decentralized, eco-friendly future.</em></p>
       </div>
     </>
   );
 };
 
 export default WhitepaperPage;
-
-    
