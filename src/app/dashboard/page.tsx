@@ -1,7 +1,7 @@
 
 import type { NextPage } from 'next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { LayoutDashboard, UserCircle, BarChart2, Settings, Gift, ShieldCheck } from 'lucide-react';
+import { LayoutDashboard, BarChart2, Settings, Gift, ShieldCheck } from 'lucide-react'; // UserCircle removed, ShieldCheck was already there
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 
@@ -22,11 +22,26 @@ const DashboardPage: NextPage = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           <Card className="shadow-lg hover:shadow-xl transition-shadow">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2"><UserCircle /> My Ecoho Profile</CardTitle>
+              <CardTitle className="flex items-center gap-2"><ShieldCheck /> Company Information</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground mb-2">View your account details and manage your community presence.</p>
-              <p className="mt-4 text-sm text-primary/80 font-semibold">(Full profile management coming soon)</p>
+              <div className="space-y-3">
+                <div>
+                  <p className="text-sm text-muted-foreground">Enterprise Name:</p>
+                  <p className="text-lg font-semibold text-primary">K2021753276 (SOUTH AFRICA)</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Registration Number:</p>
+                  <p className="text-lg font-semibold text-primary">2021 / 753276 / 07</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Registered Office:</p>
+                  <p className="text-md text-primary">1138 Tsebe Unit T, Mabopane, Gauteng, 1138</p>
+                </div>
+              </div>
+               <p className="text-muted-foreground mt-4 text-xs">
+                Official company details for Ecoho Gold.
+              </p>
             </CardContent>
           </Card>
 
