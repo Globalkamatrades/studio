@@ -30,7 +30,7 @@ const TokenInfo: FC = () => {
     { label: "Chain", value: "Binance Smart Chain (BEP-20)", icon: <ListChecks size={20} /> },
     { label: "Total Supply", value: "100,000,000 ECOHO", icon: <ShoppingCart size={20} /> },
     { label: "Circulating Supply", value: "40,000,000 ECOHO", icon: <Users size={20} /> },
-    { label: "Contract Address", value: "0x...a82b (Full address needed for interactions)", icon: <FileSignature size={20} />, isAddress: true },
+    { label: "Contract Address", value: "0x...a82b", icon: <FileSignature size={20} />, isAddress: true },
     { label: "Utility", value: "Eco-projects, NFT rewards, cross-border trade", icon: <ListChecks size={20} /> },
   ];
 
