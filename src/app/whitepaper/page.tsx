@@ -75,7 +75,7 @@ const WhitepaperPage: NextPage = () => {
           <h2>4. Tokenomics</h2>
           <ul>
             <li><strong>Total Supply:</strong> 1,000,000,000 ECOHO</li>
-            <li><strong>Initial Liquidity:</strong> $20 BNB equivalent</li>
+            <li><strong>Initial Liquidity:</strong> $5 USD equivalent</li>
             <li><strong>Token Distribution:</strong></li>
             <ul>
               <li>40% – Public Sale</li>
