@@ -8,8 +8,11 @@ const BuyToken: FC = () => {
 
   return (
     <SectionCard title="Buy ECOHO Token" icon={<CircleDollarSign className="text-primary h-8 w-8" />}>
-      <p className="mb-6 text-lg">
+      <p className="mb-4 text-lg">
         Acquire ECOHO tokens easily and securely on PancakeSwap, the leading decentralized exchange on Binance Smart Chain.
+      </p>
+      <p className="mb-6 text-xs text-muted-foreground">
+        Transactions on Binance Smart Chain, like those on PancakeSwap, generally benefit from low gas fees compared to some other blockchains.
       </p>
       <ButtonLink
         href={pancakeSwapLink}

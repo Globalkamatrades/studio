@@ -105,11 +105,14 @@ const NftPurchase: FC = () => {
             </p>
           )}
           
-          <p className="mb-2 font-semibold text-primary">
+          <p className="mb-1 font-semibold text-primary">
             Each NFT purchase rewards you with 7 ECOHO tokens!
           </p>
-          <p className="text-xs text-muted-foreground mb-6">
+          <p className="text-xs text-muted-foreground mb-2">
             (The value of ECOHO tokens may vary. Please check current exchange rates.)
+          </p>
+           <p className="text-xs text-muted-foreground mb-6">
+            If purchasing NFTs on the BNB Chain, gas fees are typically very low.
           </p>
           <ButtonLink
             href={openSeaLink}
@@ -135,5 +138,3 @@ const NftPurchase: FC = () => {
 };
 
 export default NftPurchase;
-
-    
