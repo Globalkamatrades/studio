@@ -1,19 +1,24 @@
 import type { FC } from 'react';
 import SectionCard from '@/components/ui/section-card';
-import { Coins, ListChecks, ShieldCheck, ShoppingCart } from 'lucide-react';
+import { Coins, ListChecks, ShieldCheck, ShoppingCart, Users, FileSignature } from 'lucide-react';
 
 interface TokenDetailProps {
   label: string;
   value: string;
   icon: React.ReactNode;
+  isAddress?: boolean;
 }
 
-const TokenDetailItem: FC<TokenDetailProps> = ({ label, value, icon }) => (
+const TokenDetailItem: FC<TokenDetailProps> = ({ label, value, icon, isAddress }) => (
   <li className="flex items-start space-x-3 py-3 border-b border-border last:border-b-0">
     <span className="flex-shrink-0 text-primary pt-1">{icon}</span>
     <div>
       <strong className="block text-card-foreground">{label}:</strong>
-      <span className="text-card-foreground/80">{value}</span>
+      {isAddress ? (
+        <span className="text-card-foreground/80 font-mono break-all">{value}</span>
+      ) : (
+        <span className="text-card-foreground/80">{value}</span>
+      )}
     </div>
   </li>
 );
@@ -24,6 +29,8 @@ const TokenInfo: FC = () => {
     { label: "Symbol", value: "ECOHO", icon: <ShieldCheck size={20} /> },
     { label: "Chain", value: "Binance Smart Chain (BEP-20)", icon: <ListChecks size={20} /> },
     { label: "Total Supply", value: "100,000,000 ECOHO", icon: <ShoppingCart size={20} /> },
+    { label: "Circulating Supply", value: "40,000,000 ECOHO", icon: <Users size={20} /> },
+    { label: "Contract Address", value: "0x...a82b (Full address needed for interactions)", icon: <FileSignature size={20} />, isAddress: true },
     { label: "Utility", value: "Eco-projects, NFT rewards, cross-border trade", icon: <ListChecks size={20} /> },
   ];
 
