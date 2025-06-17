@@ -91,9 +91,9 @@ const WhitepaperPage: NextPage = () => {
     "7. Security": "Smart contracts will undergo audits. Liquidity will be locked. Anti-bot and anti-whale protection included.",
     "8. Get Involved": [
       "Join the Ecoho community and help shape the future of Web3 and sustainable finance.",
-      "Website: https://kamaincprofile.com", // Ensured https
-      "Twitter: https://x.com/Akhona_Kama", // Ensured https
-      "Telegram: https://t.me/ecoho_gold_chat" // Using actual link for website consistency
+      "Website: https://kamaincprofile.com", 
+      "Twitter: https://x.com/Ecoho_Gold", 
+      "Telegram: https://t.me/ecoho_gold_chat" 
     ]
   };
 

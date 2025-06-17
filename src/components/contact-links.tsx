@@ -1,3 +1,4 @@
+
 import type { FC } from 'react';
 import SectionCard from '@/components/ui/section-card';
 import { Mail, Send, MessageSquare, Twitter, Phone } from 'lucide-react'; // Using Phone for WhatsApp temporarily
@@ -31,7 +32,7 @@ const ContactLinks: FC = () => {
     { href: "mailto:Akhona@kamaincprofile.com", icon: <Mail size={24} />, label: "Email", handle: "Akhona@kamaincprofile.com" },
     { href: "https://t.me/ecoho_gold_chat", icon: <Send size={24} />, label: "Telegram", handle: "Join Community" },
     { href: "https://wa.me/27655335608", icon: <MessageSquare size={24} />, label: "WhatsApp", handle: "+27 65 533 5608" }, // Using MessageSquare as generic chat
-    { href: "https://x.com/Akhona_Kama", icon: <Twitter size={24} />, label: "Twitter", handle: "@Akhona_Kama" },
+    { href: "https://x.com/Ecoho_Gold", icon: <Twitter size={24} />, label: "Twitter", handle: "@Ecoho_Gold" },
   ];
 
   return (
