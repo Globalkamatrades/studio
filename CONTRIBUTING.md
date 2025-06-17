@@ -1,3 +1,4 @@
+
 # Contributing to Ecoho Gold
 
 First off, thank you for considering contributing to Ecoho Gold! We welcome any contributions that can help improve the project.
@@ -28,6 +29,7 @@ We're excited to see what you can bring to the project. Here are some ways you c
 *   Use TypeScript.
 *   For styling, use Tailwind CSS and ShadCN UI components where possible.
 *   Genkit is used for AI-related features.
+*   Tokenomics: Total Supply: 1,000,000,000 ECOHO. Initial Liquidity: $20 BNB equivalent.
 
 ## Areas for Contribution
 

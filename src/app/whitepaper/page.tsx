@@ -12,56 +12,75 @@ const WhitepaperPage: NextPage = () => {
   const whitepaperStyles = `
     body.whitepaper-page-container { /* Apply to a wrapper div to avoid global body styling conflicts */
       font-family: Arial, sans-serif;
-      background-color: #0c0c0c;
-      color: #fff;
+      background-color: #0c0c0c; /* Black background */
+      color: #fff; /* White text */
       line-height: 1.6;
-      padding: 20px; /* Adjusted padding for better viewing within app */
+      padding: 20px; 
       max-width: 900px;
       margin: auto;
     }
     .whitepaper-page-container h1,
     .whitepaper-page-container h2,
     .whitepaper-page-container h3 {
-      color: gold;
+      color: gold; /* Gold titles */
     }
-    .whitepaper-page-container a:not(.app-link) { /* Avoid styling app links */
-      color: #00ffe7;
+    .whitepaper-page-container a:not(.app-link) { 
+      color: #00ffe7; /* Link color for external links in content */
     }
     .whitepaper-page-container .section {
-      margin-bottom: 30px; /* Adjusted margin for sections */
+      margin-bottom: 30px; 
     }
     .whitepaper-page-container hr {
       border: 1px solid gold;
-      margin: 30px 0; /* Adjusted margin for hr */
+      margin: 30px 0; 
     }
     .whitepaper-page-container ul {
-      list-style-type: none; /* Using '-' as bullet via content processing */
-      padding-left: 20px;
+      list-style-type: disc; /* Changed from none to disc for better readability */
+      padding-left: 40px; /* Standard padding for lists */
     }
     .whitepaper-page-container li {
       margin-bottom: 8px;
     }
     .whitepaper-page-container .whitepaper-image-container {
       text-align: center;
-      margin-bottom: 30px; /* Space after image */
+      margin-bottom: 30px; 
     }
   `;
 
-  const sections = {
-    "1. Introduction": "Ecoho Gold (ECOHO) is a decentralized digital asset built on the Binance Smart Chain (BSC) designed to power a sustainable economic ecosystem by combining blockchain technology with real-world utility.",
-    "2. Vision & Mission": "Ecoho Gold aims to create a global, stable, and user-driven token economy backed by real value, with a focus on environmentally conscious projects and community rewards.",
-    "3. Tokenomics": "- Token Name: Ecoho Gold (ECOHO)\n- Network: BSC (BEP-20)\n- Total Supply: 1,000,000 ECOHO\n- Liquidity: 20%\n- Community Rewards: 30%\n- Development: 25%\n- Marketing: 15%\n- Reserve: 10%",
-    "4. Utility": "ECOHO will power:\n- Music NFT purchases\n- Airdrop incentives\n- Voting rights in the Ecoho DAO\n- Access to exclusive content and rewards",
-    "5. Roadmap": "Q2 2025: Token Launch & Website\nQ3 2025: NFT Platform Integration\nQ4 2025: Ecoho Mobile App\nQ1 2026: DAO Governance Launch\nQ2 2026: Cross-chain Expansion",
-    "6. Get Involved": "Visit https://kamaincprofile.com and follow us on Twitter @Akhona_Kama to stay updated.\nJoin our mission to empower a decentralized, eco-friendly future."
+  const content = {
+    "1. Introduction": "Ecoho Gold is a decentralized, community-powered cryptocurrency built on Binance Smart Chain (BEP-20). It is designed to empower creators, investors, and eco-conscious communities through tokenized real-world value, music NFTs, and Web3 finance tools.",
+    "2. Vision & Mission": "Our mission is to create a transparent and powerful digital economy where users can earn, trade, and participate in real-world utility ecosystems backed by music, digital art, and environmental projects.",
+    "3. Key Features": [
+      "Ecoho Gold Token (ECOHO): BEP-20 utility token with real use in staking, governance, and rewards.",
+      "Music NFTs: Own and trade music-backed NFTs that pay royalties.",
+      "Green Projects: Support environmental impact and carbon credit projects.",
+      "Staking & Yield: Earn rewards through DeFi mechanisms."
+    ],
+    "4. Tokenomics": [
+      "Total Supply: 1,000,000,000 ECOHO",
+      "Initial Liquidity: $20 BNB equivalent",
+      "Distribution: 40% Public Sale, 20% Rewards, 15% Team, 15% Liquidity, 10% Marketing"
+    ],
+    "5. Roadmap": [
+      "Q2 2025: Token launch, Website, Whitepaper",
+      "Q3 2025: Music NFTs, Airdrops, Staking",
+      "Q4 2025: Marketplace, Onboarding Artists",
+      "2026: DAO, Bridges, Carbon Credit Trading"
+    ],
+    "6. Smart Contract Details": [
+      "Network: Binance Smart Chain (BSC)",
+      "Standard: BEP-20",
+      "Contract: To be announced after deployment"
+    ],
+    "7. Security": "Smart contracts will undergo audits. Liquidity will be locked. Anti-bot and anti-whale protection included.",
+    "8. Get Involved": [
+      "Join the Ecoho community and help shape the future of Web3 and sustainable finance.",
+      "Website: https://kamaincprofile.com",
+      "Twitter: https://x.com/Akhona_Kama",
+      "Telegram: https://t.me/ecoho_gold_chat" 
+    ]
   };
 
-  // Replace "•" with "-" as in the Python script, and prepare for HTML rendering
-  const processedSections = Object.entries(sections).map(([title, content]) => {
-    const cleanedContent = content.replace(/•/g, '-');
-    const lines = cleanedContent.split('\n').map(line => line.trim());
-    return { title, lines };
-  });
 
   return (
     <>
@@ -79,42 +98,38 @@ const WhitepaperPage: NextPage = () => {
           <Image 
             src="/images/ecoho_gold_coin_3d.png" 
             alt="Ecoho Gold Coin" 
-            width={180} // Adjusted width for better layout, Python script used w=90 in a PDF context
-            height={180} // Assuming square, adjust if not
+            width={180} 
+            height={180} 
             className="mx-auto"
             data-ai-hint="gold coin crypto"
           />
         </div>
 
-        {processedSections.map(({ title, lines }) => (
+        {Object.entries(content).map(([title, bodyOrList]) => (
           <div key={title} className="section">
             <h2>{title}</h2>
-            {lines.length === 1 && !lines[0].startsWith('-') ? (
-              <p>{lines[0]}</p>
+            {Array.isArray(bodyOrList) ? (
+              <ul>
+                {bodyOrList.map((item, index) => {
+                  if (title === "8. Get Involved" && (item.startsWith("Website:") || item.startsWith("Twitter:") || item.startsWith("Telegram:"))) {
+                    const [label, url] = item.split(": ");
+                    return (
+                      <li key={index}>
+                        <strong>{label}:</strong> <a href={url.trim()} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{url.trim()}</a>
+                      </li>
+                    );
+                  }
+                  return <li key={index}>{item}</li>;
+                })}
+              </ul>
             ) : (
-              lines[0].includes(':') && lines.length > 1 && lines[1].startsWith('-') ? ( // For Utility section structure
-                <>
-                  <p>{lines[0]}</p>
-                  <ul>
-                    {lines.slice(1).map((line, index) => (
-                      <li key={index}>{line}</li>
-                    ))}
-                  </ul>
-                </>
-              ) : (
-                <ul>
-                  {lines.map((line, index) => (
-                    <li key={index}>{line}</li>
-                  ))}
-                </ul>
-              )
+              <p>{bodyOrList}</p>
             )}
           </div>
         ))}
         
         <hr />
-
-        <p><em>Join our mission to empower a decentralized, eco-friendly future.</em></p>
+        <p className="text-center"><em>Join our mission to empower a decentralized, eco-friendly future.</em></p>
       </div>
     </>
   );

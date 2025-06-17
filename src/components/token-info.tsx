@@ -1,3 +1,4 @@
+
 import type { FC } from 'react';
 import SectionCard from '@/components/ui/section-card';
 import { Coins, ListChecks, ShieldCheck, ShoppingCart, Users, FileSignature, Droplet, CalendarDays } from 'lucide-react';
@@ -29,11 +30,11 @@ const TokenInfo: FC = () => {
     { label: "Symbol", value: "ECOHO", icon: <ShieldCheck size={20} /> },
     { label: "Chain", value: "Binance Smart Chain (BEP-20)", icon: <ListChecks size={20} /> },
     { label: "Total Supply", value: "1,000,000,000 ECOHO", icon: <ShoppingCart size={20} /> },
-    { label: "Circulating Supply", value: "40,000,000 ECOHO", icon: <Users size={20} /> },
-    { label: "Initial Liquidity", value: "$5 USD equivalent", icon: <Droplet size={20} /> },
+    { label: "Circulating Supply", value: "400,000,000 ECOHO", icon: <Users size={20} /> }, // Updated: 40% of 1B
+    { label: "Initial Liquidity", value: "$20 BNB equivalent", icon: <Droplet size={20} /> }, // Updated
     { label: "Planned Launch", value: "Q2 2025", icon: <CalendarDays size={20} /> },
-    { label: "Contract Address", value: "0x...a82b", icon: <FileSignature size={20} />, isAddress: true },
-    { label: "Utility", value: "Eco-projects, NFT rewards, cross-border trade", icon: <ListChecks size={20} /> },
+    { label: "Contract Address", value: "To be announced after deployment", icon: <FileSignature size={20} />, isAddress: true }, // Updated
+    { label: "Utility", value: "Staking, governance, music NFTs, green projects, DeFi yield", icon: <ListChecks size={20} /> }, // Updated
   ];
 
   return (
