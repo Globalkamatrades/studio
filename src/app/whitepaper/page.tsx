@@ -112,14 +112,15 @@ const WhitepaperPage: NextPage = () => {
               <ul>
                 {bodyOrList.map((item, index) => {
                   if (title === "8. Get Involved" && (item.startsWith("Website:") || item.startsWith("Twitter:") || item.startsWith("Telegram:"))) {
-                    const [label, url] = item.split(": ");
+                    const [label, urlPart] = item.split(/:(.*)/s); // Split only on the first colon
+                    const url = urlPart.trim();
                     return (
                       <li key={index}>
-                        <strong>{label}:</strong> <a href={url.trim()} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{url.trim()}</a>
+                        <strong>{label}:</strong> <a href={url.startsWith('http') ? url : `https://${url}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{url}</a>
                       </li>
                     );
                   }
-                  return <li key={index}>{item}</li>;
+                  return <li key={index}>{item.replace(/^- /,"")}</li>;
                 })}
               </ul>
             ) : (
@@ -136,3 +137,5 @@ const WhitepaperPage: NextPage = () => {
 };
 
 export default WhitepaperPage;
+
+    
