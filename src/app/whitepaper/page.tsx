@@ -35,8 +35,8 @@ const WhitepaperPage: NextPage = () => {
       margin: 30px 0; 
     }
     .whitepaper-page-container ul {
-      list-style-type: disc; /* Changed from none to disc for better readability */
-      padding-left: 40px; /* Standard padding for lists */
+      list-style-type: disc; 
+      padding-left: 40px; 
     }
     .whitepaper-page-container li {
       margin-bottom: 8px;
@@ -137,5 +137,4 @@ const WhitepaperPage: NextPage = () => {
 };
 
 export default WhitepaperPage;
-
     
