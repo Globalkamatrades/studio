@@ -37,6 +37,7 @@ const WhitepaperPage: NextPage = () => {
     .whitepaper-page-container ul {
       list-style-type: disc; 
       padding-left: 40px; 
+      margin-left: 0; /* Reset margin for ul */
     }
     .whitepaper-page-container li {
       margin-bottom: 8px;
@@ -44,6 +45,21 @@ const WhitepaperPage: NextPage = () => {
     .whitepaper-page-container .whitepaper-image-container {
       text-align: center;
       margin-bottom: 30px; 
+    }
+    .whitepaper-page-container .tokenomics-list,
+    .whitepaper-page-container .key-features-list,
+    .whitepaper-page-container .roadmap-list,
+    .whitepaper-page-container .smart-contract-list,
+    .whitepaper-page-container .get-involved-list {
+      list-style-type: none; /* Remove default bullets */
+      padding-left: 0; /* Remove default padding */
+    }
+    .whitepaper-page-container .tokenomics-list li::before,
+    .whitepaper-page-container .key-features-list li::before,
+    .whitepaper-page-container .roadmap-list li::before,
+    .whitepaper-page-container .smart-contract-list li::before {
+      content: "- "; /* Add dash prefix */
+      margin-right: 5px;
     }
   `;
 
@@ -75,12 +91,11 @@ const WhitepaperPage: NextPage = () => {
     "7. Security": "Smart contracts will undergo audits. Liquidity will be locked. Anti-bot and anti-whale protection included.",
     "8. Get Involved": [
       "Join the Ecoho community and help shape the future of Web3 and sustainable finance.",
-      "Website: https://kamaincprofile.com",
-      "Twitter: https://x.com/Akhona_Kama",
-      "Telegram: https://t.me/ecoho_gold_chat" 
+      "Website: https://kamaincprofile.com", // Ensured https
+      "Twitter: https://x.com/Akhona_Kama", // Ensured https
+      "Telegram: https://t.me/ecoho_gold_chat" // Using actual link for website consistency
     ]
   };
-
 
   return (
     <>
@@ -92,7 +107,7 @@ const WhitepaperPage: NextPage = () => {
             </Link>
         </div>
         
-        <h1>Ecoho Gold (ECOHO) Whitepaper</h1>
+        <h1 className="text-center">Ecoho Gold (ECOHO) Whitepaper</h1>
         
         <div className="whitepaper-image-container my-8">
           <Image 
@@ -109,14 +124,20 @@ const WhitepaperPage: NextPage = () => {
           <div key={title} className="section">
             <h2>{title}</h2>
             {Array.isArray(bodyOrList) ? (
-              <ul>
+              <ul className={
+                title === "3. Key Features" ? "key-features-list" :
+                title === "4. Tokenomics" ? "tokenomics-list" :
+                title === "5. Roadmap" ? "roadmap-list" :
+                title === "6. Smart Contract Details" ? "smart-contract-list" :
+                title === "8. Get Involved" ? "get-involved-list" : ""
+              }>
                 {bodyOrList.map((item, index) => {
                   if (title === "8. Get Involved" && (item.startsWith("Website:") || item.startsWith("Twitter:") || item.startsWith("Telegram:"))) {
-                    const [label, urlPart] = item.split(/:(.*)/s); // Split only on the first colon
+                    const [label, urlPart] = item.split(/:(.*)/s); 
                     const url = urlPart.trim();
                     return (
                       <li key={index}>
-                        <strong>{label}:</strong> <a href={url.startsWith('http') ? url : `https://${url}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{url}</a>
+                        <strong>{label}:</strong> <a href={url.startsWith('http') ? url : `https://${url}`} target="_blank" rel="noopener noreferrer">{url}</a>
                       </li>
                     );
                   }
