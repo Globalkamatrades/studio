@@ -1,6 +1,7 @@
 
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
+import HeroSection from '@/components/hero-section'; // New import
 import NftPurchase from '@/components/nft-purchase';
 import TokenInfo from '@/components/token-info';
 import BuyToken from '@/components/buy-token';
@@ -10,19 +11,22 @@ import ContactLinks from '@/components/contact-links';
 import CommunitySpotlightForm from '@/components/community-spotlight-form';
 import MarketAnalytics from '@/components/market-analytics';
 import EthereumNftDexTrades from '@/components/ethereum-nft-dex-trades';
-import NftGalleryPreview from '@/components/nft-gallery-preview'; // New import
+import NftGalleryPreview from '@/components/nft-gallery-preview';
 
 export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
       <main className="flex-grow container mx-auto px-4 py-8 md:py-12">
+        <HeroSection /> {/* Added Hero Section */}
         <div className="space-y-8 md:space-y-12">
-          <TokenInfo />
+          <div id="token-info-section"> {/* Added ID for hero button link */}
+            <TokenInfo />
+          </div>
           <MarketAnalytics />
           <EthereumNftDexTrades />
           <BuyToken />
-          <NftGalleryPreview /> {/* Added NFT Gallery Preview */}
+          <NftGalleryPreview />
           <NftPurchase />
           <AirdropRewards />
           <WhitepaperSection />
