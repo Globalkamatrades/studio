@@ -10,6 +10,9 @@ const Footer: FC = () => {
           &copy; {new Date().getFullYear()} Ecoho Gold. Built with purpose in Africa.
         </p>
         <div className="mt-2 space-x-4">
+          <Link href="/documents" className="text-neutral-500 hover:text-primary text-sm">
+            Documents
+          </Link>
           <Link href="/privacy-policy" className="text-neutral-500 hover:text-primary text-sm">
             Privacy Policy
           </Link>
