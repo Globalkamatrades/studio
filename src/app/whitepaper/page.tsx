@@ -97,6 +97,15 @@ const WhitepaperPage: NextPage = () => {
     ]
   };
 
+  const legalNoticeTitle = "9. Legal Notice & Regulations";
+  const legalNoticeContent = [
+    "Ecoho Gold (ECOHO) is a decentralized cryptocurrency token deployed on the Binance Smart Chain (BSC) as a BEP-20 asset. We do not act as a bank, investment service, or money transmitter. Ecoho Gold complies with decentralized finance (DeFi) principles and does not hold, manage, or store user funds. All token exchanges must be conducted through decentralized platforms such as PancakeSwap.",
+    "By using this token or engaging in any activity involving ECOHO, you agree to comply with the laws of your jurisdiction and acknowledge that criminal, fraudulent, or deceptive actions (such as money laundering, scamming, identity theft, phishing, or rug pulls) are strictly prohibited and may be reported to local authorities.",
+    "Ecoho Gold reserves the right to cooperate with regulatory bodies and law enforcement agencies to report any suspicious or illegal activity. Blockchain activity is traceable, transparent, and can be used in legal investigations.",
+    "<strong>Warning:</strong> Engaging in fraudulent activity using ECOHO may result in permanent wallet blacklisting, legal prosecution, or civil penalties in accordance with anti-money laundering (AML) and counter-terrorism financing (CTF) laws globally."
+  ];
+
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: whitepaperStyles }} />
@@ -145,10 +154,17 @@ const WhitepaperPage: NextPage = () => {
                 })}
               </ul>
             ) : (
-              <p>{bodyOrList}</p>
+              <p>{bodyOr.replace(/^- /,"")}</p>
             )}
           </div>
         ))}
+
+        <div className="section">
+          <h2>{legalNoticeTitle}</h2>
+          {legalNoticeContent.map((paragraph, index) => (
+            <p key={index} dangerouslySetInnerHTML={{ __html: paragraph }} />
+          ))}
+        </div>
         
         <hr />
         <p className="text-center"><em>Join our mission to empower a decentralized, eco-friendly future.</em></p>
