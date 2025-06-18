@@ -49,8 +49,7 @@ const DocumentsPage: NextPage = () => {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {documents.map((doc) => (
-            <Link href={doc.href} passHref key={doc.title} legacyBehavior>
-              <a className="block h-full"> {/* Added h-full to ensure link takes full card height */}
+            <Link href={doc.href} key={doc.title} className="block h-full">
                 <Card className="h-full shadow-lg hover:shadow-xl transition-shadow flex flex-col">
                   <CardHeader className="flex-row items-center gap-4 space-y-0">
                     {doc.icon}
@@ -60,7 +59,6 @@ const DocumentsPage: NextPage = () => {
                     <CardDescription>{doc.description}</CardDescription>
                   </CardContent>
                 </Card>
-              </a>
             </Link>
           ))}
         </div>
