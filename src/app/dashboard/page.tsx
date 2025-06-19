@@ -1,7 +1,7 @@
 
 import type { NextPage } from 'next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { LayoutDashboard, BarChart2, Settings, Users, ShieldCheck } from 'lucide-react'; // Changed Gift to Users
+import { LayoutDashboard, BarChart2, Settings, Gift, ShieldCheck } from 'lucide-react'; // Changed Users back to Gift
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 
@@ -61,6 +61,11 @@ const DashboardPage: NextPage = () => {
                   <p className="text-2xl font-semibold text-primary">2 NFTs</p>
                   <p className="text-xs text-muted-foreground">(Illustrative count)</p>
                 </div>
+                 <div>
+                  <p className="text-sm text-muted-foreground">ECOHO from NFT Purchases:</p>
+                  <p className="text-lg font-semibold text-primary">+14 ECOHO</p>
+                  <p className="text-xs text-muted-foreground">(Illustrative, 2 NFTs x 7 ECOHO/NFT)</p>
+                </div>
               </div>
               <p className="text-muted-foreground mt-3">Track your token and NFT investments in the Ecoho Gold ecosystem.</p>
               <p className="mt-4 text-sm text-primary/80 font-semibold">(Live asset tracking coming soon)</p>
@@ -69,17 +74,21 @@ const DashboardPage: NextPage = () => {
 
           <Card className="shadow-lg hover:shadow-xl transition-shadow">
             <CardHeader>
-                <CardTitle className="flex items-center gap-2"><Users /> Community Engagement</CardTitle> {/* Changed title and icon */}
+                <CardTitle className="flex items-center gap-2"><Gift /> Rewards & Contributions</CardTitle>
             </CardHeader>
             <CardContent>
                 <div className="space-y-3">
                     <div>
-                        <p className="text-sm text-muted-foreground">Community Recognition:</p>
-                        <p className="text-lg font-semibold text-primary">(Details coming soon)</p> {/* Changed from Community Spotlight Rewards */}
+                        <p className="text-sm text-muted-foreground">Community Spotlight Rewards:</p>
+                        <p className="text-lg font-semibold text-primary">Pending</p>
+                    </div>
+                     <div>
+                        <p className="text-sm text-muted-foreground">Airdrop Participation:</p>
+                        <p className="text-lg font-semibold text-primary">(Details on eligibility soon)</p>
                     </div>
                 </div>
-                <p className="text-muted-foreground mt-3">Stay active, participate in events, and get recognized for your community contributions.</p> {/* Changed description */}
-                <p className="mt-4 text-sm text-primary/80 font-semibold">(Recognition system under development)</p>
+                <p className="text-muted-foreground mt-3">Earn tokens for your engagement, NFT purchases, and community contributions.</p>
+                <p className="mt-4 text-sm text-primary/80 font-semibold">(Reward system under development)</p>
             </CardContent>
           </Card>
           

@@ -125,15 +125,15 @@ const NftsPage: NextPage = () => {
 
         <Card className="mt-12 bg-card/70 border-primary/30">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-primary"><ShieldCheck /> NFT Authenticity & Benefits</CardTitle> {/* Changed title */}
+            <CardTitle className="flex items-center gap-2 text-primary"><ShieldCheck /> NFT Authenticity & Benefits</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-card-foreground/90 mb-2">
               All official Ecoho Gold NFTs are verifiable on the Binance Smart Chain.
-              Ownership often comes with exclusive benefits and access to special community events. {/* Removed "ECOHO token airdrops" */}
+              Ownership often comes with exclusive benefits like early access to features, ECOHO token airdrops, and access to special community events.
             </p>
             <p className="text-sm text-muted-foreground">
-              Ensure you are purchasing from official Ecoho Gold collections on reputable marketplaces.
+              Ensure you are purchasing from official Ecoho Gold collections on reputable marketplaces. Remember, NFT purchases may also grant promotional ECOHO token rewards.
             </p>
           </CardContent>
         </Card>

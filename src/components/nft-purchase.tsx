@@ -5,7 +5,7 @@ import type { FC } from 'react';
 import { useState, useEffect } from 'react';
 import SectionCard from '@/components/ui/section-card';
 import ButtonLink from '@/components/ui/button-link';
-import { Gem, ExternalLink, Loader2, AlertTriangle } from 'lucide-react';
+import { Gem, ExternalLink, Loader2, AlertTriangle, Sparkles } from 'lucide-react'; // Added Sparkles
 import Image from 'next/image';
 
 interface NftMarketData {
@@ -24,15 +24,11 @@ const NftPurchase: FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Simulate API call to fetch NFT market data
     const fetchNftData = async () => {
       setIsLoading(true);
       setError(null);
       try {
-        // In a real app, you'd fetch this from an API
-        // For demonstration, we're using mock data after a short delay
         await new Promise(resolve => setTimeout(resolve, 1000));
-
         const mockApiResponse = {
           openSea: {
             floorPrice: 1.00,
@@ -41,7 +37,6 @@ const NftPurchase: FC = () => {
             error: null
           }
         };
-
         if (mockApiResponse.openSea && mockApiResponse.openSea.error) {
           setError(mockApiResponse.openSea.error);
           setMarketData(prev => ({ ...prev, collectionUrl: "https://opensea.io/" }));
@@ -63,14 +58,13 @@ const NftPurchase: FC = () => {
         setIsLoading(false);
       }
     };
-
     fetchNftData();
   }, []);
 
   const openSeaLink = marketData.collectionUrl || "https://opensea.io/";
 
   return (
-    <SectionCard title="Buy the Music NFT" icon={<Gem className="text-primary h-8 w-8" />}>
+    <SectionCard title="Buy the Music NFT & Get Rewards" icon={<Gem className="text-primary h-8 w-8" />}>
       <div className="flex flex-col md:flex-row items-center gap-6">
         <Image
           src="https://placehold.co/300x200.png"
@@ -81,8 +75,11 @@ const NftPurchase: FC = () => {
           data-ai-hint="music abstract"
         />
         <div className="flex-1">
-          <p className="mb-4 text-lg">
+          <p className="mb-2 text-lg">
             Support the artist and become part of the Ecoho Gold ecosystem by purchasing our exclusive Music NFT.
+          </p>
+          <p className="mb-4 text-md font-semibold text-primary flex items-center">
+            <Sparkles size={20} className="mr-2" /> Each NFT purchase rewards you with 7 ECOHO tokens!
           </p>
 
           {isLoading && (
@@ -105,7 +102,7 @@ const NftPurchase: FC = () => {
             </p>
           )}
           
-           <p className="text-xs text-muted-foreground mb-6">
+           <p className="text-xs text-muted-foreground mb-2">
             If purchasing NFTs on the BNB Chain, gas fees are typically very low.
           </p>
           <ButtonLink
@@ -120,11 +117,9 @@ const NftPurchase: FC = () => {
           >
             Buy on OpenSea
           </ButtonLink>
-          {!isLoading && (
-            <p className="mt-3 text-xs text-muted-foreground">
-              Floor price is illustrative. A live API is needed for real-time data. Ensure the OpenSea link is correct.
-            </p>
-          )}
+          <p className="mt-3 text-xs text-muted-foreground">
+            The 7 ECOHO token reward is a promotional offer and subject to change. ECOHO token value is speculative. Floor price is illustrative; a live API is needed for real-time data.
+          </p>
         </div>
       </div>
     </SectionCard>
