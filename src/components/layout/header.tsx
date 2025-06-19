@@ -1,5 +1,5 @@
 
-import type { FC } from 'react';
+import type { FC } from 'next';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button'; // Re-added for potential direct use
 import ButtonLink from '@/components/ui/button-link';
