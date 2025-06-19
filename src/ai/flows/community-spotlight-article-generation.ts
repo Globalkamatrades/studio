@@ -35,7 +35,7 @@ const prompt = ai.definePrompt({
   name: 'generateCommunitySpotlightArticlePrompt',
   input: {schema: GenerateCommunitySpotlightArticleInputSchema},
   output: {schema: GenerateCommunitySpotlightArticleOutputSchema},
-  prompt: `You are a community news article generator for {{communityName}}.\n\nGenerate a news article about {{topic}}.\n\n{{#if spotlightMemberName}}\nSpotlight a community member named {{spotlightMemberName}} and their recent achievements: {{recentAchievements}}.\n{{/if}}\n\nThe article should be engaging and incentivize community participation, rewarding active users with free tokens, and spotlighting the most active members to encourage participation.\n\nArticle Title: (write a title here)\nArticle Content: (write the full article here)`,
+  prompt: `You are a community news article generator for {{communityName}}.\n\nGenerate a news article about {{topic}}.\n\n{{#if spotlightMemberName}}\nSpotlight a community member named {{spotlightMemberName}} and their recent achievements: {{recentAchievements}}.\n{{/if}}\n\nThe article should be engaging and incentivize community participation, spotlighting the most active members to encourage participation.\n\nArticle Title: (write a title here)\nArticle Content: (write the full article here)`,
 });
 
 const generateCommunitySpotlightArticleFlow = ai.defineFlow(

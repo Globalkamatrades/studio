@@ -5,7 +5,7 @@ import HeroSection from '@/components/hero-section'; // New import
 import NftPurchase from '@/components/nft-purchase';
 import TokenInfo from '@/components/token-info';
 import BuyToken from '@/components/buy-token';
-import AirdropRewards from '@/components/airdrop-rewards';
+import CommunityHub from '@/components/community-hub'; // Changed from AirdropRewards
 import WhitepaperSection from '@/components/whitepaper-section';
 import ContactLinks from '@/components/contact-links';
 import CommunitySpotlightForm from '@/components/community-spotlight-form';
@@ -28,7 +28,7 @@ export default function HomePage() {
           <BuyToken />
           <NftGalleryPreview />
           <NftPurchase />
-          <AirdropRewards />
+          <CommunityHub /> {/* Changed from AirdropRewards */}
           <WhitepaperSection />
           <CommunitySpotlightForm />
           <ContactLinks />

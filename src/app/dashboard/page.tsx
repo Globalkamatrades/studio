@@ -1,7 +1,7 @@
 
 import type { NextPage } from 'next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { LayoutDashboard, BarChart2, Settings, Gift, ShieldCheck } from 'lucide-react'; // UserCircle removed, ShieldCheck was already there
+import { LayoutDashboard, BarChart2, Settings, Users, ShieldCheck } from 'lucide-react'; // Changed Gift to Users
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 
@@ -69,22 +69,17 @@ const DashboardPage: NextPage = () => {
 
           <Card className="shadow-lg hover:shadow-xl transition-shadow">
             <CardHeader>
-                <CardTitle className="flex items-center gap-2"><Gift /> Rewards & Contributions</CardTitle>
+                <CardTitle className="flex items-center gap-2"><Users /> Community Engagement</CardTitle> {/* Changed title and icon */}
             </CardHeader>
             <CardContent>
                 <div className="space-y-3">
                     <div>
-                        <p className="text-sm text-muted-foreground">ECOHO from NFT Purchases:</p>
-                        <p className="text-lg font-semibold text-primary">7 ECOHO</p>
-                         <p className="text-xs text-muted-foreground">(Illustrative)</p>
-                    </div>
-                    <div>
-                        <p className="text-sm text-muted-foreground">Community Spotlight Rewards:</p>
-                        <p className="text-lg font-semibold text-primary">Pending</p>
+                        <p className="text-sm text-muted-foreground">Community Recognition:</p>
+                        <p className="text-lg font-semibold text-primary">(Details coming soon)</p> {/* Changed from Community Spotlight Rewards */}
                     </div>
                 </div>
-                <p className="text-muted-foreground mt-3">Engage with the community, participate in events, and earn tokens for your contributions.</p>
-                <p className="mt-4 text-sm text-primary/80 font-semibold">(Rewards system under development)</p>
+                <p className="text-muted-foreground mt-3">Stay active, participate in events, and get recognized for your community contributions.</p> {/* Changed description */}
+                <p className="mt-4 text-sm text-primary/80 font-semibold">(Recognition system under development)</p>
             </CardContent>
           </Card>
           
