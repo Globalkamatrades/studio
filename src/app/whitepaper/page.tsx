@@ -154,7 +154,7 @@ const WhitepaperPage: NextPage = () => {
                 })}
               </ul>
             ) : (
-              <p>{bodyOr.replace(/^- /,"")}</p>
+              <p>{bodyOrList.replace(/^- /,"")}</p>
             )}
           </div>
         ))}
