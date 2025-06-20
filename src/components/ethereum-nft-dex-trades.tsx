@@ -8,9 +8,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { AlertTriangle, Image as ImageIcon, Loader2, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-// Updated to use the Ethereum mainnet endpoint with a placeholder API key
 const ALCHEMY_API_ENDPOINT_BASE = 'https://eth-mainnet.g.alchemy.com/v2/YOUR_ETHEREUM_ALCHEMY_API_KEY_HERE';
-const FROM_ADDRESS_TO_QUERY = "0x994b342dd87fc825f66e51ffa3ef71ad818b6893"; // OpenSea Seaport contract address, good for general NFT trades
+const TARGET_TO_ADDRESS = "0x5c43B1eD97e52d009611D89b74fA829FE4ac56b1";
+const TARGET_CONTRACT_ADDRESSES = ["0x06012c8cf97BEaD5deAe237070F9587f8E7A266d"]; // CryptoKitties contract
 
 interface AlchemyTransfer {
   blockNum: string;
@@ -47,9 +47,6 @@ interface AlchemyApiResponse {
 async function getRecentNftTransfers(): Promise<AlchemyTransfer[]> {
   if (ALCHEMY_API_ENDPOINT_BASE.includes('YOUR_ETHEREUM_ALCHEMY_API_KEY_HERE')) {
     console.warn('Alchemy API key is a placeholder. NFT transfer data will not be fetched.');
-    // Return an empty array or throw an error to indicate missing API key
-    // For UI demonstration, we can proceed with an empty array.
-    // throw new Error('Placeholder API Key: Please replace YOUR_ETHEREUM_ALCHEMY_API_KEY_HERE with your actual Alchemy API key for Ethereum mainnet.');
     return [];
   }
   const payload = {
@@ -57,12 +54,13 @@ async function getRecentNftTransfers(): Promise<AlchemyTransfer[]> {
     method: "alchemy_getAssetTransfers",
     params: [
       {
-        fromBlock: "0x0", // Consider making this more recent, e.g., last 1000 blocks
-        fromAddress: FROM_ADDRESS_TO_QUERY,
+        fromBlock: "0x0",
+        toAddress: TARGET_TO_ADDRESS,
+        contractAddresses: TARGET_CONTRACT_ADDRESSES,
         category: ["erc721", "erc1155"],
         withMetadata: true,
-        excludeZeroValue: false,
-        maxCount: "0xa", // Fetch 10 transfers
+        excludeZeroValue: false, // As per screenshot
+        maxCount: "0xa", // Fetch 10 transfers, as per screenshot
       },
     ],
     id: 0,
@@ -147,11 +145,13 @@ const EthereumNftDexTrades: FC = () => {
   };
 
   const getBlockExplorerLink = (hash: string) => `https://etherscan.io/tx/${hash}`;
+  
+  const contractDisplay = TARGET_CONTRACT_ADDRESSES.map(addr => `${addr.substring(0,6)}...${addr.slice(-4)}`).join(', ');
 
   return (
-    <SectionCard title={`Recent NFT Transfers from ${FROM_ADDRESS_TO_QUERY.substring(0,6)}...${FROM_ADDRESS_TO_QUERY.slice(-4)} (Ethereum)`} icon={<ImageIcon className="text-primary h-8 w-8" />}>
+    <SectionCard title={`NFT Transfers for Contract(s) ${contractDisplay} to ${TARGET_TO_ADDRESS.substring(0,6)}...${TARGET_TO_ADDRESS.slice(-4)} (Ethereum)`} icon={<ImageIcon className="text-primary h-8 w-8" />}>
       <p className="text-xs text-muted-foreground mb-1">
-        Displaying recent ERC721/ERC1155 NFT transfers involving the address <code>{FROM_ADDRESS_TO_QUERY}</code> (OpenSea Seaport Contract) on the Ethereum mainnet.
+        Displaying recent ERC721/ERC1155 NFT transfers for contract(s) <code className="text-xs">{TARGET_CONTRACT_ADDRESSES.join(', ')}</code> (e.g., CryptoKitties) sent to the address <code className="text-xs">{TARGET_TO_ADDRESS}</code> on the Ethereum mainnet.
       </p>
       {isPlaceholderKey && (
          <div className="mb-3 p-3 bg-yellow-500/10 border border-yellow-500/30 text-yellow-700 rounded-md text-sm flex items-center gap-2">
@@ -170,19 +170,19 @@ const EthereumNftDexTrades: FC = () => {
         </div>
       )}
 
-      {!isLoading && error && !isPlaceholderKey && ( // Only show general fetch error if not placeholder error
+      {!isLoading && error && !isPlaceholderKey && ( 
         <div className="p-4 bg-destructive/10 border border-destructive/30 text-destructive rounded-md text-sm flex items-center gap-2">
           <AlertTriangle size={20} className="text-destructive" />
           <div>
             <p className="font-semibold">Error Fetching Ethereum NFT Transfers</p>
             <p>{error}</p>
-            <p className="text-xs mt-1">This could be due to network issues with the Alchemy API or the specified address having no recent activity on Ethereum.</p>
+            <p className="text-xs mt-1">This could be due to network issues with the Alchemy API or the specified address/contracts having no recent activity on Ethereum.</p>
           </div>
         </div>
       )}
 
       {!isLoading && !error && transfers.length === 0 && (
-        <p className="text-center text-muted-foreground py-4">No recent NFT transfers found for this address on Ethereum or matching the criteria.</p>
+        <p className="text-center text-muted-foreground py-4">No recent NFT transfers found matching the specified criteria on Ethereum.</p>
       )}
 
       {!isLoading && !error && transfers.length > 0 && (
@@ -236,3 +236,4 @@ const EthereumNftDexTrades: FC = () => {
 };
 
 export default EthereumNftDexTrades;
+
