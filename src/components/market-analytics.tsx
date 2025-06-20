@@ -28,13 +28,13 @@ const MarketStat: FC<MarketStatProps> = ({ label, value, subValue, icon, valueCl
 };
 
 const MarketAnalytics: FC = () => {
-  // Static data based on the user-provided image
+  // Static data inspired by Token Terminal and consistent with app's token-info
   const price = "$0.01";
   const priceChange = "+2.17%";
-  const marketCap = "N/A"; // Image shows '—'
-  const circulatingSupply = "40,000,000 ECOHO"; // From TokenInfo, consistent with image
-  const totalSupply = "100,000,000 ECOHO"; // From TokenInfo, consistent with image
-  const contractAddressPartial = "0x...a82b";
+  const marketCap = "N/A"; 
+  const circulatingSupply = "400,000,000 ECOHO"; // Consistent with token-info.tsx
+  const totalSupply = "1,000,000,000 ECOHO"; // Consistent with token-info.tsx
+  const contractAddressPartial = "0x...a82b"; // Placeholder style from screenshot
 
   // Placeholder link - update when full contract address is available
   const explorerLink = `https://pancakeswap.finance/info/token/YOUR_ECOHO_CONTRACT_ADDRESS_HERE`;
@@ -46,7 +46,7 @@ const MarketAnalytics: FC = () => {
       icon={<LineChart className="text-primary h-8 w-8" />}
       actions={
         <ButtonLink
-          href={explorerLink} // This link will need the actual contract address
+          href={explorerLink} 
           target="_blank"
           rel="noopener noreferrer"
           variant="outline"
