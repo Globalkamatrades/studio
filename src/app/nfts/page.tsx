@@ -144,3 +144,4 @@ const NftsPage: NextPage = () => {
 };
 
 export default NftsPage;
+```

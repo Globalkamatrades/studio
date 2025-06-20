@@ -50,3 +50,4 @@ const generateCommunitySpotlightArticleFlow = ai.defineFlow(
     return output!;
   }
 );
+```

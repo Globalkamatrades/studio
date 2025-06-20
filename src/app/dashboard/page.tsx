@@ -1,7 +1,7 @@
 
 import type { NextPage } from 'next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { LayoutDashboard, BarChart2, Settings, Gift, ShieldCheck } from 'lucide-react'; // Changed Users back to Gift
+import { LayoutDashboard, BarChart2, Settings, Gift, ShieldCheck } from 'lucide-react';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 
@@ -123,3 +123,4 @@ const DashboardPage: NextPage = () => {
 };
 
 export default DashboardPage;
+```

@@ -69,3 +69,4 @@ const DocumentsPage: NextPage = () => {
 };
 
 export default DocumentsPage;
+```

@@ -127,3 +127,4 @@ const NftPurchase: FC = () => {
 };
 
 export default NftPurchase;
+```

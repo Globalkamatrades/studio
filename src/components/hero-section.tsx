@@ -39,3 +39,4 @@ const HeroSection: FC = () => {
 };
 
 export default HeroSection;
+```

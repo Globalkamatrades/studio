@@ -274,5 +274,4 @@ const PrivacyPolicyPage: NextPage = () => {
 };
 
 export default PrivacyPolicyPage;
-
-    
+```

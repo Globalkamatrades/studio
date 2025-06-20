@@ -126,5 +126,4 @@ const CookiesPolicyPage: NextPage = () => {
 };
 
 export default CookiesPolicyPage;
-
-    
+```

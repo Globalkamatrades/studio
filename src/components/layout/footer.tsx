@@ -1,5 +1,5 @@
 
-import type { FC } from 'react';
+import type { FC } from 'next';
 import Link from 'next/link';
 
 const Footer: FC = () => {
@@ -26,5 +26,4 @@ const Footer: FC = () => {
 };
 
 export default Footer;
-
-    
+```

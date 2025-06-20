@@ -32,5 +32,4 @@ const WhitepaperSection: FC = () => {
 };
 
 export default WhitepaperSection;
-
-    
+```

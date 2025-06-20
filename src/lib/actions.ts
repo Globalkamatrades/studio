@@ -43,3 +43,4 @@ export async function generateCommunitySpotlightArticleAction(
     return { error: e.message || "An unexpected error occurred while generating the article." };
   }
 }
+```

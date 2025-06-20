@@ -30,3 +30,4 @@ const BuyToken: FC = () => {
 };
 
 export default BuyToken;
+```

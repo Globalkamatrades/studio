@@ -236,4 +236,4 @@ const EthereumNftDexTrades: FC = () => {
 };
 
 export default EthereumNftDexTrades;
-
+```
