@@ -175,4 +175,3 @@ const CommunitySpotlightForm: FC = () => {
 };
 
 export default CommunitySpotlightForm;
-```

@@ -15,4 +15,3 @@ const CommunityHubPlaceholder: FC = () => {
 };
 
 export default CommunityHubPlaceholder;
-```

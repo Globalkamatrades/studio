@@ -195,4 +195,3 @@ const NftGalleryPreview: FC = () => {
 };
 
 export default NftGalleryPreview;
-```

@@ -72,4 +72,3 @@ const MusicNftInfoPage: NextPage = () => {
 };
 
 export default MusicNftInfoPage;
-```

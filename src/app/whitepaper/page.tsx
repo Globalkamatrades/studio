@@ -174,4 +174,3 @@ const WhitepaperPage: NextPage = () => {
 };
 
 export default WhitepaperPage;
-```

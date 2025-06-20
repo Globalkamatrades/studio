@@ -54,13 +54,13 @@ async function getRecentNftTransfers(): Promise<AlchemyTransfer[]> {
     method: "alchemy_getAssetTransfers",
     params: [
       {
-        fromBlock: "0x0",
+        fromBlock: "0x0", // Fetching from the beginning of the chain, can be set to a more recent block like "latest"
         toAddress: TARGET_TO_ADDRESS,
         contractAddresses: TARGET_CONTRACT_ADDRESSES,
         category: ["erc721", "erc1155"],
         withMetadata: true,
-        excludeZeroValue: false, // As per screenshot
-        maxCount: "0xa", // Fetch 10 transfers, as per screenshot
+        excludeZeroValue: false, 
+        maxCount: "0xa", // Fetch 10 transfers
       },
     ],
     id: 0,
@@ -236,4 +236,3 @@ const EthereumNftDexTrades: FC = () => {
 };
 
 export default EthereumNftDexTrades;
-```

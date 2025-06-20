@@ -34,4 +34,3 @@ const SectionCard: FC<SectionCardProps> = ({ title, icon, children, className, t
 };
 
 export default SectionCard;
-```

@@ -49,4 +49,3 @@ const TokenInfo: FC = () => {
 };
 
 export default TokenInfo;
-```

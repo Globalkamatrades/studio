@@ -114,4 +114,3 @@ const MarketAnalytics: FC = () => {
 };
 
 export default MarketAnalytics;
-```

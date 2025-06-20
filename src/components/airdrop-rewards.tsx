@@ -34,4 +34,3 @@ const AirdropRewards: FC = () => {
 };
 
 export default AirdropRewards;
-```

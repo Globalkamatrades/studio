@@ -28,17 +28,25 @@ const NftPurchase: FC = () => {
       setIsLoading(true);
       setError(null);
       try {
+        // Simulate API call delay
         await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Mocked API response structure (replace with actual API call)
+        // This structure assumes your API might return data from OpenSea or similar.
         const mockApiResponse = {
-          openSea: {
-            floorPrice: 1.00,
-            priceCurrency: "USD",
+          openSea: { // Example for OpenSea data
+            floorPrice: 1.00, // Example value
+            priceCurrency: "USD", // Example currency
             collectionUrl: "https://opensea.io/collection/ecoho-music-nfts-official",
-            error: null
+            error: null // No error in this mock
           }
+          // You could add other marketplaces here, e.g., rarible: { ... }
         };
+
+        // Logic to handle the mock response
         if (mockApiResponse.openSea && mockApiResponse.openSea.error) {
           setError(mockApiResponse.openSea.error);
+          // Fallback URL if there's an error or data is incomplete
           setMarketData(prev => ({ ...prev, collectionUrl: "https://opensea.io/" }));
         } else if (mockApiResponse.openSea) {
           setMarketData({
@@ -47,9 +55,11 @@ const NftPurchase: FC = () => {
             collectionUrl: mockApiResponse.openSea.collectionUrl,
           });
         } else {
+          // Handle case where API response is not as expected
           setError("Could not fetch NFT market data from OpenSea.");
           setMarketData(prev => ({ ...prev, collectionUrl: "https://opensea.io/" }));
         }
+
       } catch (e: any) {
         console.error("Failed to fetch NFT data:", e);
         setError("An unexpected error occurred while fetching NFT data.");
@@ -58,6 +68,7 @@ const NftPurchase: FC = () => {
         setIsLoading(false);
       }
     };
+
     fetchNftData();
   }, []);
 
@@ -127,4 +138,3 @@ const NftPurchase: FC = () => {
 };
 
 export default NftPurchase;
-```

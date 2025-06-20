@@ -41,4 +41,3 @@ const LoginPage: NextPage = () => {
 };
 
 export default LoginPage;
-```

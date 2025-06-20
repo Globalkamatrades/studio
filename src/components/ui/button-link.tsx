@@ -34,4 +34,3 @@ const ButtonLink: FC<ButtonLinkProps> = ({
 };
 
 export default ButtonLink;
-```
