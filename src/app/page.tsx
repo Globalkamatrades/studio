@@ -13,6 +13,7 @@ import NftGalleryPreview from '@/components/nft-gallery-preview';
 import NftPurchase from '@/components/nft-purchase';
 import MarketAnalytics from '@/components/market-analytics';
 import EthereumNftDexTrades from '@/components/ethereum-nft-dex-trades';
+import RadioPlayer from '@/components/radio-player';
 
 export default function HomePage() {
   return (
@@ -22,6 +23,10 @@ export default function HomePage() {
         <HeroSection />
         
         <div className="space-y-12 md:space-y-16 mt-12 md:mt-16">
+          <section>
+            <RadioPlayer />
+          </section>
+
           <section id="token-info-section">
             <TokenInfo />
           </section>

@@ -35,7 +35,7 @@ const nextConfig: NextConfig = {
       "img-src 'self' https://placehold.co https://kamaincprofile.com data:",
       "font-src 'self' https://fonts.gstatic.com",
       "connect-src 'self' https://eth-mainnet.g.alchemy.com", // For Alchemy API
-      "frame-src 'self'",
+      "frame-src 'self' https://link.radioking.com",
       "object-src 'none'",
       "form-action 'self'",
       "base-uri 'self'",
