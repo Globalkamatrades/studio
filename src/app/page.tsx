@@ -4,6 +4,7 @@ import Footer from '@/components/layout/footer';
 import HeroSection from '@/components/hero-section';
 import TokenInfo from '@/components/token-info';
 import BuyToken from '@/components/buy-token';
+import WithdrawInfo from '@/components/withdraw-info';
 import AirdropRewards from '@/components/airdrop-rewards';
 import WhitepaperSection from '@/components/whitepaper-section';
 import ContactLinks from '@/components/contact-links';
@@ -35,6 +36,10 @@ export default function HomePage() {
           
           <section>
             <BuyToken />
+          </section>
+
+          <section>
+            <WithdrawInfo />
           </section>
 
           <section>
