@@ -1,31 +1,26 @@
 
-import type { FC } from 'react';
+import type { FC, ReactNode } from 'react';
 import SectionCard from '@/components/ui/section-card';
 import { Coins, ListChecks, ShieldCheck, ShoppingCart, Users, FileSignature, Droplet, CalendarDays } from 'lucide-react';
 
 interface TokenDetailProps {
   label: string;
-  value: string;
+  value: ReactNode;
   icon: React.ReactNode;
-  isAddress?: boolean;
 }
 
-const TokenDetailItem: FC<TokenDetailProps> = ({ label, value, icon, isAddress }) => (
+const TokenDetailItem: FC<TokenDetailProps> = ({ label, value, icon }) => (
   <li className="flex items-start space-x-3 py-3 border-b border-border last:border-b-0">
     <span className="flex-shrink-0 text-primary pt-1">{icon}</span>
     <div>
       <strong className="block text-card-foreground">{label}:</strong>
-      {isAddress ? (
-        <span className="text-card-foreground/80 font-mono break-all">{value}</span>
-      ) : (
-        <span className="text-card-foreground/80">{value}</span>
-      )}
+      <div className="text-card-foreground/80">{value}</div>
     </div>
   </li>
 );
 
 const TokenInfo: FC = () => {
-  const tokenDetails = [
+  const tokenDetails: TokenDetailProps[] = [
     { label: "Token Name", value: "Ecoho Gold", icon: <Coins size={20} /> },
     { label: "Symbol", value: "ECOHO", icon: <ShieldCheck size={20} /> },
     { label: "Chain", value: "Binance Smart Chain (BEP-20)", icon: <ListChecks size={20} /> },
@@ -33,8 +28,24 @@ const TokenInfo: FC = () => {
     { label: "Circulating Supply", value: "400,000,000 ECOHO", icon: <Users size={20} /> },
     { label: "Initial Liquidity", value: "$20 BNB equivalent", icon: <Droplet size={20} /> },
     { label: "Planned Launch", value: "Q2 2025", icon: <CalendarDays size={20} /> },
-    { label: "Contract Address", value: "To be announced after deployment", icon: <FileSignature size={20} />, isAddress: true },
-    { label: "Utility", value: "Staking, governance, music NFTs, green projects, DeFi yield", icon: <ListChecks size={20} /> },
+    { 
+      label: "Contract Address", 
+      value: <span className="font-mono break-all">To be announced after deployment</span>, 
+      icon: <FileSignature size={20} /> 
+    },
+    { 
+      label: "Utility", 
+      value: (
+        <ul className="list-disc pl-5 space-y-1 mt-1">
+          <li>Staking for rewards</li>
+          <li>Governance & voting rights</li>
+          <li>Purchasing Music NFTs</li>
+          <li>Investing in eco-friendly projects</li>
+          <li>General DeFi yield opportunities</li>
+        </ul>
+      ), 
+      icon: <ListChecks size={20} /> 
+    },
   ];
 
   return (
