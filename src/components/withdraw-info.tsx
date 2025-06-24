@@ -1,7 +1,7 @@
 
 import type { FC } from 'react';
 import SectionCard from '@/components/ui/section-card';
-import { Banknote, AlertTriangle } from 'lucide-react';
+import { Banknote, Info } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const WithdrawInfo: FC = () => {
@@ -31,7 +31,7 @@ const WithdrawInfo: FC = () => {
   return (
     <SectionCard title="How to Withdraw Funds" icon={<Banknote className="text-primary h-8 w-8" />}>
       <p className="mb-6 text-lg">
-        Converting your ECOHO tokens back into traditional currency (like USD or ZAR) involves a few steps using standard cryptocurrency exchanges. Here is a general guide.
+        Ready to turn your ECOHO tokens back into cash? It's a straightforward process using standard crypto platforms. Here’s a simple, step-by-step guide.
       </p>
 
       <div className="space-y-4">
@@ -48,10 +48,10 @@ const WithdrawInfo: FC = () => {
         ))}
       </div>
 
-      <Alert variant="destructive" className="mt-8">
-        <AlertTriangle className="h-4 w-4" />
-        <AlertTitle>Important Disclaimer</AlertTitle>
-        <AlertDescription>
+      <Alert variant="default" className="mt-8 bg-blue-900/20 border-blue-500/30 text-blue-300">
+        <Info className="h-4 w-4 text-blue-400" />
+        <AlertTitle className="text-blue-300">Important Information</AlertTitle>
+        <AlertDescription className="text-blue-400/90">
           This guide is for informational purposes only. You are responsible for your own funds and transactions. Cryptocurrency values are volatile and involve risk. Always use official websites for exchanges and be cautious of scams. Ecoho Gold is not responsible for any losses.
         </AlertDescription>
       </Alert>
