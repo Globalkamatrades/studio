@@ -1,4 +1,3 @@
-
 "use client";
 
 import type { NextPage } from 'next';
@@ -7,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import Link from 'next/link';
 
@@ -32,10 +31,18 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
+const GoogleIcon = () => (
+    <svg role="img" viewBox="0 0 24 24" className="h-4 w-4 mr-2">
+        <path fill="currentColor" d="M12.48 10.92v3.28h7.84c-.27 1.44-1.14 3.73-4.01 3.73-2.43 0-4.4-2.02-4.4-4.54s1.97-4.54 4.4-4.54c1.35 0 2.33.58 2.86 1.06l2.28-2.28C17.13 6.1 14.91 5 12.48 5c-3.73 0-6.75 3.02-6.75 6.75s3.02 6.75 6.75 6.75c3.36 0 5.96-2.28 5.96-6.12 0-.45-.05-.9-.12-1.34H12.48z"></path>
+    </svg>
+);
+
+
 const SignupPage: NextPage = () => {
   const router = useRouter();
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
+  const [isGooglePending, startGoogleTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
   const form = useForm<FormData>({
@@ -83,6 +90,37 @@ const SignupPage: NextPage = () => {
     });
   };
 
+  const handleGoogleSignIn = () => {
+    setError(null);
+    const provider = new GoogleAuthProvider();
+    startGoogleTransition(async () => {
+      try {
+        await signInWithPopup(auth, provider);
+        toast({
+          title: "Sign-in Successful!",
+          description: "Welcome to your dashboard.",
+          variant: "success",
+        });
+        router.push('/dashboard');
+      } catch (err: any) {
+        let errorMessage = "An unknown error occurred with Google Sign-In.";
+        if (err.code === 'auth/popup-closed-by-user') {
+          errorMessage = "Google Sign-In was cancelled.";
+        } else if (err.code === 'auth/account-exists-with-different-credential') {
+          errorMessage = "An account already exists with this email address. Please sign in with the original method.";
+        }
+        setError(errorMessage);
+        toast({
+          title: "Google Sign-In Failed",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      }
+    });
+  };
+
+  const anyPending = isPending || isGooglePending;
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
@@ -93,8 +131,7 @@ const SignupPage: NextPage = () => {
             <CardDescription>Join the Ecoho Gold community.</CardDescription>
           </CardHeader>
           <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 {error && (
                     <Alert variant="destructive">
                       <AlertTitle>Sign Up Error</AlertTitle>
@@ -108,7 +145,7 @@ const SignupPage: NextPage = () => {
                     <FormItem>
                       <FormLabel>Email Address</FormLabel>
                       <FormControl>
-                        <Input type="email" placeholder="you@example.com" {...field} disabled={isPending} />
+                        <Input type="email" placeholder="you@example.com" {...field} disabled={anyPending} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -121,7 +158,7 @@ const SignupPage: NextPage = () => {
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="••••••••" {...field} disabled={isPending} />
+                        <Input type="password" placeholder="••••••••" {...field} disabled={anyPending} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -134,17 +171,36 @@ const SignupPage: NextPage = () => {
                     <FormItem>
                       <FormLabel>Confirm Password</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="••••••••" {...field} disabled={isPending} />
+                        <Input type="password" placeholder="••••••••" {...field} disabled={anyPending} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" disabled={isPending}>
+                <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" disabled={anyPending}>
                   {isPending ? <Loader2 className="animate-spin" /> : 'Create Account'}
                 </Button>
               </form>
-            </Form>
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">
+                  Or sign up with
+                </span>
+              </div>
+            </div>
+
+            <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={anyPending}>
+              {isGooglePending ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <GoogleIcon />
+              )}
+              Sign up with Google
+            </Button>
+            
             <p className="text-sm text-muted-foreground text-center mt-6">
               Already have an account?{" "}
               <Link href="/login" className="text-primary hover:underline">
