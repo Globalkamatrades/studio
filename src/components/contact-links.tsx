@@ -39,9 +39,10 @@ const ContactLinkItem: FC<ContactLinkItemProps> = ({ href, icon, label, handle }
   </li>
 );
 
+// Updated schema to match the email template variables {{name}} and {{message}}
 const formSchema = z.object({
-  from_name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  from_email: z.string().email({ message: "Please enter a valid email address." }),
+  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
+  email: z.string().email({ message: "Please enter a valid email address." }),
   message: z.string().min(10, { message: "Message must be at least 10 characters." }),
 });
 
@@ -54,8 +55,8 @@ const ContactLinks: FC = () => {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      from_name: "",
-      from_email: "",
+      name: "",
+      email: "",
       message: "",
     },
   });
@@ -75,8 +76,16 @@ const ContactLinks: FC = () => {
         return;
     }
 
+    // The 'data' object now contains { name, email, message }, which matches the template.
+    // The {{time}} variable in your template can be added automatically within the EmailJS editor.
+    const templateParams = {
+        name: data.name,
+        from_email: data.email, // Standard reply_to field
+        message: data.message,
+    };
+
     startTransition(() => {
-        emailjs.send(SERVICE_ID, TEMPLATE_ID, data, PUBLIC_KEY)
+        emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY)
         .then((response) => {
           console.log('SUCCESS!', response.status, response.text);
           toast({
@@ -116,7 +125,7 @@ const ContactLinks: FC = () => {
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         <FormField
                             control={form.control}
-                            name="from_name"
+                            name="name" // Updated from 'from_name'
                             render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Your Name</FormLabel>
@@ -129,10 +138,10 @@ const ContactLinks: FC = () => {
                         />
                         <FormField
                             control={form.control}
-                            name="from_email"
+                            name="email" // Updated from 'from_email'
                             render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Your Email</FormLabel>
+                                <FormLabel>Your Email (for replies)</FormLabel>
                                 <FormControl>
                                 <Input type="email" placeholder="you@example.com" {...field} disabled={isPending} />
                                 </FormControl>
