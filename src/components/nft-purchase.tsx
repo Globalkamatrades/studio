@@ -114,7 +114,7 @@ const NftPurchase: FC = () => {
           )}
           
            <p className="text-xs text-muted-foreground mb-2">
-            If purchasing NFTs on the BNB Chain, gas fees are typically very low.
+            If purchasing NFTs on the Polygon network, gas fees are typically very low.
           </p>
           <ButtonLink
             href={openSeaLink}

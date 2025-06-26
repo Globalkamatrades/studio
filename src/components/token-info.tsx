@@ -23,10 +23,10 @@ const TokenInfo: FC = () => {
   const tokenDetails: TokenDetailProps[] = [
     { label: "Token Name", value: "Ecoho Gold", icon: <Coins size={20} /> },
     { label: "Symbol", value: "ECOHO", icon: <ShieldCheck size={20} /> },
-    { label: "Chain", value: "Binance Smart Chain (BEP-20)", icon: <ListChecks size={20} /> },
+    { label: "Chain", value: "Polygon (ERC-20)", icon: <ListChecks size={20} /> },
     { label: "Total Supply", value: "1,000,000,000 ECOHO", icon: <ShoppingCart size={20} /> },
     { label: "Circulating Supply", value: "400,000,000 ECOHO", icon: <Users size={20} /> },
-    { label: "Initial Liquidity", value: "$20 BNB equivalent", icon: <Droplet size={20} /> },
+    { label: "Initial Liquidity", value: "$20 MATIC equivalent", icon: <Droplet size={20} /> },
     { label: "Planned Launch", value: "Q2 2025", icon: <CalendarDays size={20} /> },
     { 
       label: "Contract Address", 

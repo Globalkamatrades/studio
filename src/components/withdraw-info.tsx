@@ -8,15 +8,15 @@ const WithdrawInfo: FC = () => {
   const steps = [
     {
       title: "Step 1: Use a Decentralized Exchange (DEX)",
-      description: "Go to a DEX like PancakeSwap where ECOHO is traded. You will need to connect your personal crypto wallet (e.g., MetaMask, Trust Wallet)."
+      description: "Go to a DEX on the Polygon network like QuickSwap where ECOHO is traded. You will need to connect your personal crypto wallet (e.g., MetaMask, Trust Wallet)."
     },
     {
       title: "Step 2: Swap ECOHO for a Major Cryptocurrency",
-      description: "Swap your ECOHO tokens for a more widely accepted cryptocurrency like BNB or a stablecoin (e.g., USDT, BUSD). This requires a liquidity pool to be available."
+      description: "Swap your ECOHO tokens for a more widely accepted cryptocurrency like MATIC or a stablecoin (e.g., USDT, USDC). This requires a liquidity pool to be available."
     },
     {
       title: "Step 3: Send to a Centralized Exchange (CEX)",
-      description: "Transfer the BNB or stablecoin from your personal wallet to an account on a centralized exchange that supports your local currency (e.g., Binance, Luno, VALR, Coinbase)."
+      description: "Transfer the MATIC or stablecoin from your personal wallet to an account on a centralized exchange that supports your local currency (e.g., Binance, Luno, VALR, Coinbase)."
     },
     {
       title: "Step 4: Sell for Fiat Currency",

@@ -29,7 +29,7 @@ We're excited to see what you can bring to the project. Here are some ways you c
 *   Use TypeScript.
 *   For styling, use Tailwind CSS and ShadCN UI components where possible.
 *   Genkit is used for AI-related features.
-*   Tokenomics: Total Supply: 1,000,000,000 ECOHO. Initial Liquidity: $20 BNB equivalent.
+*   Tokenomics: Total Supply: 1,000,000,000 ECOHO. Initial Liquidity: $20 MATIC equivalent.
 
 ## Areas for Contribution
 
