@@ -66,7 +66,7 @@ const ContactLinks: FC = () => {
 
   const SERVICE_ID = 'service_lpt3qnc';
   const TEMPLATE_ID = 'template_jqyu3xd';
-  const PUBLIC_KEY = 'YOUR_PUBLIC_KEY';
+  const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
   const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
   const handleRecaptchaChange = (value: string | null) => {
@@ -74,10 +74,10 @@ const ContactLinks: FC = () => {
   };
 
   const onSubmit = (data: FormData) => {
-    if (PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+    if (!PUBLIC_KEY || PUBLIC_KEY === 'YOUR_EMAILJS_PUBLIC_KEY') {
         toast({
           title: "Setup Required",
-          description: "EmailJS is not fully configured. Please update the Public Key in src/components/contact-links.tsx.",
+          description: "EmailJS is not fully configured. Please add `NEXT_PUBLIC_EMAILJS_PUBLIC_KEY` to your .env file.",
           variant: "destructive",
         });
         return;
@@ -183,11 +183,11 @@ const ContactLinks: FC = () => {
                         </Button>
                     </form>
                 </Form>
-                 {PUBLIC_KEY === 'YOUR_PUBLIC_KEY' && (
+                 {(!PUBLIC_KEY || PUBLIC_KEY === 'YOUR_PUBLIC_KEY') && (
                     <Alert variant="destructive" className="mt-4">
                         <AlertTitle>Action Required: Activate Contact Form</AlertTitle>
                         <AlertDescription>
-                          To make this form work, get your <strong>Public Key</strong> from your EmailJS account dashboard. Then, open the file <code>src/components/contact-links.tsx</code> and replace the placeholder value for `YOUR_PUBLIC_KEY`.
+                          To make this form work, get your <strong>Public Key</strong> from your EmailJS account dashboard. Then, add it to your <code>.env</code> file as <code>NEXT_PUBLIC_EMAILJS_PUBLIC_KEY</code>.
                         </AlertDescription>
                     </Alert>
                 )}

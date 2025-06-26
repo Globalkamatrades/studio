@@ -7,10 +7,10 @@ import SectionCard from '@/components/ui/section-card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AlertTriangle, Image as ImageIcon, Loader2, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { getRecentNftTransfersAction } from '@/lib/actions';
 
-const ALCHEMY_API_ENDPOINT_BASE = 'https://eth-mainnet.g.alchemy.com/v2/YOUR_ETHEREUM_ALCHEMY_API_KEY_HERE';
 const TARGET_TO_ADDRESS = "0x5c43B1eD97e52d009611D89b74fA829FE4ac56b1";
-const TARGET_CONTRACT_ADDRESSES = ["0x06012c8cf97BEaD5deAe237070F9587f8E7A266d"]; // CryptoKitties contract
+const TARGET_CONTRACT_ADDRESSES = ["0x06012c8cf97BEaD5deAe237070F9587f8E7A266d"];
 
 interface AlchemyTransfer {
   blockNum: string;
@@ -32,90 +32,23 @@ interface AlchemyTransfer {
   };
 }
 
-interface AlchemyApiResponse {
-  jsonrpc: string;
-  id: number;
-  result?: {
-    transfers: AlchemyTransfer[];
-  };
-  error?: {
-    code: number;
-    message: string;
-  };
-}
-
-async function getRecentNftTransfers(): Promise<AlchemyTransfer[]> {
-  if (ALCHEMY_API_ENDPOINT_BASE.includes('YOUR_ETHEREUM_ALCHEMY_API_KEY_HERE')) {
-    console.warn('Alchemy API key is a placeholder. NFT transfer data will not be fetched.');
-    return [];
-  }
-  const payload = {
-    jsonrpc: "2.0",
-    method: "alchemy_getAssetTransfers",
-    params: [
-      {
-        fromBlock: "0x0", // Fetching from the beginning of the chain, can be set to a more recent block like "latest"
-        toAddress: TARGET_TO_ADDRESS,
-        contractAddresses: TARGET_CONTRACT_ADDRESSES,
-        category: ["erc721", "erc1155"],
-        withMetadata: true,
-        excludeZeroValue: false, 
-        maxCount: "0xa", // Fetch 10 transfers
-      },
-    ],
-    id: 0,
-  };
-
-  try {
-    const response = await fetch(ALCHEMY_API_ENDPOINT_BASE, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-      cache: 'no-store',
-    });
-
-    if (!response.ok) {
-      const errorBody = await response.text();
-      console.error(`Alchemy API request failed with status ${response.status}: ${errorBody}`);
-      throw new Error(`Network response was not ok. Status: ${response.status}. Body: ${errorBody}`);
-    }
-
-    const result = (await response.json()) as AlchemyApiResponse;
-
-    if (result.error) {
-      console.error('Alchemy API Error:', result.error);
-      throw new Error(`Alchemy API Error: ${result.error.message} (Code: ${result.error.code})`);
-    }
-
-    return result.result?.transfers || [];
-  } catch (error) {
-    console.error('Failed to fetch NFT transfers from Alchemy (Ethereum):', error);
-    throw error;
-  }
-}
 
 const EthereumNftDexTrades: FC = () => {
   const [transfers, setTransfers] = useState<AlchemyTransfer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isPlaceholderKey, setIsPlaceholderKey] = useState(false);
 
   useEffect(() => {
-    if (ALCHEMY_API_ENDPOINT_BASE.includes('YOUR_ETHEREUM_ALCHEMY_API_KEY_HERE')) {
-      setIsPlaceholderKey(true);
-      setError("Alchemy API key for Ethereum is missing. Please add it to .env and update the component to fetch live data.");
-      setIsLoading(false);
-      return;
-    }
-
     async function fetchData() {
       setIsLoading(true);
       setError(null);
       try {
-        const data = await getRecentNftTransfers();
-        setTransfers(data);
+        const result = await getRecentNftTransfersAction();
+        if (result.error) {
+          setError(result.error);
+        } else {
+          setTransfers(result.transfers || []);
+        }
       } catch (err: any) {
         setError(err.message || 'Failed to load NFT transfers.');
         console.error(err);
@@ -153,12 +86,14 @@ const EthereumNftDexTrades: FC = () => {
       <p className="text-xs text-muted-foreground mb-1">
         Displaying recent ERC721/ERC1155 NFT transfers for contract(s) <code className="text-xs">{TARGET_CONTRACT_ADDRESSES.join(', ')}</code> (e.g., CryptoKitties) sent to the address <code className="text-xs">{TARGET_TO_ADDRESS}</code> on the Ethereum mainnet.
       </p>
-      {isPlaceholderKey && (
+      
+      {error && error.includes("not configured on the server") && (
          <div className="mb-3 p-3 bg-yellow-500/10 border border-yellow-500/30 text-yellow-700 rounded-md text-sm flex items-center gap-2">
             <AlertTriangle size={18} />
-            <span>An Alchemy API key for Ethereum mainnet is required to fetch live data. Please update the placeholder in <code>src/components/ethereum-nft-dex-trades.tsx</code>.</span>
+            <span>An Alchemy API key for Ethereum mainnet is required. Please set <code>ETHEREUM_ALCHEMY_API_KEY</code> in your <code>.env</code> file.</span>
          </div>
       )}
+
       <p className="text-xs text-muted-foreground mb-3">
         Data powered by Alchemy.
       </p>
@@ -170,7 +105,7 @@ const EthereumNftDexTrades: FC = () => {
         </div>
       )}
 
-      {!isLoading && error && !isPlaceholderKey && ( 
+      {!isLoading && error && !error.includes("not configured on the server") && ( 
         <div className="p-4 bg-destructive/10 border border-destructive/30 text-destructive rounded-md text-sm flex items-center gap-2">
           <AlertTriangle size={20} className="text-destructive" />
           <div>
