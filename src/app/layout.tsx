@@ -6,6 +6,12 @@ import { Toaster } from "@/components/ui/toaster";
 export const metadata: Metadata = {
   title: 'Ecoho Gold (ECOHO)',
   description: "Ecoho Gold is Africa's first commodity-backed cryptocurrency powered by gold, platinum, uranium, and oil. Built on Binance Smart Chain.",
+  verification: {
+    google: "9TOOqs1532qYe39Y6XjD9tXxpPclVBd9-HiEeqU_dC4",
+    other: {
+      "zoho-verification": "zb78072665.zmverify.zoho.com",
+    },
+  },
 };
 
 export default function RootLayout({
