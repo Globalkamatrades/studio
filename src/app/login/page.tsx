@@ -28,8 +28,23 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 const GoogleIcon = () => (
-    <svg role="img" viewBox="0 0 24 24" className="h-4 w-4 mr-2">
-        <path fill="currentColor" d="M12.48 10.92v3.28h7.84c-.27 1.44-1.14 3.73-4.01 3.73-2.43 0-4.4-2.02-4.4-4.54s1.97-4.54 4.4-4.54c1.35 0 2.33.58 2.86 1.06l2.28-2.28C17.13 6.1 14.91 5 12.48 5c-3.73 0-6.75 3.02-6.75 6.75s3.02 6.75 6.75 6.75c3.36 0 5.96-2.28 5.96-6.12 0-.45-.05-.9-.12-1.34H12.48z"></path>
+    <svg role="img" viewBox="0 0 24 24" className="h-5 w-5 mr-2">
+      <path
+        fill="#4285F4"
+        d="M22.045 12.158c0-.82-.073-1.614-.21-2.382H12v4.494h5.64c-.244 1.46-1.025 2.78-2.296 3.65v2.894h3.71c2.174-2.002 3.42-4.936 3.42-8.656Z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 22c2.72 0 5.01-.893 6.68-2.42l-3.71-2.895c-.9.605-2.07.96-3.28.96-2.58 0-4.77-1.74-5.55-4.08H1.555v2.984C3.12 19.944 7.23 22 12 22Z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M6.45 13.64C6.2 12.943 6.08 12.2 6.08 11.4s.12-1.543.45-2.24l-3.9-3.03C1.65 7.9 1 9.58 1 11.4c0 1.82.65 3.5 1.65 4.87l3.8-2.63Z"
+      />
+      <path
+        fill="#EA4335"
+        d="M12 5.92c1.47 0 2.75.507 3.77 1.45l3.29-3.29C17.003 2.18 14.72.998 12 .998 7.23.998 3.12 3.055 1.55 6.15l3.9 3.03c.78-2.34 2.97-4.08 5.55-4.08Z"
+      />
     </svg>
 );
 
@@ -187,7 +202,7 @@ const LoginPage: NextPage = () => {
               </div>
             </div>
 
-            <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={anyPending}>
+            <Button variant="outline" className="w-full bg-card text-card-foreground hover:bg-card/90" onClick={handleGoogleSignIn} disabled={anyPending}>
               {isGooglePending ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
