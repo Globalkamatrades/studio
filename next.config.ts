@@ -34,7 +34,7 @@ const nextConfig: NextConfig = {
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "img-src 'self' https://placehold.co https://kamaincprofile.com data:",
       "font-src 'self' https://fonts.gstatic.com",
-      "connect-src 'self' https://eth-mainnet.g.alchemy.com https://developer.api.us.stg.walmart.com wss://blockchain.googleapis.com", // For Alchemy, Walmart & Blockchain Node Engine APIs
+      "connect-src 'self' https://eth-mainnet.g.alchemy.com https://developer.api.us.stg.walmart.com https://blockchain.googleapis.com wss://blockchain.googleapis.com https://json-rpc.acgrzmbqr4faszir326y2oit0.blockchainnodeengine.com wss://ws.acgrzmbqr4faszir326y2oit0.blockchainnodeengine.com", // For Alchemy, Walmart & Blockchain Node Engine APIs
       "frame-src 'self' https://link.radioking.com",
       "object-src 'none'",
       "form-action 'self'",
