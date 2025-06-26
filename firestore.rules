@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Example: Users can only read and write their own data.
+    // The {userId} wildcard matches the authenticated user's ID.
+    match /users/{userId}/{documents=**} {
+      allow read, update, delete: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null;
+    }
+
+    // Example: A 'public_content' collection that anyone can read,
+    // but only authenticated users can create new content.
+    match /public_content/{docId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null;
+    }
+
+    // By default, deny all reads and writes to other collections.
+    // This is a critical security practice.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
