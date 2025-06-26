@@ -6,10 +6,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import emailjs from '@emailjs/browser';
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useRef } from 'react';
+import ReCAPTCHA from "react-google-recaptcha";
 import { useToast } from "@/hooks/use-toast";
 import SectionCard from '@/components/ui/section-card';
-import { Mail, Send, MessageSquare, Twitter, Phone, Loader2, CheckCircle } from 'lucide-react';
+import { Mail, Send, MessageSquare, Twitter, Phone, Loader2, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -51,6 +52,8 @@ type FormData = z.infer<typeof formSchema>;
 const ContactLinks: FC = () => {
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
+  const [isVerified, setIsVerified] = useState(false);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -61,10 +64,14 @@ const ContactLinks: FC = () => {
     },
   });
 
-  // IMPORTANT: Replace with your actual EmailJS IDs
   const SERVICE_ID = 'service_lpt3qnc';
-  const TEMPLATE_ID = 'template_jqyu3xd'; // Updated with your ID
-  const PUBLIC_KEY = 'YOUR_PUBLIC_KEY';   // Replace with your EmailJS Public Key
+  const TEMPLATE_ID = 'template_jqyu3xd';
+  const PUBLIC_KEY = 'YOUR_PUBLIC_KEY';
+  const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+
+  const handleRecaptchaChange = (value: string | null) => {
+    setIsVerified(!!value);
+  };
 
   const onSubmit = (data: FormData) => {
     if (PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
@@ -75,10 +82,19 @@ const ContactLinks: FC = () => {
         });
         return;
     }
+    
+    if (!isVerified) {
+      toast({
+        title: "Please complete the reCAPTCHA",
+        description: "You must prove you are not a robot before sending the message.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     const templateParams = {
         name: data.name,
-        email: data.email, // This will be used for the {{email}} 'Reply To' field
+        email: data.email,
         message: data.message,
     };
 
@@ -92,6 +108,8 @@ const ContactLinks: FC = () => {
             variant: "success",
           });
           form.reset();
+          recaptchaRef.current?.reset();
+          setIsVerified(false);
         })
         .catch((err) => {
           console.error('FAILED...', err);
@@ -116,15 +134,11 @@ const ContactLinks: FC = () => {
             Have questions or want to get involved? Send us a message directly or reach out through one of our channels.
         </p>
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-start">
-            {/* Left side: Form */}
             <div className="space-y-4">
                 <h3 className="font-headline text-xl text-card-foreground">Send a Direct Message</h3>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                        <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
+                        <FormField control={form.control} name="name" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Your Name</FormLabel>
                                 <FormControl>
@@ -132,12 +146,8 @@ const ContactLinks: FC = () => {
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
+                        )}/>
+                        <FormField control={form.control} name="email" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Your Email (for replies)</FormLabel>
                                 <FormControl>
@@ -145,12 +155,8 @@ const ContactLinks: FC = () => {
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="message"
-                            render={({ field }) => (
+                        )}/>
+                        <FormField control={form.control} name="message" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Message</FormLabel>
                                 <FormControl>
@@ -158,28 +164,43 @@ const ContactLinks: FC = () => {
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
-                            )}
-                        />
+                        )}/>
+                        
+                        {RECAPTCHA_SITE_KEY && (
+                          <div className="flex justify-center pt-2">
+                             <ReCAPTCHA
+                                ref={recaptchaRef}
+                                sitekey={RECAPTCHA_SITE_KEY}
+                                onChange={handleRecaptchaChange}
+                                theme="dark"
+                              />
+                          </div>
+                        )}
+
                         <Button type="submit" disabled={isPending} className="w-full sm:w-auto">
-                            {isPending ? (
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            ) : (
-                            <Mail size={20} className="mr-2" />
-                            )}
+                            {isPending ? (<Loader2 className="mr-2 h-4 w-4 animate-spin" />) : (<Mail size={20} className="mr-2" />)}
                             {isPending ? 'Sending...' : 'Send Message'}
                         </Button>
                     </form>
                 </Form>
                  {PUBLIC_KEY === 'YOUR_PUBLIC_KEY' && (
-                    <Alert variant="destructive">
+                    <Alert variant="destructive" className="mt-4">
                         <AlertTitle>Action Required: Activate Contact Form</AlertTitle>
                         <AlertDescription>
                           To make this form work, get your <strong>Public Key</strong> from your EmailJS account dashboard. Then, open the file <code>src/components/contact-links.tsx</code> and replace the placeholder value for `YOUR_PUBLIC_KEY`.
                         </AlertDescription>
                     </Alert>
                 )}
+                 {!RECAPTCHA_SITE_KEY && (
+                    <Alert variant="destructive" className="mt-4">
+                        <Shield className="h-4 w-4" />
+                        <AlertTitle>Action Required: Activate Spam Protection</AlertTitle>
+                        <AlertDescription>
+                          The reCAPTCHA Site Key is missing. Please add it to your <code>.env</code> file as <code>NEXT_PUBLIC_RECAPTCHA_SITE_KEY</code> to enable the contact form.
+                        </AlertDescription>
+                    </Alert>
+                )}
             </div>
-            {/* Right side: Other contact links */}
             <div className="space-y-4">
                 <h3 className="font-headline text-xl text-card-foreground">Other Channels</h3>
                 <ul className="space-y-2">
