@@ -1,16 +1,25 @@
 {
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "storage": {
+    "rules": "storage.rules"
+  },
   "hosting": {
     "source": ".",
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "app": {
+          "backendId": "ecoho-landing-ai",
+          "region": "asia-southeast1"
+        }
+      }
     ]
-  },
-  "storage": {
-    "rules": "storage.rules"
-  },
-  "firestore": {
-    "rules": "firestore.rules"
   }
 }
