@@ -37,7 +37,7 @@ const MarketAnalytics: FC = () => {
   const contractAddressPartial = "0x...a82b"; // Placeholder style from screenshot
 
   // Placeholder link - update when full contract address is available
-  const explorerLink = `https://pancakeswap.finance/info/token/YOUR_ECOHO_CONTRACT_ADDRESS_HERE`;
+  const explorerLink = `https://etherscan.io/token/YOUR_ECOHO_CONTRACT_ADDRESS_HERE`;
 
 
   return (
@@ -53,7 +53,7 @@ const MarketAnalytics: FC = () => {
           size="sm"
           className="text-xs"
           icon={<ExternalLink size={14} />}
-          title="View on a token explorer (e.g., PancakeSwap Info, BscScan). Needs full contract address."
+          title="View on a token explorer (e.g., Etherscan). Needs full contract address."
         >
           View on Explorer
         </ButtonLink>

@@ -129,7 +129,7 @@ const NftsPage: NextPage = () => {
           </CardHeader>
           <CardContent>
             <p className="text-card-foreground/90 mb-2">
-              All official Ecoho Gold NFTs are verifiable on the Polygon network.
+              All official Ecoho Gold NFTs are verifiable on the Ethereum network.
               Ownership often comes with exclusive benefits like early access to features, ECOHO token airdrops, and access to special community events.
             </p>
             <p className="text-sm text-muted-foreground">

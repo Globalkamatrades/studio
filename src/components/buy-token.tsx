@@ -4,15 +4,15 @@ import ButtonLink from '@/components/ui/button-link';
 import { CircleDollarSign, ExternalLink } from 'lucide-react';
 
 const BuyToken: FC = () => {
-  const dexLink = "https://quickswap.exchange/#/swap?outputCurrency=0xYOUR_TOKEN_ADDRESS"; // Replace with actual address
+  const dexLink = "https://app.uniswap.org/#/swap?outputCurrency=0xYOUR_TOKEN_ADDRESS_HERE"; // Replace with actual address
 
   return (
     <SectionCard title="Buy ECOHO Token" icon={<CircleDollarSign className="text-primary h-8 w-8" />}>
       <p className="mb-4 text-lg">
-        Acquire ECOHO tokens easily and securely on a leading decentralized exchange on the Polygon network.
+        Acquire ECOHO tokens easily and securely on a leading decentralized exchange on the Ethereum network.
       </p>
       <p className="mb-6 text-xs text-muted-foreground">
-        Transactions on the Polygon network are known for being fast and having very low gas fees.
+        As the most secure and decentralized network, Ethereum is the home of DeFi. Note that transactions may incur higher gas fees.
       </p>
       <ButtonLink
         href={dexLink}

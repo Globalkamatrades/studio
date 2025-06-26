@@ -16,7 +16,7 @@ const Header: FC = () => {
               <h1 className="font-headline text-4xl md:text-5xl font-bold cursor-pointer">Ecoho Gold (ECOHO)</h1>
             </Link>
             <p className="font-body text-lg md:text-xl mt-2 text-neutral-300">
-              Africa's Wealth, Tokenized. Built on the Polygon Network.
+              Africa's Wealth, Tokenized. Built on the Ethereum Network.
             </p>
           </div>
           <nav className="flex flex-wrap justify-center md:justify-end gap-2">

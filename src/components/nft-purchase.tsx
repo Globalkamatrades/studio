@@ -114,7 +114,7 @@ const NftPurchase: FC = () => {
           )}
           
            <p className="text-xs text-muted-foreground mb-2">
-            If purchasing NFTs on the Polygon network, gas fees are typically very low.
+            When purchasing NFTs on the Ethereum network, be mindful of gas fees, which can fluctuate.
           </p>
           <ButtonLink
             href={openSeaLink}

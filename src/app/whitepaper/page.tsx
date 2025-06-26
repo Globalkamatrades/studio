@@ -64,7 +64,7 @@ const WhitepaperPage: NextPage = () => {
   `;
 
   const content = {
-    "1. Introduction": "Ecoho Gold is a decentralized, community-powered cryptocurrency built on the Polygon network (ERC-20). It is designed to empower creators, investors, and eco-conscious communities through tokenized real-world value, music NFTs, and Web3 finance tools.",
+    "1. Introduction": "Ecoho Gold is a decentralized, community-powered cryptocurrency built on the Ethereum network (ERC-20). It is designed to empower creators, investors, and eco-conscious communities through tokenized real-world value, music NFTs, and Web3 finance tools.",
     "2. Vision & Mission": "Our mission is to create a transparent and powerful digital economy where users can earn, trade, and participate in real-world utility ecosystems backed by music, digital art, and environmental projects.",
     "3. Key Features": [
       "Ecoho Gold Token (ECOHO): ERC-20 utility token with real use in staking, governance, and rewards.",
@@ -74,7 +74,7 @@ const WhitepaperPage: NextPage = () => {
     ],
     "4. Tokenomics": [
       "Total Supply: 1,000,000,000 ECOHO",
-      "Initial Liquidity: $20 MATIC equivalent",
+      "Initial Liquidity: $20 ETH equivalent",
       "Distribution: 40% Public Sale, 20% Rewards, 15% Team, 15% Liquidity, 10% Marketing"
     ],
     "5. Roadmap": [
@@ -84,7 +84,7 @@ const WhitepaperPage: NextPage = () => {
       "2026: DAO, Bridges, Carbon Credit Trading"
     ],
     "6. Smart Contract Details": [
-      "Network: Polygon",
+      "Network: Ethereum",
       "Standard: ERC-20",
       "Contract: To be announced after deployment"
     ],
@@ -99,7 +99,7 @@ const WhitepaperPage: NextPage = () => {
 
   const legalNoticeTitle = "9. Legal Notice & Regulations";
   const legalNoticeContent = [
-    "Ecoho Gold (ECOHO) is a decentralized cryptocurrency token deployed on the Polygon Network as an ERC-20 asset. We do not act as a bank, investment service, or money transmitter. Ecoho Gold complies with decentralized finance (DeFi) principles and does not hold, manage, or store user funds. All token exchanges must be conducted through decentralized platforms.",
+    "Ecoho Gold (ECOHO) is a decentralized cryptocurrency token deployed on the Ethereum Network as an ERC-20 asset. We do not act as a bank, investment service, or money transmitter. Ecoho Gold complies with decentralized finance (DeFi) principles and does not hold, manage, or store user funds. All token exchanges must be conducted through decentralized platforms.",
     "By using this token or engaging in any activity involving ECOHO, you agree to comply with the laws of your jurisdiction and acknowledge that criminal, fraudulent, or deceptive actions (such as money laundering, scamming, identity theft, phishing, or rug pulls) are strictly prohibited and may be reported to local authorities.",
     "Ecoho Gold reserves the right to cooperate with regulatory bodies and law enforcement agencies to report any suspicious or illegal activity. Blockchain activity is traceable, transparent, and can be used in legal investigations.",
     "<strong>Warning:</strong> Engaging in fraudulent activity using ECOHO may result in permanent wallet blacklisting, legal prosecution, or civil penalties in accordance with anti-money laundering (AML) and counter-terrorism financing (CTF) laws globally."
