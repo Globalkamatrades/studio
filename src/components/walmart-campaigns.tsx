@@ -1,7 +1,7 @@
 
 import type { FC } from 'react';
 import { randomUUID } from 'crypto';
-import { createSign } from 'crypto';
+import { createSign, createPrivateKey } from 'crypto';
 import SectionCard from '@/components/ui/section-card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AlertTriangle, Store } from 'lucide-react';
@@ -35,13 +35,20 @@ async function getWalmartCampaigns(): Promise<{ campaigns?: Campaign[], error?: 
   const stringToSign = `${consumerId}\n${timestamp}\n${keyVersion}\n`;
 
   try {
-    // The private key from .env may have escaped newlines. Replace them to form a valid PEM key.
-    const privateKey = rawPrivateKey.replace(/\\n/g, '\n');
+    // The private key from .env must be a single line with `\n` for newlines.
+    // This replaces the literal `\n` characters with actual newline characters.
+    const privateKeyString = rawPrivateKey.replace(/\\n/g, '\n');
+
+    // Create a KeyObject. This is a more robust way to handle the key
+    // and provides better error messages if the key format is incorrect.
+    // The key should be in PKCS#8 format.
+    const privateKeyObject = createPrivateKey(privateKeyString);
 
     const signer = createSign('RSA-SHA256');
     signer.update(stringToSign);
     signer.end();
-    const signature = signer.sign(privateKey, 'base64');
+    // Use the KeyObject for signing.
+    const signature = signer.sign(privateKeyObject, 'base64');
 
     const headers = {
       'Content-Type': 'application/json',
@@ -65,7 +72,7 @@ async function getWalmartCampaigns(): Promise<{ campaigns?: Campaign[], error?: 
     if (!response.ok) {
         const errorBody = await response.text();
         console.error(`Walmart API Error: ${response.status} ${response.statusText}`, errorBody);
-        return { error: `Failed to fetch from Walmart API. Status: ${response.status}. Please check your credentials and API permissions.` };
+        return { error: `Failed to fetch from Walmart API. Status: ${response.status}. Please check your credentials, API permissions, and ensure the private key format is correct.` };
     }
 
     const data = await response.json();
@@ -76,6 +83,10 @@ async function getWalmartCampaigns(): Promise<{ campaigns?: Campaign[], error?: 
 
   } catch (err: any) {
     console.error('Error during Walmart API call:', err);
+    // Provide a more specific error message if it's a key format issue.
+    if (err.code === 'ERR_OSSL_PEM_NO_START_LINE' || err.code === 'ERR_INVALID_ARG_TYPE' || err.message.includes('DECODER')) {
+        return { error: `The private key is not in a valid PEM format. Please ensure WALMART_PRIVATE_KEY in your .env file is a correctly formatted PKCS#8 key. Original error: ${err.message}` };
+    }
     return { error: err.message || 'An unknown error occurred.' };
   }
 }
@@ -94,7 +105,7 @@ const WalmartCampaigns: FC = async () => {
           <div>
             <p className="font-semibold">Could not load campaign data</p>
             <p>{error}</p>
-            <p className="text-xs mt-1">Please ensure WALMART_CONSUMER_ID, WALMART_PRIVATE_KEY, WALMART_KEY_VERSION, WALMART_ADVERTISER_ID, and WALMART_BEARER_TOKEN are set correctly in your `.env` file. The private key must be a single line in the .env file with `\n` for newlines.</p>
+            <p className="text-xs mt-1">Please ensure WALMART_CONSUMER_ID, WALMART_PRIVATE_KEY, WALMART_KEY_VERSION, WALMART_ADVERTISER_ID, and WALMART_BEARER_TOKEN are set correctly in your `.env` file. The private key must be a single line in the .env file with `\n` for newlines and be in the PKCS#8 format.</p>
           </div>
         </div>
       )}
