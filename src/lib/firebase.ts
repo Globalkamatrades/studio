@@ -14,9 +14,20 @@ const firebaseConfig: FirebaseOptions = {
 };
 
 // Initialize Firebase for SSR
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-const storage = getStorage(app);
-const auth = getAuth(app);
-const db = getFirestore(app);
+let app;
+if (!getApps().length) {
+  if (firebaseConfig.apiKey) {
+    app = initializeApp(firebaseConfig);
+  } else {
+    console.error("Firebase config is missing. Please check your .env file.");
+  }
+} else {
+  app = getApp();
+}
+
+const storage = app ? getStorage(app) : undefined;
+const auth = app ? getAuth(app) : undefined;
+const db = app ? getFirestore(app) : undefined;
+
 
 export { app, storage, auth, db };
