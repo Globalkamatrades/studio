@@ -76,12 +76,11 @@ const ContactLinks: FC = () => {
         return;
     }
 
-    // The 'data' object now contains { name, email, message }, which matches the template.
-    // The {{time}} variable in your template can be added automatically within the EmailJS editor.
     const templateParams = {
         name: data.name,
         from_email: data.email, // Standard reply_to field
         message: data.message,
+        name_initial: data.name.charAt(0).toUpperCase(),
     };
 
     startTransition(() => {
