@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { FC } from 'react';
@@ -39,7 +40,6 @@ const ContactLinkItem: FC<ContactLinkItemProps> = ({ href, icon, label, handle }
   </li>
 );
 
-// Updated schema to match the email template variables {{name}} and {{message}}
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -63,14 +63,14 @@ const ContactLinks: FC = () => {
 
   // IMPORTANT: Replace with your actual EmailJS IDs
   const SERVICE_ID = 'service_lpt3qnc';
-  const TEMPLATE_ID = 'YOUR_TEMPLATE_ID'; // Replace with your EmailJS Template ID
+  const TEMPLATE_ID = 'template_jqyu3xd'; // Updated with your ID
   const PUBLIC_KEY = 'YOUR_PUBLIC_KEY';   // Replace with your EmailJS Public Key
 
   const onSubmit = (data: FormData) => {
-    if (TEMPLATE_ID === 'YOUR_TEMPLATE_ID' || PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+    if (PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
         toast({
           title: "Setup Required",
-          description: "EmailJS is not fully configured. Please update Template ID and Public Key in src/components/contact-links.tsx.",
+          description: "EmailJS is not fully configured. Please update the Public Key in src/components/contact-links.tsx.",
           variant: "destructive",
         });
         return;
@@ -78,9 +78,8 @@ const ContactLinks: FC = () => {
 
     const templateParams = {
         name: data.name,
-        from_email: data.email, // Standard reply_to field
+        email: data.email, // This will be used for the {{email}} 'Reply To' field
         message: data.message,
-        name_initial: data.name.charAt(0).toUpperCase(),
     };
 
     startTransition(() => {
@@ -124,7 +123,7 @@ const ContactLinks: FC = () => {
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         <FormField
                             control={form.control}
-                            name="name" // Updated from 'from_name'
+                            name="name"
                             render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Your Name</FormLabel>
@@ -137,7 +136,7 @@ const ContactLinks: FC = () => {
                         />
                         <FormField
                             control={form.control}
-                            name="email" // Updated from 'from_email'
+                            name="email"
                             render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Your Email (for replies)</FormLabel>
@@ -171,11 +170,11 @@ const ContactLinks: FC = () => {
                         </Button>
                     </form>
                 </Form>
-                 {TEMPLATE_ID === 'YOUR_TEMPLATE_ID' && (
+                 {PUBLIC_KEY === 'YOUR_PUBLIC_KEY' && (
                     <Alert variant="destructive">
                         <AlertTitle>Action Required: Activate Contact Form</AlertTitle>
                         <AlertDescription>
-                          To make this form work, get your <strong>Template ID</strong> and <strong>Public Key</strong> from your EmailJS account dashboard. Then, open the file <code>src/components/contact-links.tsx</code> and replace the placeholder values.
+                          To make this form work, get your <strong>Public Key</strong> from your EmailJS account dashboard. Then, open the file <code>src/components/contact-links.tsx</code> and replace the placeholder value for `YOUR_PUBLIC_KEY`.
                         </AlertDescription>
                     </Alert>
                 )}
