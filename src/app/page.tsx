@@ -14,6 +14,7 @@ import NftPurchase from '@/components/nft-purchase';
 import MarketAnalytics from '@/components/market-analytics';
 import EthereumNftDexTrades from '@/components/ethereum-nft-dex-trades';
 import RadioPlayer from '@/components/radio-player';
+import WalmartCampaigns from '@/components/walmart-campaigns';
 
 export default function HomePage() {
   return (
@@ -65,6 +66,10 @@ export default function HomePage() {
 
           <section>
             <EthereumNftDexTrades />
+          </section>
+
+          <section>
+            <WalmartCampaigns />
           </section>
           
           <section>
