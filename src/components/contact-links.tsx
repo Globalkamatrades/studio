@@ -1,4 +1,3 @@
-
 "use client";
 
 import type { FC } from 'react';
@@ -166,8 +165,10 @@ const ContactLinks: FC = () => {
                 </Form>
                  {TEMPLATE_ID === 'YOUR_TEMPLATE_ID' && (
                     <Alert variant="destructive">
-                        <AlertTitle>Action Required</AlertTitle>
-                        <AlertDescription>The contact form is not yet active. The site developer needs to add the EmailJS Template ID and Public Key to the code.</AlertDescription>
+                        <AlertTitle>Action Required: Activate Contact Form</AlertTitle>
+                        <AlertDescription>
+                          To make this form work, get your <strong>Template ID</strong> and <strong>Public Key</strong> from your EmailJS account dashboard. Then, open the file <code>src/components/contact-links.tsx</code> and replace the placeholder values.
+                        </AlertDescription>
                     </Alert>
                 )}
             </div>
