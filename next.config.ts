@@ -28,14 +28,14 @@ const nextConfig: NextConfig = {
   async headers() {
     const cspDirectives = [
       "default-src 'self'",
-      // Next.js often requires 'unsafe-inline' for styles and 'unsafe-eval' for scripts in dev.
-      // For production, consider using nonces with Next.js's CSP support for stricter policies.
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      // reCAPTCHA requires 'www.google.com' and 'www.gstatic.com' for scripts.
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com https://www.gstatic.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "img-src 'self' https://placehold.co https://kamaincprofile.com data:",
       "font-src 'self' https://fonts.gstatic.com",
-      "connect-src 'self' https://eth-mainnet.g.alchemy.com https://developer.api.us.stg.walmart.com https://blockchain.googleapis.com wss://blockchain.googleapis.com https://json-rpc.acgrzmbqr4faszir326y2oit0.blockchainnodeengine.com wss://ws.acgrzmbqr4faszir326y2oit0.blockchainnodeengine.com", // For Alchemy, Walmart & Blockchain Node Engine APIs
-      "frame-src 'self' https://link.radioking.com",
+      "connect-src 'self' https://eth-mainnet.g.alchemy.com https://developer.api.us.stg.walmart.com https://blockchain.googleapis.com wss://blockchain.googleapis.com", 
+      // reCAPTCHA requires 'www.google.com' for its iframe.
+      "frame-src 'self' https://link.radioking.com https://www.google.com",
       "object-src 'none'",
       "form-action 'self'",
       "base-uri 'self'",

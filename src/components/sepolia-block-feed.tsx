@@ -6,10 +6,9 @@ import { useState, useEffect, useRef } from 'react';
 import SectionCard from '@/components/ui/section-card';
 import { Cuboid, Signal, Zap, ZapOff } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertTriangle } from 'lucide-react';
 
-// This is the WebSocket URL for the Sepolia testnet.
-// For production, the API key should be stored securely in environment variables.
-const SEPOLIA_WSS_URL = 'wss://blockchain.googleapis.com/v1/projects/ecoho-landing-ai/locations/asia-east1/endpoints/ethereum-sepolia/rpc?key=AIzaSyBk-uXNTNiXB5miuzmgffpLGi39Kr9sCoo';
 
 interface BlockHeader {
   number: string;
@@ -22,8 +21,17 @@ const SepoliaBlockFeed: FC = () => {
   const [connectionStatus, setConnectionStatus] = useState<'Connecting' | 'Connected' | 'Disconnected' | 'Error'>('Connecting');
   const ws = useRef<WebSocket | null>(null);
 
+  // This URL is now safely exposed to the client via a NEXT_PUBLIC_ prefixed environment variable
+  const SEPOLIA_WSS_URL = process.env.NEXT_PUBLIC_SEPOLIA_WSS_URL;
+
   useEffect(() => {
-    // Prevent creating multiple connections
+    // If the URL is not configured, don't attempt to connect.
+    if (!SEPOLIA_WSS_URL) {
+        setConnectionStatus('Error');
+        return;
+    }
+
+    // Prevent creating multiple connections on re-renders
     if (ws.current) return;
     
     ws.current = new WebSocket(SEPOLIA_WSS_URL);
@@ -68,7 +76,7 @@ const SepoliaBlockFeed: FC = () => {
       ws.current?.close();
       ws.current = null;
     };
-  }, []);
+  }, [SEPOLIA_WSS_URL]);
 
   const getStatusIndicator = () => {
     switch (connectionStatus) {
@@ -93,29 +101,39 @@ const SepoliaBlockFeed: FC = () => {
         </p>
         {getStatusIndicator()}
       </div>
-      
-      <div className="p-4 border rounded-lg bg-card/50 min-h-[200px] shadow-inner">
-        {latestBlocks.length > 0 ? (
-          <ul className="space-y-3">
-            {latestBlocks.map(block => (
-              <li key={block.hash} className="flex items-center gap-4 p-2 bg-background/50 rounded-md animate-in fade-in-0 slide-in-from-top-2">
-                <Cuboid className="text-primary" size={24}/>
-                <div>
-                  <p className="font-semibold text-card-foreground">Block #{block.number}</p>
-                  <p className="text-xs text-muted-foreground font-mono truncate" title={block.hash}>Hash: {block.hash}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
-            <Signal size={40} className="mb-2"/>
-            <p>Waiting for new blocks...</p>
-            {connectionStatus === 'Connecting' && <p className="text-sm">Establishing connection to Sepolia...</p>}
-            {connectionStatus === 'Error' && <p className="text-sm text-destructive">Could not establish connection. Check API Key & CSP.</p>}
-          </div>
-        )}
-      </div>
+
+      {!SEPOLIA_WSS_URL ? (
+        <Alert variant="destructive">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>Configuration Missing</AlertTitle>
+          <AlertDescription>
+            The WebSocket URL is not configured. Please set <code>NEXT_PUBLIC_SEPOLIA_WSS_URL</code> in your <code>.env</code> file.
+          </AlertDescription>
+        </Alert>
+      ) : (
+        <div className="p-4 border rounded-lg bg-card/50 min-h-[200px] shadow-inner">
+          {latestBlocks.length > 0 ? (
+            <ul className="space-y-3">
+              {latestBlocks.map(block => (
+                <li key={block.hash} className="flex items-center gap-4 p-2 bg-background/50 rounded-md animate-in fade-in-0 slide-in-from-top-2">
+                  <Cuboid className="text-primary" size={24}/>
+                  <div>
+                    <p className="font-semibold text-card-foreground">Block #{block.number}</p>
+                    <p className="text-xs text-muted-foreground font-mono truncate" title={block.hash}>Hash: {block.hash}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+              <Signal size={40} className="mb-2"/>
+              <p>Waiting for new blocks...</p>
+              {connectionStatus === 'Connecting' && <p className="text-sm">Establishing connection to Sepolia...</p>}
+              {connectionStatus === 'Error' && <p className="text-sm text-destructive">Could not establish connection. Check API Key & CSP.</p>}
+            </div>
+          )}
+        </div>
+      )}
       <p className="text-xs text-muted-foreground mt-2 text-right">Powered by Google Cloud Blockchain Node Engine</p>
     </SectionCard>
   );
