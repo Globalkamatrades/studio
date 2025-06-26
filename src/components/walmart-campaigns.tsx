@@ -18,12 +18,12 @@ interface Campaign {
 // Function to fetch data, must be on the server
 async function getWalmartCampaigns(): Promise<{ campaigns?: Campaign[], error?: string }> {
   const consumerId = process.env.WALMART_CONSUMER_ID;
-  const privateKey = process.env.WALMART_PRIVATE_KEY;
+  const rawPrivateKey = process.env.WALMART_PRIVATE_KEY;
   const keyVersion = process.env.WALMART_KEY_VERSION;
   const advertiserId = process.env.WALMART_ADVERTISER_ID;
   const bearerToken = process.env.WALMART_BEARER_TOKEN;
 
-  if (!consumerId || !privateKey || !keyVersion || !advertiserId || !bearerToken) {
+  if (!consumerId || !rawPrivateKey || !keyVersion || !advertiserId || !bearerToken) {
     return { error: "Walmart API credentials are not set in the environment variables." };
   }
 
@@ -35,6 +35,9 @@ async function getWalmartCampaigns(): Promise<{ campaigns?: Campaign[], error?: 
   const stringToSign = `${consumerId}\n${timestamp}\n${keyVersion}\n`;
 
   try {
+    // The private key from .env may have escaped newlines. Replace them to form a valid PEM key.
+    const privateKey = rawPrivateKey.replace(/\\n/g, '\n');
+
     const signer = createSign('RSA-SHA256');
     signer.update(stringToSign);
     signer.end();
@@ -91,7 +94,7 @@ const WalmartCampaigns: FC = async () => {
           <div>
             <p className="font-semibold">Could not load campaign data</p>
             <p>{error}</p>
-            <p className="text-xs mt-1">Please ensure WALMART_CONSUMER_ID, WALMART_PRIVATE_KEY, WALMART_KEY_VERSION, WALMART_ADVERTISER_ID, and WALMART_BEARER_TOKEN are set correctly in your `.env` file.</p>
+            <p className="text-xs mt-1">Please ensure WALMART_CONSUMER_ID, WALMART_PRIVATE_KEY, WALMART_KEY_VERSION, WALMART_ADVERTISER_ID, and WALMART_BEARER_TOKEN are set correctly in your `.env` file. The private key must be a single line in the .env file with `\n` for newlines.</p>
           </div>
         </div>
       )}
