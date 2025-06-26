@@ -15,6 +15,7 @@ import MarketAnalytics from '@/components/market-analytics';
 import EthereumNftDexTrades from '@/components/ethereum-nft-dex-trades';
 import RadioPlayer from '@/components/radio-player';
 import WalmartCampaigns from '@/components/walmart-campaigns';
+import SepoliaBlockFeed from '@/components/sepolia-block-feed';
 
 export default function HomePage() {
   return (
@@ -34,6 +35,10 @@ export default function HomePage() {
           
           <section>
             <MarketAnalytics />
+          </section>
+
+          <section>
+            <SepoliaBlockFeed />
           </section>
 
           <section>
