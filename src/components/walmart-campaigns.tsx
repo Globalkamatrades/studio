@@ -1,4 +1,3 @@
-
 import type { FC } from 'react';
 import { randomUUID } from 'crypto';
 import { createSign, createPrivateKey } from 'crypto';
@@ -27,6 +26,16 @@ async function getWalmartCampaigns(): Promise<{ campaigns?: Campaign[], error?: 
     return { error: "Walmart API credentials are not set in the environment variables." };
   }
 
+  // The private key from .env must be a single line with `\n` for newlines.
+  // This replaces the literal `\n` characters with actual newline characters.
+  const privateKeyString = rawPrivateKey.replace(/\\n/g, '\n');
+
+  // Add a specific check for PEM format before attempting to use the key.
+  // This prevents cryptic crypto errors if the key is malformed.
+  if (!privateKeyString.startsWith('-----BEGIN') || !privateKeyString.includes('-----END')) {
+    return { error: `The private key is not in a valid PEM format. Please ensure WALMART_PRIVATE_KEY in your .env file is a correctly formatted PKCS#8 key, including the -----BEGIN... and -----END... markers.` };
+  }
+
   const timestamp = Date.now().toString();
   const correlationId = randomUUID();
 
@@ -35,13 +44,7 @@ async function getWalmartCampaigns(): Promise<{ campaigns?: Campaign[], error?: 
   const stringToSign = `${consumerId}\n${timestamp}\n${keyVersion}\n`;
 
   try {
-    // The private key from .env must be a single line with `\n` for newlines.
-    // This replaces the literal `\n` characters with actual newline characters.
-    const privateKeyString = rawPrivateKey.replace(/\\n/g, '\n');
-
-    // Create a KeyObject. This is a more robust way to handle the key
-    // and provides better error messages if the key format is incorrect.
-    // The key should be in PKCS#8 format.
+    // The private key should be in PKCS#8 format.
     const privateKeyObject = createPrivateKey(privateKeyString);
 
     const signer = createSign('RSA-SHA256');
