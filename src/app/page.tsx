@@ -13,6 +13,9 @@ import NftGalleryPreview from '@/components/nft-gallery-preview';
 import NftPurchase from '@/components/nft-purchase';
 import MarketAnalytics from '@/components/market-analytics';
 import RadioPlayer from '@/components/radio-player';
+import EthereumNftDexTrades from '@/components/ethereum-nft-dex-trades';
+import SepoliaBlockFeed from '@/components/sepolia-block-feed';
+
 
 export default function HomePage() {
   return (
@@ -32,6 +35,14 @@ export default function HomePage() {
           
           <section>
             <MarketAnalytics />
+          </section>
+
+          <section>
+            <EthereumNftDexTrades />
+          </section>
+
+          <section>
+            <SepoliaBlockFeed />
           </section>
 
           <section>
