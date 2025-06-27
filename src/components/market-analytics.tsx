@@ -1,7 +1,6 @@
-
 import type { FC } from 'react';
 import SectionCard from '@/components/ui/section-card';
-import { LineChart, TrendingUp, DollarSign, Info, ExternalLink, Percent, Users, Coins, FileSignature } from 'lucide-react';
+import { LineChart, TrendingUp, DollarSign, Info, ExternalLink, Users, Coins, FileSignature } from 'lucide-react';
 import ButtonLink from './ui/button-link';
 
 interface MarketStatProps {
@@ -14,12 +13,12 @@ interface MarketStatProps {
 
 const MarketStat: FC<MarketStatProps> = ({ label, value, subValue, icon, valueClassName }) => {
   return (
-    <div className="p-3 bg-card/50 rounded-lg shadow">
-      <p className="text-sm text-muted-foreground flex items-center gap-1">
+    <div className="p-4 bg-card/50 rounded-lg shadow-inner">
+      <p className="text-sm text-muted-foreground flex items-center gap-1.5">
         {icon}
         {label}
       </p>
-      <p className={`text-xl font-semibold text-primary ${valueClassName}`}>
+      <p className={`text-2xl font-semibold text-primary mt-1 ${valueClassName}`}>
         {value}
       </p>
       {subValue && <p className="text-xs text-muted-foreground">{subValue}</p>}
@@ -61,53 +60,41 @@ const MarketAnalytics: FC = () => {
     >
       <div className="mb-4 p-3 bg-blue-500/10 border border-blue-500/30 text-blue-700 rounded-md text-sm flex items-center gap-2">
         <Info size={18} />
-        <span>Data displayed is illustrative and based on a market snapshot. For real-time data, integration with a market data API is required.</span>
+        <span>Data displayed is illustrative. Real-time data will be available from exchanges upon listing.</span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Left side: Price and Chart placeholder */}
-        <div className="space-y-4">
-          <div className="flex items-baseline gap-2">
-            <p className="text-4xl font-bold text-foreground">{price}</p>
-            <p className="text-lg font-semibold text-green-500 flex items-center">
-              <TrendingUp size={20} className="mr-1" /> {priceChange}
-            </p>
-          </div>
-          <div className="aspect-video bg-muted/30 rounded-lg flex items-center justify-center">
-            <p className="text-muted-foreground text-center p-4">
-              <LineChart size={48} className="mx-auto mb-2" />
-              Live price chart would be displayed here with data integration.
-            </p>
-          </div>
-        </div>
-
-        {/* Right side: Market Stats */}
-        <div className="space-y-4">
-          <MarketStat
-            label="Market Cap"
-            value={marketCap}
-            icon={<DollarSign size={16} className="text-muted-foreground" />}
-          />
-          <MarketStat
-            label="Circulating Supply"
-            value={circulatingSupply}
-            icon={<Users size={16} className="text-muted-foreground" />}
-          />
-          <MarketStat
-            label="Total Supply"
-            value={totalSupply}
-            icon={<Coins size={16} className="text-muted-foreground" />}
-          />
-          <MarketStat
-            label="Contract Address"
-            value={contractAddressPartial}
-            icon={<FileSignature size={16} className="text-muted-foreground" />}
-            valueClassName="text-sm font-mono"
-          />
-        </div>
+      <div className="flex items-baseline gap-2 mb-6">
+        <p className="text-4xl font-bold text-foreground">{price}</p>
+        <p className="text-lg font-semibold text-green-500 flex items-center">
+          <TrendingUp size={20} className="mr-1" /> {priceChange}
+        </p>
+      </div>
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <MarketStat
+          label="Market Cap"
+          value={marketCap}
+          icon={<DollarSign size={16} className="text-muted-foreground" />}
+        />
+        <MarketStat
+          label="Circulating Supply"
+          value={circulatingSupply}
+          icon={<Users size={16} className="text-muted-foreground" />}
+        />
+        <MarketStat
+          label="Total Supply"
+          value={totalSupply}
+          icon={<Coins size={16} className="text-muted-foreground" />}
+        />
+        <MarketStat
+          label="Contract Address"
+          value={contractAddressPartial}
+          icon={<FileSignature size={16} className="text-muted-foreground" />}
+          valueClassName="text-sm font-mono"
+        />
       </div>
        <p className="text-xs text-muted-foreground mt-4 text-right">
-        Snapshot data for ECOHO. For detailed and real-time information, please refer to official exchanges or explorers once the full contract address is integrated.
+        For detailed and real-time information, please refer to official exchanges or explorers once the full contract address is integrated.
       </p>
     </SectionCard>
   );
