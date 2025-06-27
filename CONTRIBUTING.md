@@ -35,11 +35,11 @@ We're excited to see what you can bring to the project. Here are some ways you c
 
 We're particularly interested in contributions in the following areas:
 
-*   Implementing full user authentication.
+*   Implementing wallet connection functionality (e.g., with RainbowKit or Web3Modal).
 *   Building out the NFT gallery and minting functionalities.
-*   Expanding the dashboard features.
+*   Expanding the dashboard features to interact with smart contracts.
 *   Improving UI/UX and accessibility.
-*   Adding more detailed analytics.
+*   Adding more detailed, real-time analytics.
 *   Integrating with backend services for token management, staking, etc.
 
 ## Questions?

@@ -12,10 +12,7 @@ import CommunitySpotlightForm from '@/components/community-spotlight-form';
 import NftGalleryPreview from '@/components/nft-gallery-preview';
 import NftPurchase from '@/components/nft-purchase';
 import MarketAnalytics from '@/components/market-analytics';
-import EthereumNftDexTrades from '@/components/ethereum-nft-dex-trades';
 import RadioPlayer from '@/components/radio-player';
-import WalmartCampaigns from '@/components/walmart-campaigns';
-import SepoliaBlockFeed from '@/components/sepolia-block-feed';
 
 export default function HomePage() {
   return (
@@ -35,10 +32,6 @@ export default function HomePage() {
           
           <section>
             <MarketAnalytics />
-          </section>
-
-          <section>
-            <SepoliaBlockFeed />
           </section>
 
           <section>
@@ -67,14 +60,6 @@ export default function HomePage() {
           
           <section>
             <CommunitySpotlightForm />
-          </section>
-
-          <section>
-            <EthereumNftDexTrades />
-          </section>
-
-          <section>
-            <WalmartCampaigns />
           </section>
           
           <section>

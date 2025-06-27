@@ -1,9 +1,8 @@
 
 import type { FC } from 'next';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button'; // Re-added for potential direct use
 import ButtonLink from '@/components/ui/button-link';
-import { LogIn, LayoutDashboard, Sparkles, Music } from 'lucide-react';
+import { LogIn, LayoutDashboard, Sparkles, Music, FileText } from 'lucide-react';
 
 
 const Header: FC = () => {
@@ -26,11 +25,11 @@ const Header: FC = () => {
             <ButtonLink href="/music-nft-info" variant="ghost" className="text-primary hover:bg-primary/10 hover:text-primary-foreground">
               <Music size={18} /> Music NFT Info
             </ButtonLink>
+            <ButtonLink href="/documents" variant="ghost" className="text-primary hover:bg-primary/10 hover:text-primary-foreground">
+              <FileText size={18} /> Documents
+            </ButtonLink>
             <ButtonLink href="/dashboard" variant="ghost" className="text-primary hover:bg-primary/10 hover:text-primary-foreground">
               <LayoutDashboard size={18} /> Dashboard
-            </ButtonLink>
-            <ButtonLink href="/login" variant="ghost" className="text-primary hover:bg-primary/10 hover:text-primary-foreground">
-              <LogIn size={18} /> Login
             </ButtonLink>
           </nav>
         </div>

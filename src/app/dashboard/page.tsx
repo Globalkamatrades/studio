@@ -1,10 +1,9 @@
 
 import type { NextPage } from 'next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { LayoutDashboard, BarChart2, Settings, Gift, ShieldCheck, UserCircle } from 'lucide-react';
+import { LayoutDashboard, BarChart2, Settings, Gift, ShieldCheck, Wallet } from 'lucide-react';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
-import ProfilePictureUploader from '@/components/profile-picture-uploader';
 
 const DashboardPage: NextPage = () => {
   return (
@@ -21,14 +20,6 @@ const DashboardPage: NextPage = () => {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Card className="shadow-lg hover:shadow-xl transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2"><UserCircle /> My Profile</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ProfilePictureUploader />
-            </CardContent>
-          </Card>
 
           <Card className="shadow-lg hover:shadow-xl transition-shadow">
             <CardHeader>
@@ -53,7 +44,7 @@ const DashboardPage: NextPage = () => {
                 </div>
               </div>
               <p className="text-muted-foreground mt-3">Track your token and NFT investments in the Ecoho Gold ecosystem.</p>
-              <p className="mt-4 text-sm text-primary/80 font-semibold">(Live asset tracking coming soon)</p>
+              <p className="mt-4 text-sm text-primary/80 font-semibold">(Live asset tracking coming soon via wallet connection)</p>
             </CardContent>
           </Card>
 
@@ -107,22 +98,22 @@ const DashboardPage: NextPage = () => {
               <CardTitle className="flex items-center gap-2"><Settings /> Account & Security</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">Manage your login credentials, notification preferences, and security settings.</p>
-              <p className="mt-4 text-sm text-primary/80 font-semibold">(Account settings coming soon)</p>
+              <p className="text-muted-foreground">Manage your assets and security by connecting your Web3 wallet (e.g., MetaMask, Trust Wallet).</p>
+              <p className="mt-4 text-sm text-primary/80 font-semibold">(Wallet connection functionality coming soon)</p>
             </CardContent>
           </Card>
         </div>
 
          <Card className="mt-10 text-center bg-card/70 border-primary/30">
           <CardHeader>
-            <CardTitle className="text-primary flex items-center justify-center gap-2"><ShieldCheck size={28}/> Unlock Full Potential</CardTitle>
+            <CardTitle className="text-primary flex items-center justify-center gap-2"><Wallet size={28}/> Future-Proof: Wallet Integration</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-card-foreground/90">
-              Full dashboard functionality, including live asset tracking, detailed reward management, and advanced profile settings, requires user authentication.
+              Full dashboard functionality, including live asset tracking and reward management, will be available by connecting your secure Web3 wallet.
             </p>
             <p className="text-card-foreground/90 mt-2">
-              Secure login and comprehensive account features are currently under development and will be available soon!
+              This ensures you always have full control over your assets. Wallet connection features are under development!
             </p>
           </CardContent>
         </Card>
