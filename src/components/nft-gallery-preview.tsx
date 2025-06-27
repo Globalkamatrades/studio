@@ -31,9 +31,9 @@ const staticPreviewNfts: PreviewNftItem[] = [
   },
   {
     id: 2,
-    name: "African Beats",
+    name: "Platinum Heritage",
     imageUrl: "https://placehold.co/300x300.png",
-    dataAiHint: "music rhythm",
+    dataAiHint: "platinum luxury",
   },
   {
     id: 3,

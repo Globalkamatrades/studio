@@ -26,15 +26,15 @@ const initialNftData: NftItem[] = [
     imageUrl: "https://placehold.co/400x400.png",
     dataAiHint: "gold abstract",
     description: "The very first collection symbolizing the dawn of Ecoho Gold. Holders get exclusive perks.",
-    openseaLink: "https://opensea.io/collection/ecoho-music-nfts-official"
+    openseaLink: "https://opensea.io/collection/ecoho-gold-official"
   },
   {
     id: 2,
-    name: "African Beats Series",
+    name: "Gold Reserve Certificate",
     imageUrl: "https://placehold.co/400x400.png",
-    dataAiHint: "music rhythm",
-    description: "A series celebrating diverse African musical talents, backed by unique commodity assets.",
-    openseaLink: "https://opensea.io/collection/ecoho-music-nfts-official"
+    dataAiHint: "gold certificate",
+    description: "A digital certificate NFT representing a share of the underlying gold assets.",
+    openseaLink: "https://opensea.io/collection/ecoho-gold-official"
   },
   {
     id: 3,
@@ -42,7 +42,7 @@ const initialNftData: NftItem[] = [
     imageUrl: "https://placehold.co/400x400.png",
     dataAiHint: "energy glow",
     description: "Unique art pieces digitally representing the energy and value of uranium reserves.",
-    openseaLink: "https://opensea.io/collection/ecoho-music-nfts-official"
+    openseaLink: "https://opensea.io/collection/ecoho-gold-official"
   },
   {
     id: 4,
@@ -50,7 +50,7 @@ const initialNftData: NftItem[] = [
     imageUrl: "https://placehold.co/400x400.png",
     dataAiHint: "platinum luxury",
     description: "NFTs representing stakes in sustainably sourced platinum, blending tradition with technology.",
-    openseaLink: "https://opensea.io/collection/ecoho-music-nfts-official"
+    openseaLink: "https://opensea.io/collection/ecoho-gold-official"
   },
 ];
 

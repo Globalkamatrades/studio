@@ -18,7 +18,7 @@ const NftPurchase: FC = () => {
   const [marketData, setMarketData] = useState<NftMarketData>({
     floorPrice: null,
     priceCurrency: null,
-    collectionUrl: "https://opensea.io/collection/ecoho-music-nfts-official", // Default/fallback
+    collectionUrl: "https://opensea.io/collection/ecoho-gold-official", // Default/fallback
   });
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +34,7 @@ const NftPurchase: FC = () => {
           openSea: {
             floorPrice: 1.00,
             priceCurrency: "USD",
-            collectionUrl: "https://opensea.io/collection/ecoho-music-nfts-official",
+            collectionUrl: "https://opensea.io/collection/ecoho-gold-official",
             error: null
           }
         };
