@@ -5,7 +5,7 @@ import type { FC } from 'react';
 import { useState, useEffect } from 'react';
 import SectionCard from '@/components/ui/section-card';
 import ButtonLink from '@/components/ui/button-link';
-import { Gem, ExternalLink, Loader2, AlertTriangle, Sparkles } from 'lucide-react'; // Added Sparkles
+import { Gem, ExternalLink, Loader2, AlertTriangle, Sparkles } from 'lucide-react';
 import Image from 'next/image';
 
 interface NftMarketData {
@@ -28,25 +28,19 @@ const NftPurchase: FC = () => {
       setIsLoading(true);
       setError(null);
       try {
-        // Simulate API call delay
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        // Mocked API response structure (replace with actual API call)
-        // This structure assumes your API might return data from OpenSea or similar.
         const mockApiResponse = {
-          openSea: { // Example for OpenSea data
-            floorPrice: 1.00, // Example value
-            priceCurrency: "USD", // Example currency
+          openSea: {
+            floorPrice: 1.00,
+            priceCurrency: "USD",
             collectionUrl: "https://opensea.io/collection/ecoho-music-nfts-official",
-            error: null // No error in this mock
+            error: null
           }
-          // You could add other marketplaces here, e.g., rarible: { ... }
         };
 
-        // Logic to handle the mock response
         if (mockApiResponse.openSea && mockApiResponse.openSea.error) {
           setError(mockApiResponse.openSea.error);
-          // Fallback URL if there's an error or data is incomplete
           setMarketData(prev => ({ ...prev, collectionUrl: "https://opensea.io/" }));
         } else if (mockApiResponse.openSea) {
           setMarketData({
@@ -55,7 +49,6 @@ const NftPurchase: FC = () => {
             collectionUrl: mockApiResponse.openSea.collectionUrl,
           });
         } else {
-          // Handle case where API response is not as expected
           setError("Could not fetch NFT market data from OpenSea.");
           setMarketData(prev => ({ ...prev, collectionUrl: "https://opensea.io/" }));
         }
@@ -75,19 +68,19 @@ const NftPurchase: FC = () => {
   const openSeaLink = marketData.collectionUrl || "https://opensea.io/";
 
   return (
-    <SectionCard title="Buy the Music NFT & Get Rewards" icon={<Gem className="text-primary h-8 w-8" />}>
+    <SectionCard title="Buy Official Ecoho NFTs & Get Rewards" icon={<Gem className="text-primary h-8 w-8" />}>
       <div className="flex flex-col md:flex-row items-center gap-6">
         <Image
           src="https://placehold.co/300x200.png"
-          alt="Music NFT"
+          alt="Ecoho Gold NFT Collection"
           width={300}
           height={200}
           className="rounded-lg shadow-md object-cover"
-          data-ai-hint="music abstract"
+          data-ai-hint="abstract nft"
         />
         <div className="flex-1">
           <p className="mb-2 text-lg">
-            Support the artist and become part of the Ecoho Gold ecosystem by purchasing our exclusive Music NFT.
+            Support the project and become part of the Ecoho Gold ecosystem by purchasing our exclusive NFTs.
           </p>
           <p className="mb-4 text-md font-semibold text-primary flex items-center">
             <Sparkles size={20} className="mr-2" /> Each NFT purchase rewards you with 7 ECOHO tokens!

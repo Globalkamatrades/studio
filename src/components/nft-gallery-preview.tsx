@@ -9,7 +9,7 @@ import ButtonLink from '@/components/ui/button-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Gem, Sparkles, ArrowRight, Music2, PlayCircle, Tag } from 'lucide-react';
+import { Gem, Sparkles, ArrowRight, Newspaper, PlayCircle, Tag, Link as LinkIcon } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface PreviewNftItem {
@@ -17,9 +17,9 @@ interface PreviewNftItem {
   name: string;
   imageUrl: string;
   dataAiHint: string;
-  musicUrl?: string;
+  contentUrl?: string;
   description?: string;
-  price?: string; // Added price field
+  price?: string;
 }
 
 const staticPreviewNfts: PreviewNftItem[] = [
@@ -44,74 +44,70 @@ const staticPreviewNfts: PreviewNftItem[] = [
 ];
 
 const NftGalleryPreview: FC = () => {
-  const [musicUrlInput, setMusicUrlInput] = useState('');
-  const [musicTitleInput, setMusicTitleInput] = useState('');
-  const [musicPriceInput, setMusicPriceInput] = useState(''); // State for price
-  const [userMusicNft, setUserMusicNft] = useState<PreviewNftItem | null>(null);
+  const [contentUrlInput, setContentUrlInput] = useState('');
+  const [contentHeadlineInput, setContentHeadlineInput] = useState('');
+  const [contentPriceInput, setContentPriceInput] = useState('');
+  const [userContentNft, setUserContentNft] = useState<PreviewNftItem | null>(null);
 
-  const handleUserMusicSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleUserContentSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (musicTitleInput.trim() && musicUrlInput.trim()) {
-      setUserMusicNft({
+    if (contentHeadlineInput.trim() && contentUrlInput.trim()) {
+      setUserContentNft({
         id: 'user-submitted-' + Date.now(),
-        name: musicTitleInput,
-        imageUrl: 'https://placehold.co/300x300.png',
-        dataAiHint: 'custom music audio',
-        musicUrl: musicUrlInput,
-        description: "User submitted music.",
-        price: musicPriceInput.trim() || undefined, // Add price
+        name: contentHeadlineInput,
+        imageUrl: 'https://placehold.co/300x300.png', // Generic image for content
+        dataAiHint: 'news content abstract',
+        contentUrl: contentUrlInput,
+        description: "User-submitted content.",
+        price: contentPriceInput.trim() || undefined,
       });
-      // Optionally clear inputs
-      // setMusicTitleInput('');
-      // setMusicUrlInput('');
-      // setMusicPriceInput('');
     }
   };
 
   return (
-    <SectionCard title="Featured NFTs & Music" icon={<Sparkles className="text-primary h-8 w-8" />}>
+    <SectionCard title="Featured NFTs & Community Content" icon={<Newspaper className="text-primary h-8 w-8" />}>
       <p className="mb-6 text-lg">
-        Discover unique digital collectibles and featured music from Ecoho Gold. Each item is more than art – it's a piece of our vision. You can also feature your own music link below!
+        Discover unique digital collectibles and featured content from the community. You can also feature your own NFT news or content link below!
       </p>
 
-      {/* Form to add music URL */}
-      <form onSubmit={handleUserMusicSubmit} className="my-6 p-4 border-2 border-dashed border-primary/30 rounded-lg shadow-inner bg-card/50 space-y-4">
-        <h3 className="text-xl font-headline text-primary mb-3">Feature Your Music Link</h3>
+      {/* Form to add content URL */}
+      <form onSubmit={handleUserContentSubmit} className="my-6 p-4 border-2 border-dashed border-primary/30 rounded-lg shadow-inner bg-card/50 space-y-4">
+        <h3 className="text-xl font-headline text-primary mb-3">Feature Your Content</h3>
         <div>
-          <Label htmlFor="musicTitle" className="block text-sm font-medium text-card-foreground/90 mb-1">Music Title</Label>
+          <Label htmlFor="contentHeadline" className="block text-sm font-medium text-card-foreground/90 mb-1">Content Headline</Label>
           <Input 
-            id="musicTitle" 
-            value={musicTitleInput} 
-            onChange={(e) => setMusicTitleInput(e.target.value)} 
-            placeholder="e.g., My Awesome Track" 
+            id="contentHeadline" 
+            value={contentHeadlineInput} 
+            onChange={(e) => setContentHeadlineInput(e.target.value)} 
+            placeholder="e.g., The Latest in NFT Security" 
             required 
             className="bg-background/70"
           />
         </div>
         <div>
-          <Label htmlFor="musicUrl" className="block text-sm font-medium text-card-foreground/90 mb-1">Music URL (e.g., Soundcloud, YouTube, MP3 link)</Label>
+          <Label htmlFor="contentUrl" className="block text-sm font-medium text-card-foreground/90 mb-1">Content URL (e.g., TikTok, X, Blog Post)</Label>
           <Input 
-            id="musicUrl" 
+            id="contentUrl" 
             type="url" 
-            value={musicUrlInput} 
-            onChange={(e) => setMusicUrlInput(e.target.value)} 
-            placeholder="https://example.com/your-music" 
+            value={contentUrlInput} 
+            onChange={(e) => setContentUrlInput(e.target.value)} 
+            placeholder="https://tiktok.com/.../your-video" 
             required 
             className="bg-background/70"
           />
         </div>
         <div>
-          <Label htmlFor="musicPrice" className="block text-sm font-medium text-card-foreground/90 mb-1">Price (Optional, e.g., 10 ECOHO)</Label>
+          <Label htmlFor="contentPrice" className="block text-sm font-medium text-card-foreground/90 mb-1">Price (Optional, e.g., 10 ECOHO)</Label>
           <Input 
-            id="musicPrice" 
-            value={musicPriceInput} 
-            onChange={(e) => setMusicPriceInput(e.target.value)} 
+            id="contentPrice" 
+            value={contentPriceInput} 
+            onChange={(e) => setContentPriceInput(e.target.value)} 
             placeholder="e.g., 10 ECOHO or 0.5 BNB" 
             className="bg-background/70"
           />
         </div>
         <Button type="submit" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground">
-          <Music2 size={18} className="mr-2"/> Add Music to Preview
+          <Newspaper size={18} className="mr-2"/> Add Content to Preview
         </Button>
       </form>
       
@@ -119,7 +115,7 @@ const NftGalleryPreview: FC = () => {
           <Sparkles className="h-4 w-4 text-primary" />
           <AlertTitle className="text-primary">Marketplace Preview</AlertTitle>
           <AlertDescription className="text-primary/80">
-            The "Feature Your Music" section is a UI demonstration. Actual sales and token transactions would require further backend and blockchain development.
+            The "Feature Your Content" section is a UI demonstration. Actual sales and token transactions would require further backend and blockchain development.
           </AlertDescription>
       </Alert>
 
@@ -143,37 +139,37 @@ const NftGalleryPreview: FC = () => {
             </div>
           </div>
         ))}
-        {userMusicNft && (
-          <div key={userMusicNft.id} className="group rounded-lg overflow-hidden shadow-md border border-primary hover:shadow-xl transition-shadow flex flex-col">
+        {userContentNft && (
+          <div key={userContentNft.id} className="group rounded-lg overflow-hidden shadow-md border border-primary hover:shadow-xl transition-shadow flex flex-col">
             <div className="aspect-square w-full overflow-hidden bg-muted/30 flex items-center justify-center">
               <Image
-                src={userMusicNft.imageUrl}
-                alt={userMusicNft.name}
+                src={userContentNft.imageUrl}
+                alt={userContentNft.name}
                 width={300}
                 height={300}
                 className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-                data-ai-hint={userMusicNft.dataAiHint}
+                data-ai-hint={userContentNft.dataAiHint}
               />
             </div>
             <div className="p-4 bg-card flex-grow flex flex-col">
-              <h3 className="font-semibold text-card-foreground text-lg">{userMusicNft.name}</h3>
-              {userMusicNft.musicUrl && (
+              <h3 className="font-semibold text-card-foreground text-lg">{userContentNft.name}</h3>
+              {userContentNft.contentUrl && (
                 <a 
-                  href={userMusicNft.musicUrl} 
+                  href={userContentNft.contentUrl} 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="text-sm text-primary hover:underline mt-2 inline-flex items-center"
                 >
-                  <PlayCircle size={16} className="mr-1.5 shrink-0" /> Listen Here
+                  <LinkIcon size={16} className="mr-1.5 shrink-0" /> View Content
                 </a>
               )}
-              {userMusicNft.price && (
+              {userContentNft.price && (
                 <div className="mt-2 text-sm text-card-foreground/90 flex items-center">
                   <Tag size={16} className="mr-1.5 shrink-0 text-primary" />
-                  Price: <span className="font-semibold ml-1">{userMusicNft.price}</span>
+                  Price: <span className="font-semibold ml-1">{userContentNft.price}</span>
                 </div>
               )}
-              {userMusicNft.description && <p className="text-xs text-muted-foreground mt-1 flex-grow">{userMusicNft.description}</p>}
+              {userContentNft.description && <p className="text-xs text-muted-foreground mt-1 flex-grow">{userContentNft.description}</p>}
             </div>
           </div>
         )}

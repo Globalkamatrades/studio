@@ -22,9 +22,6 @@ const Header: FC = () => {
             <ButtonLink href="/nfts" variant="ghost" className="text-primary hover:bg-primary/10 hover:text-primary-foreground">
               <Sparkles size={18} /> Our NFTs
             </ButtonLink>
-            <ButtonLink href="/music-nft-info" variant="ghost" className="text-primary hover:bg-primary/10 hover:text-primary-foreground">
-              <Music size={18} /> Music NFT Info
-            </ButtonLink>
             <ButtonLink href="/documents" variant="ghost" className="text-primary hover:bg-primary/10 hover:text-primary-foreground">
               <FileText size={18} /> Documents
             </ButtonLink>

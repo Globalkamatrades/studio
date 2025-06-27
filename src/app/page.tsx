@@ -12,7 +12,6 @@ import CommunitySpotlightForm from '@/components/community-spotlight-form';
 import NftGalleryPreview from '@/components/nft-gallery-preview';
 import NftPurchase from '@/components/nft-purchase';
 import MarketAnalytics from '@/components/market-analytics';
-import RadioPlayer from '@/components/radio-player';
 import EthereumNftDexTrades from '@/components/ethereum-nft-dex-trades';
 import SepoliaBlockFeed from '@/components/sepolia-block-feed';
 
@@ -25,10 +24,6 @@ export default function HomePage() {
         <HeroSection />
         
         <div className="space-y-12 md:space-y-16 mt-12 md:mt-16">
-          <section>
-            <RadioPlayer />
-          </section>
-
           <section id="token-info-section">
             <TokenInfo />
           </section>

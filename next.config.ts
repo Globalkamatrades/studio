@@ -35,7 +35,7 @@ const nextConfig: NextConfig = {
       "font-src 'self' https://fonts.gstatic.com",
       "connect-src 'self' https://eth-mainnet.g.alchemy.com https://blockchain.googleapis.com wss://blockchain.googleapis.com", 
       // reCAPTCHA requires 'www.google.com' for its iframe.
-      "frame-src 'self' https://link.radioking.com https://www.google.com",
+      "frame-src 'self' https://www.google.com",
       "object-src 'none'",
       "form-action 'self'",
       "base-uri 'self'",
