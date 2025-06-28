@@ -19,7 +19,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'kamaincprofile.com',
+        hostname: 'ecohogold.co.za',
         port: '',
         pathname: '/**',
       }
@@ -31,9 +31,9 @@ const nextConfig: NextConfig = {
       // reCAPTCHA requires 'www.google.com' and 'www.gstatic.com' for scripts.
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com https://www.gstatic.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "img-src 'self' https://placehold.co https://kamaincprofile.com data:",
+      "img-src 'self' https://placehold.co https://ecohogold.co.za data:",
       "font-src 'self' https://fonts.gstatic.com",
-      "connect-src 'self' https://eth-mainnet.g.alchemy.com https://blockchain.googleapis.com wss://blockchain.googleapis.com", 
+      "connect-src 'self' https://eth-mainnet.g.alchemy.com https://blockchain.googleapis.com wss://blockchain.googleapis.com https://json-rpc.acgrzmbqr4faszir326y2oit0.blockchainnodeengine.com wss://ws.acgrzmbqr4faszir326y2oit0.blockchainnodeengine.com", 
       // reCAPTCHA requires 'www.google.com' for its iframe.
       "frame-src 'self' https://www.google.com",
       "object-src 'none'",

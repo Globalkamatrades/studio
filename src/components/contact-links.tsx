@@ -212,7 +212,7 @@ const ContactLinks: FC = () => {
                     <Mail className="h-4 w-4" />
                     <AlertTitle>Direct Email</AlertTitle>
                     <AlertDescription>
-                    For official inquiries, you can also email us at <a href="mailto:Akhona@kamaincprofile.com" className="font-semibold text-primary hover:underline">Akhona@kamaincprofile.com</a>.
+                    For official inquiries, you can also email us at <a href="mailto:Akhona@ecohogold.co.za" className="font-semibold text-primary hover:underline">Akhona@ecohogold.co.za</a>.
                     </AlertDescription>
                 </Alert>
             </div>
