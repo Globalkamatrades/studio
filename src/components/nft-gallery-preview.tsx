@@ -9,7 +9,7 @@ import ButtonLink from '@/components/ui/button-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Gem, Sparkles, ArrowRight, Newspaper, PlayCircle, Tag, Link as LinkIcon } from 'lucide-react';
+import { ExternalLink, Sparkles, ArrowRight, Newspaper, PlayCircle, Tag, Link as LinkIcon } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface PreviewNftItem {
@@ -48,6 +48,8 @@ const NftGalleryPreview: FC = () => {
   const [contentHeadlineInput, setContentHeadlineInput] = useState('');
   const [contentPriceInput, setContentPriceInput] = useState('');
   const [userContentNft, setUserContentNft] = useState<PreviewNftItem | null>(null);
+  const openSeaCollectionLink = "https://opensea.io/collection/ecoho-gold-official";
+
 
   const handleUserContentSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -113,9 +115,9 @@ const NftGalleryPreview: FC = () => {
       
       <Alert variant="default" className="mb-6 bg-primary/5 border-primary/20">
           <Sparkles className="h-4 w-4 text-primary" />
-          <AlertTitle className="text-primary">Marketplace Preview</AlertTitle>
+          <AlertTitle className="text-primary">This is a Marketplace Demonstration</AlertTitle>
           <AlertDescription className="text-primary/80">
-            The "Feature Your Content" section is a UI demonstration. Actual sales and token transactions would require further backend and blockchain development.
+            The "Feature Your Content" form is a UI preview. To create and sell real NFTs (like for your news content), you can use a public marketplace like OpenSea.
           </AlertDescription>
       </Alert>
 
@@ -177,13 +179,15 @@ const NftGalleryPreview: FC = () => {
 
       <div className="text-center mt-8">
         <ButtonLink
-          href="/nfts"
+          href={openSeaCollectionLink}
+          target="_blank"
+          rel="noopener noreferrer"
           variant="default"
           size="lg"
           className="bg-primary hover:bg-primary/90 text-primary-foreground group" 
-          icon={<Gem size={20} />}
+          icon={<ExternalLink size={20} />}
         >
-          Explore Full NFT Gallery <ArrowRight size={20} className="ml-1 group-hover:translate-x-1 transition-transform"/>
+          View Official Collection on OpenSea <ArrowRight size={20} className="ml-1 group-hover:translate-x-1 transition-transform"/>
         </ButtonLink>
       </div>
     </SectionCard>

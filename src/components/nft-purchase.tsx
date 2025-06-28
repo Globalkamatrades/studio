@@ -119,7 +119,7 @@ const NftPurchase: FC = () => {
             icon={<ExternalLink size={20}/>}
             disabled={isLoading}
           >
-            Buy on OpenSea
+            View Collection on OpenSea
           </ButtonLink>
           <p className="mt-3 text-xs text-muted-foreground">
             The 7 ECOHO token reward is a promotional offer and subject to change. ECOHO token value is speculative. Floor price is illustrative; a live API is needed for real-time data.
