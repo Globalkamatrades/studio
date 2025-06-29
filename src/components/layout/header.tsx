@@ -3,8 +3,6 @@ import type { FC } from 'next';
 import Link from 'next/link';
 import ButtonLink from '@/components/ui/button-link';
 import { Sparkles, FileText, LayoutDashboard } from 'lucide-react';
-import { ConnectWallet } from '@/components/connect-wallet';
-
 
 const Header: FC = () => {
   return (
@@ -29,9 +27,6 @@ const Header: FC = () => {
             <ButtonLink href="/dashboard" variant="ghost" className="text-primary hover:bg-primary/10 hover:text-primary-foreground">
               <LayoutDashboard size={18} /> Dashboard
             </ButtonLink>
-            <div className="ml-2">
-              <ConnectWallet />
-            </div>
           </nav>
         </div>
       </div>

@@ -7,31 +7,23 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 const WithdrawInfo: FC = () => {
   const steps = [
     {
-      title: "Step 1: Use a Decentralized Exchange (DEX)",
-      description: "Go to a DEX on the Ethereum network like Uniswap where ECOHO is traded. You will need to connect your personal crypto wallet (e.g., MetaMask, Trust Wallet)."
+      title: "Step 1: Log into Your Exchange Account",
+      description: "Sign in to the centralized exchange (e.g., Bybit, KuCoin) where you hold your ECOHO tokens."
     },
     {
-      title: "Step 2: Swap ECOHO for a Major Cryptocurrency",
-      description: "Swap your ECOHO tokens for a more widely accepted cryptocurrency like ETH or a stablecoin (e.g., USDT, USDC). This requires a liquidity pool to be available."
+      title: "Step 2: Sell ECOHO for Fiat Currency",
+      description: "Navigate to the trading section and sell your ECOHO tokens for your local currency (like USD, EUR, ZAR, etc.)."
     },
     {
-      title: "Step 3: Send to a Centralized Exchange (CEX)",
-      description: "Transfer the ETH or stablecoin from your personal wallet to an account on a centralized exchange that supports your local currency (e.g., Binance, Luno, VALR, Coinbase)."
-    },
-    {
-      title: "Step 4: Sell for Fiat Currency",
-      description: "On the centralized exchange, sell the cryptocurrency you received for your local currency (like USD, EUR, ZAR, etc.)."
-    },
-    {
-      title: "Step 5: Withdraw to Your Bank Account",
-      description: "Finally, withdraw the funds from your centralized exchange account directly to your bank account."
+      title: "Step 3: Withdraw to Your Bank Account",
+      description: "Go to your fiat wallet on the exchange and initiate a withdrawal to your linked bank account."
     }
   ];
 
   return (
     <SectionCard title="How to Withdraw Funds" icon={<Banknote className="text-primary h-8 w-8" />}>
       <p className="mb-6 text-lg">
-        Ready to turn your ECOHO tokens back into cash? It's a straightforward process using standard crypto platforms. Here’s a simple, step-by-step guide.
+        Ready to turn your ECOHO tokens back into cash? With centralized exchanges, it's a simple and secure process.
       </p>
 
       <div className="space-y-4">
@@ -52,7 +44,7 @@ const WithdrawInfo: FC = () => {
         <Info className="h-4 w-4 text-blue-400" />
         <AlertTitle className="text-blue-300">Important Information</AlertTitle>
         <AlertDescription className="text-blue-400/90">
-          This guide is for informational purposes only. You are responsible for your own funds and transactions. Cryptocurrency values are volatile and involve risk. Always use official websites for exchanges and be cautious of scams. Ecoho Gold is not responsible for any losses.
+          This guide assumes ECOHO is listed on a centralized exchange and you hold your tokens there. You are responsible for your own funds and transactions. Always use official exchange websites and enable two-factor authentication (2FA) for security.
         </AlertDescription>
       </Alert>
     </SectionCard>
