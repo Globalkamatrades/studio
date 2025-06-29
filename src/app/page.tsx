@@ -14,6 +14,7 @@ import NftPurchase from '@/components/nft-purchase';
 import MarketAnalytics from '@/components/market-analytics';
 import EthereumNftDexTrades from '@/components/ethereum-nft-dex-trades';
 import SepoliaBlockFeed from '@/components/sepolia-block-feed';
+import RadioPlayer from '@/components/radio-player';
 
 
 export default function HomePage() {
@@ -28,6 +29,10 @@ export default function HomePage() {
             <TokenInfo />
           </section>
           
+          <section>
+            <RadioPlayer />
+          </section>
+
           <section>
             <MarketAnalytics />
           </section>
