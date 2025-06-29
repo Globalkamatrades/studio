@@ -8,12 +8,11 @@ const HeroSection: FC = () => {
   return (
     <section className="relative h-[60vh] md:h-[70vh] w-full flex items-center justify-center text-center overflow-hidden mb-12 rounded-lg shadow-xl border border-primary/20">
       <Image
-        src="/images/ecoho_city_coins_hero.jpg" 
+        src="https://storage.googleapis.com/nkIiUzkATj3CxoP/Wlma5vgwwtwhpsa02tyI26Eg" 
         alt="Ecoho Gold - Digital Assets in a Modern Cityscape"
         fill
         className="object-cover"
         priority 
-        data-ai-hint="cityscape crypto" 
       />
       <div className="absolute inset-0 bg-black/60" /> {/* Dark overlay for text legibility */}
       <div className="relative z-10 p-4 md:p-8">

@@ -22,6 +22,12 @@ const nextConfig: NextConfig = {
         hostname: 'ecohogold.co.za',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'storage.googleapis.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
@@ -31,7 +37,7 @@ const nextConfig: NextConfig = {
       // reCAPTCHA requires 'www.google.com' and 'www.gstatic.com' for scripts.
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com https://www.gstatic.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "img-src 'self' https://placehold.co https://ecohogold.co.za data:",
+      "img-src 'self' https://placehold.co https://ecohogold.co.za https://storage.googleapis.com data:",
       "font-src 'self' https://fonts.gstatic.com",
       "connect-src 'self' https://eth-mainnet.g.alchemy.com https://blockchain.googleapis.com https://*.blockchainnodeengine.com wss://*.blockchainnodeengine.com wss://*.googleapis.com", 
       // reCAPTCHA requires 'www.google.com' for its iframe.
