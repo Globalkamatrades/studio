@@ -3,6 +3,7 @@ import SectionCard from '@/components/ui/section-card';
 import { LineChart, TrendingUp, DollarSign, Info, ExternalLink, Users, Coins, FileSignature } from 'lucide-react';
 import ButtonLink from './ui/button-link';
 import MarketPriceChart from './charts/market-price-chart';
+import TokenDistributionChart from './charts/token-distribution-chart';
 
 interface MarketStatProps {
   label: string;
@@ -64,8 +65,9 @@ const MarketAnalytics: FC = () => {
         <span>Data displayed is illustrative. Real-time data will be available from exchanges upon listing.</span>
       </div>
       
-      <div className="mb-8">
+      <div className="grid lg:grid-cols-2 gap-8 mb-8">
         <MarketPriceChart />
+        <TokenDistributionChart />
       </div>
 
       <div className="flex items-baseline gap-2 mb-6">
