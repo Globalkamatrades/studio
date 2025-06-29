@@ -2,6 +2,7 @@ import type { FC } from 'react';
 import SectionCard from '@/components/ui/section-card';
 import { LineChart, TrendingUp, DollarSign, Info, ExternalLink, Users, Coins, FileSignature } from 'lucide-react';
 import ButtonLink from './ui/button-link';
+import MarketPriceChart from './charts/market-price-chart';
 
 interface MarketStatProps {
   label: string;
@@ -61,6 +62,10 @@ const MarketAnalytics: FC = () => {
       <div className="mb-4 p-3 bg-blue-500/10 border border-blue-500/30 text-blue-700 rounded-md text-sm flex items-center gap-2">
         <Info size={18} />
         <span>Data displayed is illustrative. Real-time data will be available from exchanges upon listing.</span>
+      </div>
+      
+      <div className="mb-8">
+        <MarketPriceChart />
       </div>
 
       <div className="flex items-baseline gap-2 mb-6">
