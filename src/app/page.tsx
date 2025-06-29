@@ -9,7 +9,6 @@ import AirdropRewards from '@/components/airdrop-rewards';
 import WhitepaperSection from '@/components/whitepaper-section';
 import ContactLinks from '@/components/contact-links';
 import CommunitySpotlightForm from '@/components/community-spotlight-form';
-import NftGalleryPreview from '@/components/nft-gallery-preview';
 import NftPurchase from '@/components/nft-purchase';
 import MarketAnalytics from '@/components/market-analytics';
 import EthereumNftDexTrades from '@/components/ethereum-nft-dex-trades';
@@ -43,10 +42,6 @@ export default function HomePage() {
 
           <section>
             <SepoliaBlockFeed />
-          </section>
-
-          <section>
-            <NftGalleryPreview />
           </section>
           
           <section>

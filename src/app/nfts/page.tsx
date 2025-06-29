@@ -1,72 +1,14 @@
 
-"use client";
-
 import type { NextPage } from 'next';
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { ExternalLink, Gem, ShieldCheck, Loader2 } from 'lucide-react';
+import { ExternalLink, Gem, ShieldCheck, Sparkles } from 'lucide-react';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 import ButtonLink from '@/components/ui/button-link';
-import { useState, useEffect } from 'react';
-
-interface NftItem {
-  id: number;
-  name: string;
-  imageUrl: string;
-  dataAiHint: string;
-  description: string;
-  openseaLink: string;
-}
-
-const initialNftData: NftItem[] = [
-  {
-    id: 1,
-    name: "Ecoho Genesis Drop",
-    imageUrl: "https://placehold.co/400x400.png",
-    dataAiHint: "gold abstract",
-    description: "The very first collection symbolizing the dawn of Ecoho Gold. Holders get exclusive perks.",
-    openseaLink: "https://opensea.io/collection/ecoho-gold-official"
-  },
-  {
-    id: 2,
-    name: "Gold Reserve Certificate",
-    imageUrl: "https://placehold.co/400x400.png",
-    dataAiHint: "gold certificate",
-    description: "A digital certificate NFT representing a share of the underlying gold assets.",
-    openseaLink: "https://opensea.io/collection/ecoho-gold-official"
-  },
-  {
-    id: 3,
-    name: "Uranium Art Project",
-    imageUrl: "https://placehold.co/400x400.png",
-    dataAiHint: "energy glow",
-    description: "Unique art pieces digitally representing the energy and value of uranium reserves.",
-    openseaLink: "https://opensea.io/collection/ecoho-gold-official"
-  },
-  {
-    id: 4,
-    name: "Platinum Heritage",
-    imageUrl: "https://placehold.co/400x400.png",
-    dataAiHint: "platinum luxury",
-    description: "NFTs representing stakes in sustainably sourced platinum, blending tradition with technology.",
-    openseaLink: "https://opensea.io/collection/ecoho-gold-official"
-  },
-];
 
 const NftsPage: NextPage = () => {
-  const [nfts, setNfts] = useState<NftItem[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    // Simulate fetching data
-    const timer = setTimeout(() => {
-      setNfts(initialNftData);
-      setIsLoading(false);
-    }, 1000); // Simulate 1 second loading time
-
-    return () => clearTimeout(timer); // Cleanup timer on component unmount
-  }, []);
+  const openSeaCollectionLink = "https://opensea.io/collection/ecoho-gold-official";
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -74,69 +16,66 @@ const NftsPage: NextPage = () => {
       <main className="flex-grow container mx-auto px-4 py-12">
         <div className="mb-10 text-center">
           <h1 className="font-headline text-4xl md:text-5xl text-primary flex items-center justify-center gap-3">
-            <Gem size={40} /> Our NFT Collections
+            <Gem size={40} /> Official NFT Collections
           </h1>
           <p className="text-muted-foreground mt-3 text-lg max-w-2xl mx-auto">
-            Explore the unique Non-Fungible Tokens offered by Ecoho Gold. Each NFT is a piece of digital art,
-            a collectible, and a representation of value within our ecosystem.
+            Discover the value and utility of owning an official Ecoho Gold NFT.
           </p>
         </div>
 
-        {isLoading ? (
-          <div className="flex justify-center items-center py-10">
-            <Loader2 className="h-12 w-12 animate-spin text-primary" />
-            <p className="ml-4 text-xl text-muted-foreground">Loading NFT Collections...</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {nfts.map((nft) => (
-              <Card key={nft.id} className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
-                <div className="aspect-square w-full overflow-hidden">
-                   <Image
-                    src={nft.imageUrl}
-                    alt={nft.name}
-                    width={400}
-                    height={400}
-                    className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-                    data-ai-hint={nft.dataAiHint}
-                  />
-                </div>
-                <CardHeader className="pb-2">
-                  <CardTitle className="font-headline text-xl">{nft.name}</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <CardDescription>{nft.description}</CardDescription>
-                </CardContent>
-                <CardFooter>
-                  <ButtonLink 
-                    href={nft.openseaLink} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-                    icon={<ExternalLink size={18} />}
-                  >
-                    View on OpenSea
-                  </ButtonLink>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
-        )}
+        <div className="max-w-4xl mx-auto">
+          <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+            <div className="relative h-48 w-full">
+              <Image
+                src="https://placehold.co/800x300.png"
+                alt="Ecoho Gold NFT Banner"
+                layout="fill"
+                objectFit="cover"
+                data-ai-hint="abstract nft gold"
+              />
+            </div>
+            <CardHeader>
+              <CardTitle className="text-2xl">Purchase Our Exclusive NFTs</CardTitle>
+              <CardDescription>
+                Become a part of the Ecoho Gold ecosystem by acquiring our unique digital assets.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-card-foreground/90">
+                Our NFT collections are more than just digital art; they are a key to unlocking further utility within the Ecoho Gold project. Ownership provides you with exclusive benefits and a deeper connection to our community.
+              </p>
+              <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
+                <p className="font-semibold text-primary flex items-center gap-2">
+                  <Sparkles size={20} /> Exclusive Reward
+                </p>
+                <p className="text-primary/90 mt-1">
+                  As a thank you to our supporters, each official NFT purchase from our collection rewards you with <strong>7 bonus ECOHO tokens</strong>.
+                </p>
+              </div>
+               <div className="p-4 bg-card/50 rounded-lg border border-border">
+                <p className="font-semibold text-card-foreground flex items-center gap-2">
+                  <ShieldCheck size={20} /> Authenticity Guaranteed
+                </p>
+                <p className="text-muted-foreground mt-1">
+                  All official Ecoho Gold NFTs are verifiable on the Ethereum network. To ensure authenticity and security, please only purchase through our official OpenSea collection linked below.
+                </p>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <ButtonLink
+                href={openSeaCollectionLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                icon={<ExternalLink size={18} />}
+                size="lg"
+              >
+                View Collection on OpenSea
+              </ButtonLink>
+            </CardFooter>
+          </Card>
+        </div>
 
-        <Card className="mt-12 bg-card/70 border-primary/30">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-primary"><ShieldCheck /> NFT Authenticity & Benefits</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-card-foreground/90 mb-2">
-              All official Ecoho Gold NFTs are verifiable on the Ethereum network.
-              Ownership often comes with exclusive benefits like early access to features, ECOHO token airdrops, and access to special community events.
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Ensure you are purchasing from official Ecoho Gold collections on reputable marketplaces. Remember, NFT purchases may also grant promotional ECOHO token rewards.
-            </p>
-          </CardContent>
-        </Card>
       </main>
       <Footer />
     </div>
