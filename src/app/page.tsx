@@ -14,7 +14,6 @@ import MarketAnalytics from '@/components/market-analytics';
 import EthereumNftDexTrades from '@/components/ethereum-nft-dex-trades';
 import SepoliaBlockFeed from '@/components/sepolia-block-feed';
 import RadioPlayer from '@/components/radio-player';
-import CompanyChatbot from '@/components/company-chatbot';
 
 
 export default function HomePage() {
@@ -69,10 +68,6 @@ export default function HomePage() {
             <CommunitySpotlightForm />
           </section>
           
-          <section>
-            <CompanyChatbot />
-          </section>
-
           <section>
             <ContactLinks />
           </section>

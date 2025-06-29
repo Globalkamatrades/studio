@@ -7,7 +7,6 @@
 import { generateCommunitySpotlightArticle } from "@/ai/flows/community-spotlight-article-generation";
 import type { GenerateCommunitySpotlightArticleOutput } from "@/ai/flows/community-spotlight-article-generation";
 import { z } from "zod";
-import { askCompanyChatbot } from "@/ai/flows/company-chatbot-flow";
 
 const GenerateCommunitySpotlightArticleInputSchema = z.object({
   topic: z.string().min(1, "Topic is required"),
@@ -120,38 +119,5 @@ export async function getRecentNftTransfersAction(): Promise<{ transfers?: Alche
   } catch (error: any) {
     console.error('Failed to fetch NFT transfers from Alchemy (Ethereum) in server action:', error);
     return { transfers: [], error: error.message || 'An unknown error occurred while fetching NFT transfers.' };
-  }
-}
-
-// --- Company Chatbot Action ---
-
-const CompanyChatbotInputSchema = z.object({
-  question: z.string().min(3, "Question must be at least 3 characters."),
-});
-
-export async function askCompanyChatbotAction(
-  formData: FormData
-): Promise<{ answer?: string; error?: string, fieldErrors?: any }> {
-  try {
-    const rawFormData = {
-      question: formData.get("question"),
-    };
-
-    const validatedFields = CompanyChatbotInputSchema.safeParse(rawFormData);
-
-    if (!validatedFields.success) {
-      return { error: "Invalid input.", fieldErrors: validatedFields.error.flatten().fieldErrors };
-    }
-
-    const result = await askCompanyChatbot({ question: validatedFields.data.question });
-    
-    if (result.answer) {
-      return { answer: result.answer };
-    } else {
-      return { error: "Failed to get an answer. The AI model might have returned an incomplete response." };
-    }
-  } catch (e: any) {
-    console.error("Error in askCompanyChatbotAction:", e);
-    return { error: e.message || "An unexpected error occurred while getting an answer." };
   }
 }
