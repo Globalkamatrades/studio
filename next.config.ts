@@ -33,7 +33,7 @@ const nextConfig: NextConfig = {
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "img-src 'self' https://placehold.co https://ecohogold.co.za data:",
       "font-src 'self' https://fonts.gstatic.com",
-      "connect-src 'self' https://eth-mainnet.g.alchemy.com https://blockchain.googleapis.com wss://blockchain.googleapis.com https://*.blockchainnodeengine.com wss://*.blockchainnodeengine.com", 
+      "connect-src 'self' https://eth-mainnet.g.alchemy.com https://blockchain.googleapis.com https://*.blockchainnodeengine.com wss://*.blockchainnodeengine.com wss://*.googleapis.com", 
       // reCAPTCHA requires 'www.google.com' for its iframe.
       "frame-src 'self' https://www.google.com",
       "object-src 'none'",
