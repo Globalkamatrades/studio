@@ -38,7 +38,7 @@ const nextConfig: NextConfig = {
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "img-src 'self' https://placehold.co https://ecohogold.co.za https://storage.googleapis.com data:",
       "font-src 'self' https://fonts.gstatic.com",
-      "connect-src 'self' https: wss: wss://*.blockchainnodeengine.com", 
+      "connect-src 'self' https: wss://*.blockchain.node.engine.a.goog", 
       "frame-src 'self' https://www.google.com https://link.radioking.com",
       "object-src 'none'",
       "form-action 'self'",
