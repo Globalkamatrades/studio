@@ -2,7 +2,8 @@
 import type { FC } from 'next';
 import Link from 'next/link';
 import ButtonLink from '@/components/ui/button-link';
-import { LogIn, LayoutDashboard, Sparkles, Music, FileText } from 'lucide-react';
+import { Sparkles, FileText, LayoutDashboard } from 'lucide-react';
+import { ConnectWallet } from '@/components/connect-wallet';
 
 
 const Header: FC = () => {
@@ -18,7 +19,7 @@ const Header: FC = () => {
               Africa's Wealth, Tokenized. Built on the Ethereum Network.
             </p>
           </div>
-          <nav className="flex flex-wrap justify-center md:justify-end gap-2">
+          <nav className="flex flex-wrap justify-center md:justify-end items-center gap-2">
             <ButtonLink href="/nfts" variant="ghost" className="text-primary hover:bg-primary/10 hover:text-primary-foreground">
               <Sparkles size={18} /> Our NFTs
             </ButtonLink>
@@ -28,6 +29,9 @@ const Header: FC = () => {
             <ButtonLink href="/dashboard" variant="ghost" className="text-primary hover:bg-primary/10 hover:text-primary-foreground">
               <LayoutDashboard size={18} /> Dashboard
             </ButtonLink>
+            <div className="ml-2">
+              <ConnectWallet />
+            </div>
           </nav>
         </div>
       </div>
