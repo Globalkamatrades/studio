@@ -1,4 +1,3 @@
-
 "use client";
 
 import type { FC } from 'react';
@@ -23,10 +22,12 @@ const SepoliaBlockFeed: FC = () => {
 
   // This URL is now safely exposed to the client via a NEXT_PUBLIC_ prefixed environment variable
   const SEPOLIA_WSS_URL = process.env.NEXT_PUBLIC_SEPOLIA_WSS_URL;
+  const isConfigured = SEPOLIA_WSS_URL && SEPOLIA_WSS_URL !== 'YOUR_SEPOLIA_WSS_URL_HERE';
+
 
   useEffect(() => {
     // If the URL is not configured, don't attempt to connect.
-    if (!SEPOLIA_WSS_URL) {
+    if (!isConfigured) {
         setConnectionStatus('Error');
         return;
     }
@@ -34,7 +35,7 @@ const SepoliaBlockFeed: FC = () => {
     // Prevent creating multiple connections on re-renders
     if (ws.current) return;
     
-    ws.current = new WebSocket(SEPOLIA_WSS_URL);
+    ws.current = new WebSocket(SEPOLIA_WSS_URL!);
     setConnectionStatus('Connecting');
 
     ws.current.onopen = () => {
@@ -76,7 +77,7 @@ const SepoliaBlockFeed: FC = () => {
       ws.current?.close();
       ws.current = null;
     };
-  }, [SEPOLIA_WSS_URL]);
+  }, [isConfigured, SEPOLIA_WSS_URL]);
 
   const getStatusIndicator = () => {
     switch (connectionStatus) {
@@ -102,7 +103,7 @@ const SepoliaBlockFeed: FC = () => {
         {getStatusIndicator()}
       </div>
 
-      {!SEPOLIA_WSS_URL ? (
+      {!isConfigured ? (
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
           <AlertTitle>Configuration Missing</AlertTitle>
